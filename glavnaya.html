@@ -1,0 +1,294 @@
+<!DOCTYPE html><html class="light" lang="ru" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>UNI VOLLEY | Университетская волейбольная команда</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {tertiary: "#531100", "on-background": "#1a1b22", white: "#FFFFFF", "on-primary": "#ffffff", "surface-bright": "#faf8ff", "on-secondary-container": "#5b6576", "ice-blue": "#F0F5FF", "victory-gold": "#FFD700", "secondary-fixed": "#d9e3f7", "on-primary-container": "#8ea6ff", "inverse-on-surface": "#f1f0f9", "secondary-fixed-dim": "#bdc7da", primary: "#00216e", "on-tertiary-fixed": "#3b0900", "on-secondary-fixed-variant": "#3d4757", "tertiary-fixed": "#ffdbd1", "on-error": "#ffffff", secondary: "#555f6f", "tertiary-container": "#791d00", "secondary-container": "#d9e3f7", "on-secondary-fixed": "#121c2a", "sky-blue": "#4A90E2", "surface-variant": "#e2e1eb", "on-primary-fixed": "#001550", "on-surface-variant": "#444653", "surface-container-low": "#f4f2fc", "on-primary-fixed-variant": "#133ca8", "inverse-surface": "#2f3037", "surface-container-high": "#e8e7f1", "primary-fixed-dim": "#b6c4ff", "on-secondary": "#ffffff", outline: "#747684", surface: "#faf8ff", "inverse-primary": "#b6c4ff", "royal-blue": "#0033A0", "on-error-container": "#93000a", "on-tertiary": "#ffffff", "tertiary-fixed-dim": "#ffb5a0", "primary-container": "#0033a0", "outline-variant": "#c4c5d5", "surface-container-highest": "#e2e1eb", error: "#ba1a1a", background: "#faf8ff", "on-surface": "#1a1b22", "on-tertiary-container": "#ff8a68", "primary-fixed": "#dce1ff", "error-container": "#ffdad6", "surface-dim": "#dad9e3", "surface-container-lowest": "#ffffff", "surface-container": "#eeedf6", "surface-tint": "#3456c1", "on-tertiary-fixed-variant": "#842506"}, borderRadius: {DEFAULT: "1rem", lg: "2rem", xl: "3rem", full: "9999px"}, spacing: {"section-gap": "64px", "container-margin": "24px", gutter: "16px", base: "8px"}, fontFamily: {"headline-lg": ["Nunito Sans"], "label-lg": ["Nunito Sans"], "body-lg": ["Nunito Sans"], "headline-md": ["Nunito Sans"], "headline-lg-mobile": ["Nunito Sans"], "label-sm": ["Nunito Sans"], "display-lg": ["Nunito Sans"], "body-md": ["Nunito Sans"], headline: ["Nunito Sans"], display: ["Nunito Sans"], body: ["Nunito Sans"], label: ["Nunito Sans"]}, fontSize: {"headline-lg": ["32px", {lineHeight: "40px", fontWeight: "800"}], "label-lg": ["14px", {lineHeight: "20px", letterSpacing: "0.05em", fontWeight: "700"}], "body-lg": ["18px", {lineHeight: "28px", fontWeight: "400"}], "headline-md": ["24px", {lineHeight: "32px", fontWeight: "700"}], "headline-lg-mobile": ["28px", {lineHeight: "36px", fontWeight: "800"}], "label-sm": ["12px", {lineHeight: "16px", fontWeight: "600"}], "display-lg": ["48px", {lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "800"}], "body-md": ["16px", {lineHeight: "24px", fontWeight: "400"}]}}}};</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .wave-transition {
+            clip-path: polygon(0 15%, 100% 0, 100% 85%, 0 100%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        #mobile-menu {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(100%);
+        }
+        #mobile-menu.open {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden flex flex-col min-h-screen">
+<!-- Header -->
+<header class="sticky top-0 w-full z-50 bg-white/80 backdrop-blur-xl dark:bg-inverse-surface/90 shadow-sm shadow-royal-blue/5">
+<div class="flex justify-between items-center px-4 md:px-container-margin py-4 max-w-7xl mx-auto">
+<div class="text-headline-md font-headline-md font-extrabold tracking-tighter text-royal-blue dark:text-ice-blue z-20">РГСУ ВОЛЕЙБОЛ</div>
+<!-- Desktop Nav -->
+<nav class="hidden md:flex items-center gap-gutter">
+<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="#">Достижения</a>
+<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="#">Турниры</a>
+<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="#">Игроки</a>
+<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="#">Мы вне поля</a>
+</nav>
+<div class="hidden md:flex items-center gap-4">
+<div class="hidden lg:flex items-center gap-2">
+<span class="material-symbols-outlined text-royal-blue cursor-pointer hover:scale-110 transition-transform">send</span>
+<span class="material-symbols-outlined text-royal-blue cursor-pointer hover:scale-110 transition-transform">alternate_email</span>
+</div>
+<button class="bg-royal-blue text-white font-bold rounded-full px-6 py-2 text-label-lg hover:scale-105 active:scale-95 transition-all shadow-md shadow-royal-blue/20">
+                Связаться
+            </button>
+</div>
+<!-- Mobile Menu Button -->
+<button class="md:hidden text-royal-blue z-20 focus:outline-none" id="mobile-menu-btn">
+<span class="material-symbols-outlined text-3xl">menu</span>
+</button>
+</div>
+<!-- Mobile Menu Overlay -->
+<div class="fixed inset-0 bg-white dark:bg-inverse-surface z-10 flex flex-col pt-24 px-6 md:hidden" id="mobile-menu">
+<nav class="flex flex-col gap-6 items-center text-center">
+<a class="text-headline-md font-headline-md text-royal-blue dark:text-ice-blue" href="#">Достижения</a>
+<a class="text-headline-md font-headline-md text-royal-blue dark:text-ice-blue" href="#">Турниры</a>
+<a class="text-headline-md font-headline-md text-royal-blue dark:text-ice-blue" href="#">Игроки</a>
+<a class="text-headline-md font-headline-md text-royal-blue dark:text-ice-blue" href="#">Мы вне поля</a>
+<button class="mt-8 bg-royal-blue text-white font-bold rounded-full px-8 py-4 text-label-lg w-full max-w-xs shadow-md">
+                Связаться с менеджером
+            </button>
+</nav>
+</div>
+</header>
+<main class="flex-grow">
+<!-- Hero Section -->
+<section class="relative min-h-[600px] lg:min-h-[870px] flex items-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover object-center lg:object-top" data-alt="Action shot of a university volleyball court" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCd00tUo0QcB3oXHn02WSNsadAAiNZv6JZA2SdcuhQ3mHk18E9LwbSEdGO5e2Mw6VfoZrA-r-Rpr-XoFPmX2r4Uzh74SpP18EuWMLPUET-qoJ50DK31jO6dWnKyn7IUZkoYdRNq6C9SBajTJHmEfDkVHb9YEbJqqi-WSvXNyAf1OigoLBaHnMDrmR32P84wuL7caFpzkxe63wehs73PXHCN5uYaRpsKTfWS5YMrCwxCeZ-ocn7cHVFc_b4UaxduzIxy0eOWxG6molYxQ">
+<div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-royal-blue/90 md:from-royal-blue/80 to-royal-blue/30 md:to-transparent"></div>
+</div>
+<div class="relative z-10 max-w-7xl mx-auto px-4 md:px-container-margin w-full py-20">
+<div class="max-w-2xl text-white">
+<h1 class="font-display-lg text-headline-lg-mobile md:text-display-lg mb-4 animate-fade-in-up">Добро пожаловать, будущие чемпионы</h1>
+<p class="font-body-lg text-body-md md:text-body-lg mb-8 text-ice-blue/90">Присоединяйтесь к наследию совершенства. В РГСУ ВОЛЕЙБОЛ мы не просто играем — мы задаем стандарты через дух, сообщество и неустанное стремление к победе.</p>
+<div class="flex flex-col sm:flex-row flex-wrap gap-4">
+<button class="bg-victory-gold text-primary font-bold rounded-full px-8 py-4 text-label-lg hover:scale-105 transition-transform flex items-center justify-center gap-2 w-full sm:w-auto">
+                        Подать заявку <span class="material-symbols-outlined">sports_volleyball</span>
+</button>
+<button class="bg-white/20 backdrop-blur-md text-white font-bold border border-white/30 rounded-full px-8 py-4 text-label-lg hover:bg-white/30 transition-all w-full sm:w-auto text-center" style="transform: scale(1);">
+                        Познакомиться с командой
+                    </button>
+</div>
+</div>
+</div>
+<!-- Wave transition -->
+<div class="absolute bottom-0 left-0 w-full h-16 md:h-32 bg-background" style="clip-path: ellipse(70% 100% at 50% 100%);"></div>
+</section>
+<!-- Why Choose Us Section -->
+<section class="py-12 md:py-section-gap max-w-7xl mx-auto px-4 md:px-container-margin">
+<div class="flex mb-8 md:mb-12 flex-col items-center justify-center text-center">
+<span class="text-sky-blue font-bold uppercase tracking-widest text-label-sm mb-2">Начни свою историю здесь</span>
+<h2 class="font-headline-lg text-headline-md md:text-headline-lg text-royal-blue mb-4">Почему стоит выбрать нас?</h2>
+<p class="text-secondary font-body-md max-w-2xl">Мы строим новую историю РГСУ ВОЛЕЙБОЛ и ищем талантливых игроков, готовых расти вместе с нами.</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-gutter">
+<!-- Card 1 -->
+<div class="bg-royal-blue rounded-xl p-6 md:p-8 flex flex-col justify-between relative overflow-hidden group shadow-lg shadow-royal-blue/10 min-h-[250px] md:min-h-[300px]">
+<div class="relative z-10">
+<div class="bg-victory-gold/20 text-victory-gold w-12 h-12 rounded-full flex items-center justify-center mb-4 md:mb-6">
+<span class="material-symbols-outlined">trending_up</span>
+</div>
+<h3 class="text-white font-headline-md text-headline-md mb-2 md:mb-4">Новые вызовы</h3>
+<p class="text-ice-blue/80 font-body-md">Со следующего учебного года мы заявляемся в крупнейшие лиги: МССИ и ЛВЛ.</p>
+</div>
+<div class="absolute -bottom-12 -right-12 w-32 h-32 bg-white/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white border border-ice-blue rounded-xl p-6 md:p-8 flex flex-col justify-between shadow-md shadow-royal-blue/5 hover:shadow-xl transition-all min-h-[250px] md:min-h-[300px]">
+<div>
+<div class="bg-ice-blue text-royal-blue w-12 h-12 rounded-full flex items-center justify-center mb-4 md:mb-6">
+<span class="material-symbols-outlined">person_add</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-royal-blue mb-2 md:mb-4">Твой шанс проявить себя</h3>
+<p class="text-secondary font-body-md">Мы обновляем состав, а значит у тебя есть реальная возможность стать лидером сборной с первого сезона.</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-ice-blue rounded-xl p-6 md:p-8 flex flex-col justify-between group shadow-md shadow-royal-blue/5 hover:bg-white transition-all min-h-[250px] md:min-h-[300px]">
+<div>
+<div class="bg-royal-blue text-white w-12 h-12 rounded-full flex items-center justify-center mb-4 md:mb-6">
+<span class="material-symbols-outlined">school</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-royal-blue mb-2 md:mb-4">Профессиональное развитие</h3>
+<p class="text-secondary font-body-md">Регулярные тренировки, качественный инвентарь и поддержка университета для совмещения спорта и учебы.</p>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-white border border-ice-blue rounded-xl p-6 md:p-8 flex flex-col justify-between shadow-md shadow-royal-blue/5 hover:shadow-xl transition-all min-h-[250px] md:min-h-[300px]">
+<div>
+<div class="bg-sky-blue text-white w-12 h-12 rounded-full flex items-center justify-center mb-4 md:mb-6">
+<span class="material-symbols-outlined">groups</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-royal-blue mb-2 md:mb-4">Сильное сообщество</h3>
+<p class="text-secondary font-body-md">Стань частью команды, где поддержка и командный дух важнее счета на табло. Мы — семья.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Squad Section -->
+<section class="bg-ice-blue/50 py-12 md:py-section-gap relative overflow-hidden">
+<div class="max-w-7xl mx-auto px-4 md:px-container-margin grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-section-gap items-center">
+<div class="relative order-2 lg:order-1">
+<div class="absolute -top-10 -left-10 w-64 h-64 bg-royal-blue/5 rounded-full blur-3xl"></div>
+<div class="relative z-10 glass-panel rounded-xl p-1 shadow-2xl">
+<img class="rounded-lg w-full aspect-[4/5] object-cover" data-alt="Portrait of Alex Petrov" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjxtISPilbeSo55frZPY_zKjj88mu09Ryr8CeltN-sjeeuOBKTyDkjtfwy8t3jYEEVZeVpXHKbN55yc6hlZi39aARi4eoDjCBHfgtY4fVYTRqZMofqlKOSH4Z-_DARu2M3Xj01RPctjkJO9S1UNSDKFmT4urq5sHXVIGZpgB5FNnkADg-KIzCnZ3DUQLf1MHK6fMdCEFP1FRo7yTK-P4V1HYrStzcFprX1zwt9IPlXQby8G4baA8J2lFE44iDNC6MJlwCIV2eFZh8">
+<div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 right-4 md:right-6 p-4 md:p-6 bg-white/90 backdrop-blur-md rounded-xl border border-white/50">
+<div class="flex justify-between items-center">
+<div>
+<h3 class="font-bold text-royal-blue text-body-lg md:text-headline-md">Алекс Петров</h3>
+<span class="bg-sky-blue/20 text-royal-blue px-2 md:px-3 py-1 rounded-full text-xs md:text-label-sm inline-block mt-1">Сеттер • Капитан</span>
+</div>
+<div class="bg-royal-blue text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-bold text-sm md:text-base shrink-0 ml-2">
+                                23
+                            </div>
+</div>
+</div>
+</div>
+</div>
+<div class="order-1 lg:order-2">
+<h2 class="font-headline-lg text-headline-md md:text-headline-lg text-royal-blue mb-4 md:mb-6">Наш состав</h2>
+<p class="text-secondary text-body-md md:text-body-lg mb-6 md:mb-8">Наши игроки из разных уголков мира, но у нас одно сердце. Каждый участник приносит уникальную энергию, которая питает дух нашего университета.</p>
+<div class="space-y-3 md:space-y-4">
+<div class="group flex items-center justify-between p-3 md:p-4 bg-white rounded-xl shadow-sm hover:bg-ice-blue transition-all cursor-pointer">
+<div class="flex items-center gap-3 md:gap-4">
+<div class="w-10 h-10 md:w-12 md:h-12 bg-surface-variant rounded-full flex items-center justify-center text-royal-blue font-bold text-sm md:text-base">07</div>
+<span class="font-bold text-royal-blue text-sm md:text-base">Дмитрий Иванов</span>
+</div>
+<span class="text-secondary text-xs md:text-label-lg">21 год</span>
+</div>
+<div class="group flex items-center justify-between p-3 md:p-4 bg-white rounded-xl shadow-sm hover:bg-ice-blue transition-all cursor-pointer">
+<div class="flex items-center gap-3 md:gap-4">
+<div class="w-10 h-10 md:w-12 md:h-12 bg-surface-variant rounded-full flex items-center justify-center text-royal-blue font-bold text-sm md:text-base">14</div>
+<span class="font-bold text-royal-blue text-sm md:text-base">Игорь Соколов</span>
+</div>
+<span class="text-secondary text-xs md:text-label-lg">19 лет</span>
+</div>
+<div class="group flex items-center justify-between p-3 md:p-4 bg-white rounded-xl shadow-sm hover:bg-ice-blue transition-all cursor-pointer">
+<div class="flex items-center gap-3 md:gap-4">
+<div class="w-10 h-10 md:w-12 md:h-12 bg-surface-variant rounded-full flex items-center justify-center text-royal-blue font-bold text-sm md:text-base">11</div>
+<span class="font-bold text-royal-blue text-sm md:text-base">Сергей Волков</span>
+</div>
+<span class="text-secondary text-xs md:text-label-lg">22 года</span>
+</div>
+</div>
+<button class="mt-6 md:mt-8 bg-sky-blue text-white font-bold rounded-full px-6 md:px-8 py-3 hover:scale-105 transition-transform flex items-center justify-center gap-2 w-full sm:w-auto" style="transform: scale(1);">
+                    Весь состав <span class="material-symbols-outlined">trending_flat</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-royal-blue dark:bg-tertiary mt-0">
+<div class="max-w-7xl mx-auto px-4 md:px-container-margin py-12 md:py-16">
+<div class="flex flex-col lg:flex-row justify-between items-start gap-12 border-b border-white/10 pb-12">
+<div class="flex flex-col gap-4 w-full lg:max-w-sm">
+<div class="text-headline-md font-bold text-white tracking-tighter text-center md:text-left">РГСУ ВОЛЕЙБОЛ</div>
+<p class="text-ice-blue/70 text-body-md leading-relaxed text-center md:text-left">Воспитываем чемпионов на площадке и за её пределами через дисциплину, единство и непоколебимый командный дух. Присоединяйтесь к нашей истории побед.</p>
+<div class="flex gap-4 mt-2 justify-center md:justify-start">
+<a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#"><span class="material-symbols-outlined">alternate_email</span></a>
+<a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#">
+<svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"></path></svg>
+</a>
+</div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-8 md:gap-12 w-full lg:w-auto">
+<div>
+<h4 class="text-white font-bold mb-4 md:mb-6">Команда</h4>
+<ul class="space-y-3 md:space-y-4">
+<li class=""><a class="text-ice-blue/70 hover:text-white transition-colors text-sm md:text-base" href="#">Состав</a></li>
+<li class=""><a class="text-ice-blue/70 hover:text-white transition-colors text-sm md:text-base" href="#">Тренеры</a></li>
+<li class=""><a class="text-ice-blue/70 hover:text-white transition-colors text-sm md:text-base" href="#">Расписание</a></li>
+<li class=""><a class="text-ice-blue/70 hover:text-white transition-colors text-sm md:text-base" href="#">Достижения</a></li>
+<li class=""><a class="text-ice-blue/70 hover:text-white transition-colors text-sm md:text-base" href="#">Мы вне поля</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-white font-bold mb-4 md:mb-6">Информация</h4>
+<ul class="space-y-3 md:space-y-4">
+<li class=""><a class="text-ice-blue/70 hover:text-white transition-colors text-sm md:text-base" href="#">Новости</a></li>
+<li class=""><a class="text-ice-blue/70 hover:text-white transition-colors text-sm md:text-base" href="#">Галерея</a></li>
+<li class=""><a class="text-ice-blue/70 hover:text-white transition-colors text-sm md:text-base" href="#">Билеты</a></li>
+</ul>
+</div>
+<div class="col-span-2 sm:col-span-1 mt-4 sm:mt-0">
+<h4 class="text-white font-bold mb-4 md:mb-6">Поддержка</h4>
+<ul class="space-y-3 md:space-y-4 grid grid-cols-2 sm:grid-cols-1 gap-x-4">
+<li class=""><a class="text-ice-blue/70 hover:text-white transition-colors text-sm md:text-base" href="#">Спонсорам</a></li>
+<li class=""><a class="text-ice-blue/70 hover:text-white transition-colors text-sm md:text-base" href="#">Контакты</a></li>
+<li class=""><a class="text-ice-blue/70 hover:text-white transition-colors text-sm md:text-base" href="#">Политика</a></li>
+<li class=""><a class="text-ice-blue/70 hover:text-white transition-colors text-sm md:text-base" href="#">Правила</a></li>
+<li class="col-span-2 sm:col-span-1"><a class="text-ice-blue/70 hover:text-white transition-colors text-sm md:text-base" href="#">Мы вне поля</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="pt-8 text-center">
+<p class="text-ice-blue/50 text-xs md:text-body-md">© 2024 Университетская волейбольная команда. Все права защищены. Разработано с любовью к спорту.</p>
+</div>
+</div>
+</footer>
+<script>
+    // Parallax effect for hero image
+    window.addEventListener('scroll', () => {
+        if(window.innerWidth > 768) {
+            const scroll = window.pageYOffset;
+            const heroImage = document.querySelector('section img');
+            if (heroImage) {
+                heroImage.style.transform = `translateY(${scroll * 0.4}px)`;
+            }
+        }
+    });
+
+    // Button hover effects
+    document.querySelectorAll('button:not(#mobile-menu-btn)').forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+            btn.style.transform = 'scale(1.05)';
+        });
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = 'scale(1)';
+        });
+    });
+
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = mobileMenuBtn.querySelector('span');
+
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+        if (mobileMenu.classList.contains('open')) {
+            menuIcon.textContent = 'close';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+        } else {
+            menuIcon.textContent = 'menu';
+            document.body.style.overflow = '';
+        }
+    });
+</script>
+
+
+</body></html>

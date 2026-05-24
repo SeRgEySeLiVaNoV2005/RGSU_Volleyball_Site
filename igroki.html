@@ -1,0 +1,402 @@
+<!DOCTYPE html><html class="light" lang="ru" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Игроки - РГСУ ВОЛЕЙБОЛ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"on-secondary-container": "#5b6576", "secondary-fixed-dim": "#bdc7da", "surface-tint": "#3456c1", "on-secondary-fixed-variant": "#3d4757", "on-error-container": "#93000a", "surface-container-highest": "#e2e1eb", "on-tertiary": "#ffffff", "ice-blue": "#F0F5FF", "outline-variant": "#c4c5d5", "on-background": "#1a1b22", "on-surface-variant": "#444653", "on-primary": "#ffffff", "surface-bright": "#faf8ff", outline: "#747684", surface: "#faf8ff", "inverse-on-surface": "#f1f0f9", "on-primary-container": "#8ea6ff", "surface-container-low": "#f4f2fc", "on-secondary-fixed": "#121c2a", "surface-container": "#eeedf6", "tertiary-fixed-dim": "#ffb5a0", background: "#faf8ff", "primary-container": "#0033a0", "on-tertiary-fixed": "#3b0900", "on-primary-fixed-variant": "#133ca8", "on-error": "#ffffff", "tertiary-container": "#791d00", "sky-blue": "#4A90E2", "on-primary-fixed": "#001550", "surface-dim": "#dad9e3", "victory-gold": "#FFD700", white: "#FFFFFF", "tertiary-fixed": "#ffdbd1", secondary: "#555f6f", "on-tertiary-container": "#ff8a68", "on-surface": "#1a1b22", error: "#ba1a1a", primary: "#00216e", "secondary-fixed": "#d9e3f7", "surface-variant": "#e2e1eb", "inverse-surface": "#2f3037", "on-tertiary-fixed-variant": "#842506", "secondary-container": "#d9e3f7", "primary-fixed-dim": "#b6c4ff", "surface-container-high": "#e8e7f1", "primary-fixed": "#dce1ff", "royal-blue": "#0033A0", tertiary: "#531100", "on-secondary": "#ffffff", "inverse-primary": "#b6c4ff", "error-container": "#ffdad6", "surface-container-lowest": "#ffffff"}, borderRadius: {DEFAULT: "1rem", lg: "2rem", xl: "3rem", full: "9999px"}, spacing: {base: "8px", "section-gap": "64px", gutter: "16px", "container-margin": "24px"}, fontFamily: {"label-sm": ["Nunito Sans"], "headline-md": ["Nunito Sans"], "headline-lg-mobile": ["Nunito Sans"], "display-lg": ["Nunito Sans"], "body-md": ["Nunito Sans"], "body-lg": ["Nunito Sans"], "headline-lg": ["Nunito Sans"], "label-lg": ["Nunito Sans"], headline: ["Nunito Sans"], display: ["Nunito Sans"], body: ["Nunito Sans"], label: ["Nunito Sans"]}, fontSize: {"label-sm": ["12px", {lineHeight: "16px", fontWeight: "600"}], "headline-md": ["24px", {lineHeight: "32px", fontWeight: "700"}], "headline-lg-mobile": ["28px", {lineHeight: "36px", fontWeight: "800"}], "display-lg": ["48px", {lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "800"}], "body-md": ["16px", {lineHeight: "24px", fontWeight: "400"}], "body-lg": ["18px", {lineHeight: "28px", fontWeight: "400"}], "headline-lg": ["32px", {lineHeight: "40px", fontWeight: "800"}], "label-lg": ["14px", {lineHeight: "20px", letterSpacing: "0.05em", fontWeight: "700"}]}}}};</script>
+<style>
+        body { font-family: 'Nunito Sans', sans-serif; overflow-x: hidden; min-height: 100vh; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        
+        .carousel-container {
+            perspective: 2000px;
+            height: 950px;
+            position: relative;
+            overflow: visible;
+        }
+
+        @media (min-width: 768px) {
+            .carousel-container {
+                height: 650px;
+            }
+        }
+        
+        .player-card-3d {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 1000px;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .player-card-3d.active {
+            opacity: 1;
+            z-index: 30;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .player-card-3d.prev {
+            opacity: 0;
+            z-index: 10;
+            transform: translate(-110%, -50%) scale(0.7) rotateY(15deg);
+            filter: blur(4px);
+        }
+
+        .player-card-3d.next {
+            opacity: 0;
+            z-index: 10;
+            transform: translate(10%, -50%) scale(0.7) rotateY(-15deg);
+            filter: blur(4px);
+        }
+
+        @media (min-width: 768px) {
+            .player-card-3d.prev, .player-card-3d.next {
+                opacity: 0.3;
+            }
+        }
+
+        .player-card-3d.hidden-left {
+            opacity: 0;
+            transform: translate(-150%, -50%) scale(0.5);
+        }
+
+        .player-card-3d.hidden-right {
+            opacity: 0;
+            transform: translate(50%, -50%) scale(0.5);
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(-10px); }
+            50% { transform: translateY(10px); }
+            100% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        .content-slide-in {
+            animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-white">
+<header class="sticky top-0 w-full z-50 bg-white/80 backdrop-blur-xl dark:bg-inverse-surface/90 shadow-sm shadow-royal-blue/5">
+<div class="flex justify-between items-center px-container-margin py-4 max-w-7xl mx-auto">
+<div class="text-headline-md font-headline-md font-extrabold tracking-tighter text-royal-blue dark:text-ice-blue">РГСУ ВОЛЕЙБОЛ</div>
+<nav class="hidden md:flex items-center gap-gutter">
+<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="#">Достижения</a>
+<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="#">Турниры</a>
+<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="#">Игроки</a>
+<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="#">Мы вне поля</a></nav>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center gap-2">
+<span class="material-symbols-outlined text-royal-blue cursor-pointer hover:scale-110 transition-transform">send</span>
+<span class="material-symbols-outlined text-royal-blue cursor-pointer hover:scale-110 transition-transform">alternate_email</span>
+</div>
+<button class="bg-royal-blue text-white font-bold rounded-full px-4 md:px-6 py-2 text-label-lg hover:scale-105 active:scale-95 transition-all shadow-md shadow-royal-blue/20">
+                Связаться с менеджером</button>
+</div>
+</div>
+</header>
+<main class="">
+<section class="relative pt-12 pb-24 overflow-hidden">
+<div class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[600px] h-[600px] bg-ice-blue rounded-full blur-3xl opacity-50 -z-10"></div>
+<div class="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[400px] h-[400px] bg-primary-container/10 rounded-full blur-3xl -z-10"></div>
+<div class="max-w-7xl mx-auto px-container-margin text-center mb-16">
+<h1 class="font-display-lg text-display-lg text-primary mb-4">Наш состав</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+                Познакомьтесь с атлетами, которые защищают честь университета на каждом турнире. Сила, скорость и командный дух.
+            </p>
+</div>
+<div class="carousel-container" id="carousel-wrapper">
+<!-- Cards will be injected by JavaScript -->
+</div>
+<!-- Controls -->
+<div class="flex flex-col items-center gap-6 mt-12 px-4">
+<div class="flex items-center gap-4 md:gap-8 w-full justify-center">
+<button class="w-12 h-12 md:w-16 md:h-16 shrink-0 rounded-full border-2 border-primary text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300 group shadow-lg active:scale-90" id="prev-btn">
+<span class="material-symbols-outlined text-2xl md:text-3xl group-hover:-translate-x-1 transition-transform">arrow_back_ios_new</span>
+</button>
+<div class="flex flex-wrap justify-center gap-2 md:gap-3 max-w-[200px] md:max-w-none" id="dot-indicators">
+<!-- Dots injected by JS -->
+</div>
+<button class="w-12 h-12 md:w-16 md:h-16 shrink-0 rounded-full border-2 border-primary text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300 group shadow-lg active:scale-90" id="next-btn">
+<span class="material-symbols-outlined text-2xl md:text-3xl group-hover:translate-x-1 transition-transform">arrow_forward_ios</span>
+</button>
+</div>
+<p class="text-on-surface-variant font-label-sm text-label-sm flex items-center gap-2 text-center">
+<span class="material-symbols-outlined text-base hidden sm:inline-block">keyboard</span>
+                Используйте стрелки на клавиатуре для навигации
+            </p>
+</div>
+</section><section class="bg-white py-section-gap overflow-hidden">
+<div class="max-w-7xl mx-auto px-container-margin">
+<div class="flex flex-col lg:flex-row items-center gap-16">
+<div class="w-full lg:w-5/12 relative group max-w-md mx-auto lg:max-w-none">
+<div class="absolute -inset-4 bg-royal-blue/5 rounded-full blur-2xl group-hover:bg-royal-blue/10 transition-colors duration-500"></div>
+<div class="relative aspect-[3/4] rounded-full overflow-hidden border-8 border-white shadow-2xl">
+<img alt="Александр Сергеевич Волков" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB18Y6tuQDe4KVbbztRQ4jmv5aZMGGCuVlUMMG4mb61Rfn28_CHOkxJgCanU1c0UKycdVtaGUKsGrcP0dSK0qxb-Z8pfnQIV2RcjW8K3b8CYm9CyunlYmXbOLnNm8zawvx_ihoFSOqScQraSPL4X0TP60l-hVLJH5_BtQ_DSY4o5Pv-uivcOAhSH1B0_4_PqoCvwFQ2Q3wJxeQfY9cIn7HHXahoA_mEmjhodJPOC7ebnbhaBch8OWFD1Y3TJmx8_NXbOM_OArP3bOkXKw">
+</div>
+<div class="absolute -bottom-6 -right-6 bg-victory-gold text-primary p-6 rounded-full shadow-xl hidden md:block">
+<span class="material-symbols-outlined text-4xl">sports</span>
+</div>
+</div>
+<div class="w-full lg:w-7/12 flex flex-col items-start text-center lg:text-left">
+<div class="flex items-center justify-center lg:justify-start gap-2 mb-4 w-full">
+<div class="h-1 w-12 bg-royal-blue rounded-full"></div>
+<span class="text-royal-blue font-bold tracking-widest uppercase text-label-lg">Наш наставник</span>
+</div>
+<h2 class="font-display-lg text-display-lg text-primary mb-2 w-full">Малымова Мария Ильинишна</h2>
+<h3 class="text-headline-md text-sky-blue font-headline-md mb-6 w-full">Главный тренер сборной РГСУ</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-8 leading-relaxed">
+                    Мастер спорта международного класса с более чем 15-летним опытом тренерской работы. Александр Сергеевич воспитал несколько поколений чемпионов, делая упор не только на физическую подготовку, но и на тактическую гибкость и психологическую стойкость каждого игрока.
+                </p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mb-8 text-left">
+<div class="flex items-center gap-3 bg-ice-blue p-4 rounded-full">
+<span class="material-symbols-outlined text-royal-blue">military_tech</span>
+<span class="font-label-lg text-primary">Многократный чемпион Москвы</span>
+</div>
+<div class="flex items-center gap-3 bg-ice-blue p-4 rounded-full">
+<span class="material-symbols-outlined text-royal-blue">trophy</span>
+<span class="font-label-lg text-primary">Лучший тренер сезона 2023</span>
+</div>
+<div class="flex items-center gap-3 bg-ice-blue p-4 rounded-full col-span-1 sm:col-span-2">
+<span class="material-symbols-outlined text-royal-blue">verified_user</span>
+<span class="font-label-lg text-primary">Заслуженный работник физической культуры</span>
+</div>
+</div>
+<button class="mx-auto lg:mx-0 bg-royal-blue text-white px-8 py-4 rounded-full font-bold hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center justify-center gap-3 w-full sm:w-auto">
+                    Связаться с тренером
+                    <span class="material-symbols-outlined">mail</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<section class="max-w-7xl mx-auto px-container-margin py-section-gap grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="text-sky-blue mb-4 text-center md:text-left">
+<span class="material-symbols-outlined text-4xl">groups</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-2 text-center md:text-left">Командный дух</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-center md:text-left">Мы не просто игроки, мы одна семья, объединенная любовью к спорту и РГСУ.</p>
+</div>
+<div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="text-sky-blue mb-4 text-center md:text-left">
+<span class="material-symbols-outlined text-4xl">workspace_premium</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-2 text-center md:text-left">Высокие стандарты</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-center md:text-left">Ежедневные тренировки и профессиональный подход к каждому игровому моменту.</p>
+</div>
+<div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="text-sky-blue mb-4 text-center md:text-left">
+<span class="material-symbols-outlined text-4xl">school</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-2 text-center md:text-left">Спорт и Учеба</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-center md:text-left">Наши атлеты показывают отличные результаты не только на площадке, но и в аудиториях.</p>
+</div>
+</section>
+</main>
+<footer class="w-full bg-royal-blue dark:bg-tertiary"><div class="max-w-7xl mx-auto px-container-margin py-16"><div class="flex flex-col md:flex-row justify-between items-start gap-12 border-b border-white/10 pb-12"><div class="flex flex-col gap-4 max-w-sm"><div class="text-headline-md font-bold text-white tracking-tighter">РГСУ ВОЛЕЙБОЛ</div><p class="text-ice-blue/70 text-body-md leading-relaxed">Воспитываем чемпионов на площадке и за её пределами через дисциплину, единство и непоколебимый командный дух. Присоединяйтесь к нашей истории побед.</p><div class="flex gap-4 mt-2"><a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#"><span class="material-symbols-outlined">public</span></a><a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#"><span class="material-symbols-outlined">alternate_email</span></a><a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#"><svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"></path></svg></a></div></div><div class="grid grid-cols-2 sm:grid-cols-3 gap-12"><div><h4 class="text-white font-bold mb-6">Команда</h4><ul class="space-y-4"><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Состав</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Тренеры</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Расписание</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Достижения</a></li></ul></div><div><h4 class="text-white font-bold mb-6">Информация</h4><ul class="space-y-4"><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Новости</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Галерея</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Билеты</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Мы вне поля</a></li></ul></div><div><h4 class="text-white font-bold mb-6">Поддержка</h4><ul class="space-y-4"><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Спонсорам</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Контакты</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Политика</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Правила</a></li></ul></div></div></div><div class="pt-8 text-center"><p class="text-ice-blue/50 text-body-md">© 2024 Университетская волейбольная команда. Все права защищены. Разработано с любовью к спорту.</p></div></div></footer>
+<script>
+    const players = [
+        {
+            name: "Селиванов Сергей",
+            number: "4",
+            position: "Центральный блокирующий",
+            height: "188 см",
+            weight: "86 кг",
+            desc: "Капитан команды и лидер на площадке. Обладает исключительным игровым чутьем.",
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBasmchgp266aEGSRcstu0cY0wQts7YhqoBqbC4FaPjxvaCKjIXP0PhQRwZDfqYnNsQEo--NNzIgiAPws8q1LAFI8GIFUf1G3KuL9_CSH7YqQnmz-sf8O_5hFaie5QyWXQVP2Q3hRhQ9IOIQRaGoBvK03RgWX5goLBGoHX-vDj9U04AakrDBRih6XZ0W6Jl9uNTw34QVhVVtgwP-h0frfRiZc-RbyY40YMJr70375ve2b0KbHc63E_2KwkcN9CX0xUhH9-eZdvfoqdTYA"
+        },
+        {
+            name: "Дмитрий Иванов",
+            number: "5",
+            position: "Либеро",
+            height: "185 см",
+            weight: "75 кг",
+            desc: "Мастер приема и защиты. Молниеносная реакция и невероятное чтение игры.",
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAJpYZdI8ZYBFvsrHOkvkpYchomeFzPUdjpVGkRCc-yJyjL1xYvmO4GM2qxsbrgUE1fdCN41P0O8YcIReivvuwKyZNJbm60CYaJEPGuXX-R0l1aqbdJgBwCxc3TBdPUg3SIspiuP1quNst4Q0-kqjZnqaU2moVeKrtI2aRO26E4arzNO6sZzDNxMCVPXwJoxMTtUNyLfQfXGH75K1wQ69KS6Hbw74MxWj8pRtiCaH4xHNZCho2G5jnYeyWPAOy75_KjAFCy1st-h24"
+        },
+        {
+            name: "Игорь Соколов",
+            number: "8",
+            position: "Диагональный",
+            height: "204 см",
+            weight: "98 кг",
+            desc: "Основная атакующая сила команды. Способен пробить любой блок соперника.",
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF2yOGnmJOq65NPrUFgC2Lizgugj7HyFzA2QeJd6wvU30AMxN7_cWdphnvuXiauT7EICi8R9CL4f4hJBx2oEY2igXqiGbmgByE1SQ2zvvgg2_wuL6GSK0iPyrZGWBRj5vWkolSGzbgC6OEVjd2Ta-fLXjYSuVJ-qGdGPNRApn-lftLzzAymzrESMSn1wBQPpL_NFEuWI6-06x1KcnK-OuWNkcxzw0UwOKLw-amuTJqUiiz6EVe0w0ujdhvi_wVuyWLOYI9RDHAtns"
+        },
+        {
+            name: "Сергей Волков",
+            number: "7",
+            position: "Доигровщик",
+            height: "195 см",
+            weight: "86 кг",
+            desc: "Универсальный игрок с отличным балансом между атакой и защитными действиями.",
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAJpYZdI8ZYBFvsrHOkvkpYchomeFzPUdjpVGkRCc-yJyjL1xYvmO4GM2qxsbrgUE1fdCN41P0O8YcIReivvuwKyZNJbm60CYaJEPGuXX-R0l1aqbdJgBwCxc3TBdPUg3SIspiuP1quNst4Q0-kqjZnqaU2moVeKrtI2aRO26E4arzNO6sZzDNxMCVPXwJoxMTtUNyLfQfXGH75K1wQ69KS6Hbw74MxWj8pRtiCaH4xHNZCho2G5jnYeyWPAOy75_KjAFCy1st-h24"
+        },
+        {
+            name: "Алексей Морозов",
+            number: "15",
+            position: "Блокирующий",
+            height: "210 см",
+            weight: "102 кг",
+            desc: "Стена нашей команды. Лучший по количеству результативных блоков в сезоне.",
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF2yOGnmJOq65NPrUFgC2Lizgugj7HyFzA2QeJd6wvU30AMxN7_cWdphnvuXiauT7EICi8R9CL4f4hJBx2oEY2igXqiGbmgByE1SQ2zvvgg2_wuL6GSK0iPyrZGWBRj5vWkolSGzbgC6OEVjd2Ta-fLXjYSuVJ-qGdGPNRApn-lftLzzAymzrESMSn1wBQPpL_NFEuWI6-06x1KcnK-OuWNkcxzw0UwOKLw-amuTJqUiiz6EVe0w0ujdhvi_wVuyWLOYI9RDHAtns"
+        },
+        {
+            name: "Максим Петров",
+            number: "3",
+            position: "Связующий",
+            height: "192 см",
+            weight: "82 кг",
+            desc: "Мозг команды. Его передачи всегда точны и непредсказуемы для соперника.",
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCPmCnVrkOeKYJ9kW2mzUGaSnGlzu2P6vunb0EdjqNR6ol75AaljxTCUMT3Bak6MX4XfC4ugt99Ld0NPdwwM1gORd2ct3R2m1MQo3NSNEPXwEcO0SJmcC5caKdtQuxx2ppaqHKlQG9a-dEXHpn-AyRmexqLmJTOxI8Hiq9rH1olFFg1SwVWyBDt1ODbvhdPkYPi3ikBoH9Cs-3ccscuFGq2dmDsw2wfOmTCuSNX_SYLQEm-jdCOdC9lXpIsiYxRksVRQPtCEt2pY8M"
+        }
+    ];
+
+    let currentIndex = 0;
+    const wrapper = document.getElementById('carousel-wrapper');
+    const dotsContainer = document.getElementById('dot-indicators');
+
+    function initCarousel() {
+        // Create cards
+        players.forEach((player, index) => {
+            const card = document.createElement('div');
+            card.className = `player-card-3d`;
+            card.id = `card-${index}`;
+            card.innerHTML = `
+                <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12 px-4 md:px-6">
+                    <div class="relative w-full max-w-[280px] sm:max-w-sm md:max-w-none md:w-1/2 aspect-[3/4] md:aspect-[1.16]">
+                        <img alt="${player.name}" class="w-full h-full object-cover md:object-contain rounded-2xl md:rounded-none animate-float drop-shadow-2xl" src="${player.image}"/>
+                        <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-victory-gold text-primary font-bold px-6 py-2 rounded-full shadow-lg whitespace-nowrap">
+                            #${player.number}
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2 text-left mt-4 md:mt-0">
+                        <div class="glass-panel p-6 md:p-8 rounded-xl shadow-xl details-panel">
+                            <span class="bg-secondary-container text-primary font-bold px-4 py-1 rounded-full text-label-sm mb-4 inline-block">${player.position}</span>
+                            <h2 class="font-display-lg text-[32px] md:text-display-lg text-primary mb-4 md:mb-6 leading-tight">${player.name}</h2>
+                            <div class="grid grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
+                                <div class="flex flex-col">
+                                    <span class="text-sky-blue font-label-lg uppercase tracking-wider text-xs md:text-sm">РОСТ</span>
+                                    <span class="font-headline-md text-xl md:text-headline-md text-on-surface">${player.height}</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-sky-blue font-label-lg uppercase tracking-wider text-xs md:text-sm">ВЕС</span>
+                                    <span class="font-headline-md text-xl md:text-headline-md text-on-surface">${player.weight}</span>
+                                </div>
+                                <div class="flex flex-col col-span-2">
+                                    <span class="text-sky-blue font-label-lg uppercase tracking-wider text-xs md:text-sm">ХАРАКТЕРИСТИКА</span>
+                                    <p class="font-body-md text-sm md:text-body-md text-on-surface-variant mt-1">${player.desc}</p>
+                                </div>
+                            </div>
+                            <button class="w-full bg-primary text-white py-3 md:py-4 rounded-full font-bold hover:bg-royal-blue transition-colors flex items-center justify-center gap-2 text-sm md:text-base">
+                                Подробная статистика
+                                <span class="material-symbols-outlined">trending_up</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            wrapper.appendChild(card);
+
+            const dot = document.createElement('div');
+            dot.className = `w-3 h-3 rounded-full cursor-pointer transition-colors duration-300 ${index === 0 ? 'bg-primary' : 'bg-primary-fixed'}`;
+            dot.onclick = () => goToPlayer(index);
+            dotsContainer.appendChild(dot);
+        });
+
+        updateCarousel();
+    }
+
+    function updateCarousel() {
+        const cards = document.querySelectorAll('.player-card-3d');
+        const dots = dotsContainer.children;
+        const total = players.length;
+
+        cards.forEach((card, index) => {
+            card.classList.remove('active', 'prev', 'next', 'hidden-left', 'hidden-right');
+            const details = card.querySelector('.details-panel');
+            details.classList.remove('content-slide-in');
+
+            if (index === currentIndex) {
+                card.classList.add('active');
+                // Trigger animation for the details panel
+                setTimeout(() => details.classList.add('content-slide-in'), 50);
+            } else if (index === (currentIndex - 1 + total) % total) {
+                card.classList.add('prev');
+            } else if (index === (currentIndex + 1) % total) {
+                card.classList.add('next');
+            } else if (index < currentIndex) {
+                card.classList.add('hidden-left');
+            } else {
+                card.classList.add('hidden-right');
+            }
+        });
+
+        Array.from(dots).forEach((dot, index) => {
+            dot.classList.toggle('bg-primary', index === currentIndex);
+            dot.classList.toggle('bg-primary-fixed', index !== currentIndex);
+        });
+    }
+
+    function rotateCarousel(dir) {
+        currentIndex = (currentIndex + dir + players.length) % players.length;
+        updateCarousel();
+    }
+
+    function goToPlayer(index) {
+        currentIndex = index;
+        updateCarousel();
+    }
+
+    document.getElementById('prev-btn').onclick = () => rotateCarousel(-1);
+    document.getElementById('next-btn').onclick = () => rotateCarousel(1);
+
+    document.addEventListener('keydown', (e) => {
+        // Only prevent default for arrow keys to avoid blocking vertical scroll
+        if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            rotateCarousel(-1);
+        }
+        if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            rotateCarousel(1);
+        }
+    });
+
+    // Simple parallax on scroll
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const bgBlur1 = document.querySelector('.bg-ice-blue');
+        const bgBlur2 = document.querySelector('.bg-primary-container\\/10');
+        
+        if(bgBlur1) bgBlur1.style.transform = `translate(25%, -50%) translateY(${scrolled * 0.15}px)`;
+        if(bgBlur2) bgBlur2.style.transform = `translate(-25%, 25%) translateY(${-scrolled * 0.1}px)`;
+    });
+
+    initCarousel();
+</script>
+</body></html>
