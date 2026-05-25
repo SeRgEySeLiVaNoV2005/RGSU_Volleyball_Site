@@ -55,7 +55,7 @@
 
 <!-- ===== HOME / ГЛАВНАЯ ===== -->
 <!-- Hero -->
-<section class="relative min-h-[600px] lg:min-h-[870px] flex items-center overflow-hidden">
+<section class="relative min-h-[500px] lg:min-h-[870px] flex items-center overflow-hidden">
   <div class="absolute inset-0 z-0">
     <img class="w-full h-full object-cover object-center lg:object-top" id="hero-image" data-alt="Action shot of a university volleyball court" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCd00tUo0QcB3oXHn02WSNsadAAiNZv6JZA2SdcuhQ3mHk18E9LwbSEdGO5e2Mw6VfoZrA-r-Rpr-XoFPmX2r4Uzh74SpP18EuWMLPUET-qoJ50DK31jO6dWnKyn7IUZkoYdRNq6C9SBajTJHmEfDkVHb9YEbJqqi-WSvXNyAf1OigoLBaHnMDrmR32P84wuL7caFpzkxe63wehs73PXHCN5uYaRpsKTfWS5YMrCwxCeZ-ocn7cHVFc_b4UaxduzIxy0eOWxG6molYxQ">
     <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-royal-blue/90 md:from-royal-blue/80 to-royal-blue/30 md:to-transparent"></div>
@@ -139,8 +139,15 @@
 </section>
 </main>
 
+<!-- ===== MOBILE BOTTOM NAV ===== -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-2 bg-white/95 dark:bg-inverse-surface/95 backdrop-blur-md shadow-[0_-4px_10px_rgba(0,0,0,0.05)] rounded-t-xl">
+  <a class="flex flex-col items-center justify-center text-royal-blue py-2" href="/"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span><span class="font-label-sm text-[10px]">Главная</span></a>
+  <a class="flex flex-col items-center justify-center text-on-surface-variant py-2" href="/tournaments.html"><span class="material-symbols-outlined">calendar_today</span><span class="font-label-sm text-[10px]">Турниры</span></a>
+  <a class="flex flex-col items-center justify-center bg-royal-blue text-white rounded-xl px-5 py-2 -mt-4 shadow-md shadow-royal-blue/30" href="/off-field.html"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">diversity_1</span><span class="font-label-sm text-[10px]">Команда</span></a>
+  <a class="flex flex-col items-center justify-center text-on-surface-variant py-2" href="/players.html"><span class="material-symbols-outlined">groups</span><span class="font-label-sm text-[10px]">Игроки</span></a>
+</nav>
 <!-- ===== SHARED FOOTER ===== -->
-<footer class="w-full bg-royal-blue dark:bg-tertiary">
+<footer class="w-full bg-royal-blue dark:bg-tertiary pb-16 md:pb-0">
   <div class="max-w-7xl mx-auto px-4 md:px-container-margin py-12 md:py-16">
     <div class="flex flex-col lg:flex-row justify-between items-start gap-12 border-b border-white/10 pb-12">
       <div class="flex flex-col gap-4 w-full lg:max-w-sm">
@@ -206,11 +213,6 @@
       if (img) img.style.transform = 'translateY(' + (window.pageYOffset * 0.4) + 'px)';
     }
   });
-  // Button hover effects
-  document.querySelectorAll('button:not(#mobile-menu-btn)').forEach(function(b) {
-    b.addEventListener('mouseenter', function() { b.style.transform = 'scale(1.05)'; });
-    b.addEventListener('mouseleave', function() { b.style.transform = 'scale(1)'; });
-  });
-})();
+  })();
 </script>
 </body></html>

@@ -10,7 +10,10 @@
       "Bash(curl -s -L \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1Mjk2NTcyN2E4NDQwNDc5YzkyMzA0MTk4NmJiEgsSBxD22rLVsQ8YAZIBIwoKcHJvamVjdF9pZBIVQhM2ODcxNzc0MTU4MjU1NjkzMTA2&filename=my_vne_polya.html&opi=89354086\" -o \"my_vne_polya.html\")",
       "Bash(npx http-server *)",
       "Bash(curl *)",
-      "PowerShell(Get-Item *)"
+      "PowerShell(Get-Item *)",
+      "Bash(python *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

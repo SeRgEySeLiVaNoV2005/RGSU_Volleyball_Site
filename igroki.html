@@ -9,20 +9,29 @@
 <style>
         body { font-family: 'Nunito Sans', sans-serif; overflow-x: hidden; min-height: 100vh; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        
+
+        #mobile-menu {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(100%);
+        }
+        #mobile-menu.open {
+            transform: translateX(0);
+        }
+
         .carousel-container {
-            perspective: 2000px;
-            height: 950px;
             position: relative;
-            overflow: visible;
+            overflow: hidden;
+            height: 700px;
         }
 
         @media (min-width: 768px) {
             .carousel-container {
+                perspective: 2000px;
                 height: 650px;
+                overflow: visible;
             }
         }
-        
+
         .player-card-3d {
             position: absolute;
             left: 50%;
@@ -30,7 +39,7 @@
             transform: translate(-50%, -50%);
             width: 100%;
             max-width: 1000px;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             opacity: 0;
             pointer-events: none;
             z-index: 0;
@@ -40,37 +49,38 @@
             opacity: 1;
             z-index: 30;
             pointer-events: auto;
-            transform: translate(-50%, -50%) scale(1);
+            transform: translate(-50%, -50%);
         }
 
-        .player-card-3d.prev {
+        .player-card-3d.prev, .player-card-3d.next {
             opacity: 0;
             z-index: 10;
-            transform: translate(-110%, -50%) scale(0.7) rotateY(15deg);
-            filter: blur(4px);
         }
 
-        .player-card-3d.next {
+        .player-card-3d.hidden-left, .player-card-3d.hidden-right {
             opacity: 0;
-            z-index: 10;
-            transform: translate(10%, -50%) scale(0.7) rotateY(-15deg);
-            filter: blur(4px);
         }
 
         @media (min-width: 768px) {
-            .player-card-3d.prev, .player-card-3d.next {
-                opacity: 0.3;
+            .player-card-3d.active {
+                transform: translate(-50%, -50%) scale(1);
             }
-        }
-
-        .player-card-3d.hidden-left {
-            opacity: 0;
-            transform: translate(-150%, -50%) scale(0.5);
-        }
-
-        .player-card-3d.hidden-right {
-            opacity: 0;
-            transform: translate(50%, -50%) scale(0.5);
+            .player-card-3d.prev {
+                opacity: 0.3;
+                transform: translate(-110%, -50%) scale(0.7) rotateY(15deg);
+                filter: blur(4px);
+            }
+            .player-card-3d.next {
+                opacity: 0.3;
+                transform: translate(10%, -50%) scale(0.7) rotateY(-15deg);
+                filter: blur(4px);
+            }
+            .player-card-3d.hidden-left {
+                transform: translate(-150%, -50%) scale(0.5);
+            }
+            .player-card-3d.hidden-right {
+                transform: translate(50%, -50%) scale(0.5);
+            }
         }
         
         .glass-panel {
@@ -104,10 +114,10 @@
 <div class="flex justify-between items-center px-container-margin py-4 max-w-7xl mx-auto">
 <div class="text-headline-md font-headline-md font-extrabold tracking-tighter text-royal-blue dark:text-ice-blue">РГСУ ВОЛЕЙБОЛ</div>
 <nav class="hidden md:flex items-center gap-gutter">
-<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="#">Достижения</a>
-<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="#">Турниры</a>
-<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="#">Игроки</a>
-<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="#">Мы вне поля</a></nav>
+<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="glavnaya.html">Главная</a>
+<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="turniry.html">Турниры</a>
+<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="igroki.html">Игроки</a>
+<a class="text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="my_vne_polya.html">Мы вне поля</a></nav>
 <div class="flex items-center gap-4">
 <div class="hidden sm:flex items-center gap-2">
 <span class="material-symbols-outlined text-royal-blue cursor-pointer hover:scale-110 transition-transform">send</span>
@@ -116,6 +126,19 @@
 <button class="bg-royal-blue text-white font-bold rounded-full px-4 md:px-6 py-2 text-label-lg hover:scale-105 active:scale-95 transition-all shadow-md shadow-royal-blue/20">
                 Связаться с менеджером</button>
 </div>
+<button class="md:hidden text-royal-blue z-20 focus:outline-none" id="mobile-menu-btn">
+<span class="material-symbols-outlined text-3xl">menu</span>
+</button>
+</div>
+<!-- Mobile Menu Overlay -->
+<div class="fixed inset-0 bg-white dark:bg-inverse-surface z-10 flex flex-col pt-24 px-6 md:hidden" id="mobile-menu">
+<nav class="flex flex-col gap-6 items-center text-center">
+<a class="text-headline-md font-headline-md text-royal-blue dark:text-ice-blue" href="glavnaya.html">Главная</a>
+<a class="text-headline-md font-headline-md text-royal-blue dark:text-ice-blue" href="turniry.html">Турниры</a>
+<a class="text-headline-md font-headline-md text-royal-blue dark:text-ice-blue" href="igroki.html">Игроки</a>
+<a class="text-headline-md font-headline-md text-royal-blue dark:text-ice-blue" href="my_vne_polya.html">Мы вне поля</a>
+<button class="mt-8 bg-royal-blue text-white font-bold rounded-full px-8 py-4 text-label-lg w-full max-w-xs shadow-md">Связаться с менеджером</button>
+</nav>
 </div>
 </header>
 <main class="">
@@ -217,7 +240,14 @@
 </div>
 </section>
 </main>
-<footer class="w-full bg-royal-blue dark:bg-tertiary"><div class="max-w-7xl mx-auto px-container-margin py-16"><div class="flex flex-col md:flex-row justify-between items-start gap-12 border-b border-white/10 pb-12"><div class="flex flex-col gap-4 max-w-sm"><div class="text-headline-md font-bold text-white tracking-tighter">РГСУ ВОЛЕЙБОЛ</div><p class="text-ice-blue/70 text-body-md leading-relaxed">Воспитываем чемпионов на площадке и за её пределами через дисциплину, единство и непоколебимый командный дух. Присоединяйтесь к нашей истории побед.</p><div class="flex gap-4 mt-2"><a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#"><span class="material-symbols-outlined">public</span></a><a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#"><span class="material-symbols-outlined">alternate_email</span></a><a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#"><svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"></path></svg></a></div></div><div class="grid grid-cols-2 sm:grid-cols-3 gap-12"><div><h4 class="text-white font-bold mb-6">Команда</h4><ul class="space-y-4"><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Состав</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Тренеры</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Расписание</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Достижения</a></li></ul></div><div><h4 class="text-white font-bold mb-6">Информация</h4><ul class="space-y-4"><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Новости</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Галерея</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Билеты</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Мы вне поля</a></li></ul></div><div><h4 class="text-white font-bold mb-6">Поддержка</h4><ul class="space-y-4"><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Спонсорам</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Контакты</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Политика</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Правила</a></li></ul></div></div></div><div class="pt-8 text-center"><p class="text-ice-blue/50 text-body-md">© 2024 Университетская волейбольная команда. Все права защищены. Разработано с любовью к спорту.</p></div></div></footer>
+<!-- ===== MOBILE BOTTOM NAV ===== -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-2 bg-white/95 dark:bg-inverse-surface/95 backdrop-blur-md shadow-[0_-4px_10px_rgba(0,0,0,0.05)] rounded-t-xl">
+  <a class="flex flex-col items-center justify-center text-on-surface-variant py-2" href="glavnaya.html"><span class="material-symbols-outlined">home</span><span class="font-label-sm text-[10px]">Главная</span></a>
+  <a class="flex flex-col items-center justify-center text-on-surface-variant py-2" href="turniry.html"><span class="material-symbols-outlined">calendar_today</span><span class="font-label-sm text-[10px]">Турниры</span></a>
+  <a class="flex flex-col items-center justify-center bg-royal-blue text-white rounded-xl px-5 py-2 -mt-4 shadow-md shadow-royal-blue/30" href="my_vne_polya.html"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">diversity_1</span><span class="font-label-sm text-[10px]">Команда</span></a>
+  <a class="flex flex-col items-center justify-center text-royal-blue py-2" href="igroki.html"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span><span class="font-label-sm text-[10px]">Игроки</span></a>
+</nav>
+<footer class="w-full bg-royal-blue dark:bg-tertiary pb-16 md:pb-0"><div class="max-w-7xl mx-auto px-container-margin py-16"><div class="flex flex-col md:flex-row justify-between items-start gap-12 border-b border-white/10 pb-12"><div class="flex flex-col gap-4 max-w-sm"><div class="text-headline-md font-bold text-white tracking-tighter">РГСУ ВОЛЕЙБОЛ</div><p class="text-ice-blue/70 text-body-md leading-relaxed">Воспитываем чемпионов на площадке и за её пределами через дисциплину, единство и непоколебимый командный дух. Присоединяйтесь к нашей истории побед.</p><div class="flex gap-4 mt-2"><a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#"><span class="material-symbols-outlined">public</span></a><a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#"><span class="material-symbols-outlined">alternate_email</span></a><a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#"><svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"></path></svg></a></div></div><div class="grid grid-cols-2 sm:grid-cols-3 gap-12"><div><h4 class="text-white font-bold mb-6">Команда</h4><ul class="space-y-4"><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Состав</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Тренеры</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Расписание</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Достижения</a></li></ul></div><div><h4 class="text-white font-bold mb-6">Информация</h4><ul class="space-y-4"><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Новости</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Галерея</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Билеты</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Мы вне поля</a></li></ul></div><div><h4 class="text-white font-bold mb-6">Поддержка</h4><ul class="space-y-4"><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Спонсорам</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Контакты</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Политика</a></li><li class=""><a class="text-ice-blue/70 hover:text-white transition-colors" href="#">Правила</a></li></ul></div></div></div><div class="pt-8 text-center"><p class="text-ice-blue/50 text-body-md">© 2024 Университетская волейбольная команда. Все права защищены. Разработано с любовью к спорту.</p></div></div></footer>
 <script>
     const players = [
         {
@@ -386,6 +416,36 @@
             rotateCarousel(1);
         }
     });
+
+    // Touch swipe support
+    const wrapper = document.getElementById('carousel-wrapper');
+    let touchStartX = 0;
+    wrapper.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+    wrapper.addEventListener('touchend', (e) => { const diff = touchStartX - e.changedTouches[0].screenX; if (Math.abs(diff) > 50) { rotateCarousel(diff > 0 ? 1 : -1); } }, {passive: true});
+
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenuBtn && mobileMenu) {
+        const menuIcon = mobileMenuBtn.querySelector('span');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+            if (mobileMenu.classList.contains('open')) {
+                menuIcon.textContent = 'close';
+                document.body.style.overflow = 'hidden';
+            } else {
+                menuIcon.textContent = 'menu';
+                document.body.style.overflow = '';
+            }
+        });
+        mobileMenu.querySelectorAll('a').forEach(l => {
+            l.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                menuIcon.textContent = 'menu';
+                document.body.style.overflow = '';
+            });
+        });
+    }
 
     // Simple parallax on scroll
     window.addEventListener('scroll', () => {
