@@ -13,7 +13,10 @@
       "PowerShell(Get-Item *)",
       "Bash(python *)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "mcp__stitch__list_screens",
+      "mcp__stitch__generate_screen_from_text"
     ]
   }
 }

@@ -1,0 +1,53 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "Поздравляем капитана с прибавлением в семье!",
+      "content": "Наш капитан Андрей стал папой! Вся команда желает малышу крепкого здоровья, а родителям — терпения и как можно больше спокойных ночей.",
+      "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuB3RAA1yYJi8tq8vpf7AjFsSMXY0kV0va7bIopvjfe8JMCSbAoeLMQwI5JT25LtL_TtNiPbmtfg1__4-u9ifYU87VngGgMVa7-tHIFEpbpk-sEYywJn_NqI1FrkA_NEA31yfMpjLGQQqfTf0uUr-E8dmeCZeo4H8Q8-U9UvAHAjZAM0-p00vKbZdh9ItUXpLqaOwrQqj2_xU0SMXWju7PFPYkPaEccAnFNFDwCdUPglowR7C8fO2e7HxOdLlBFksHJUDJ24wZbgrzQ",
+      "category": "personal",
+      "date": "2025-01-15",
+      "author": "admin",
+      "published": true,
+      "comments": [
+        { "id": 1, "author": "Команда РГСУ", "text": "Поздравляем! 🎉", "date": "2025-01-15", "replies": [] }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "На один диплом больше!",
+      "content": "Сегодня официально завершила обучение в магистратуре РГСУ. Эти 6 лет были невероятными. Спасибо команде за поддержку во время сессий!",
+      "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuDoq3ducr9e8OcmRhpQqpQ8GLKBqT6UndiihXmERlNeFIGmozd_e6KPTCE8EEaUuDT8hFRhxf6eGX7byfnn-lO2_it5Hl-k4a28JesPwehaHO4mOtOyrALlUBbHAcR1ngwm1Xq_BRF0oy60f9T32NXCiCj1QSWxDQ-RHr2gUFzXjKazDjL8IYgqtTuQdRQO91tyQXB2IPh4BaulHQqrjCUff6shCSpnCuyK4qiOPjqUdPFbeti8Ii2eimklrVa0hc-oVP8i5iQ5ou8",
+      "category": "study",
+      "date": "2025-01-12",
+      "author": "admin",
+      "published": true,
+      "comments": []
+    },
+    {
+      "id": 3,
+      "title": "Субботний завтрак всей командой",
+      "content": "Традиционный утренний сбор. Обсуждаем не только тактику, но и планы на лето. Вместе мы — сила не только на площадке!",
+      "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuAhFTpvF5M1VLulQkta2kMngi2kWm1Ve9GDqsEO_WxxkxiYAugw2iO7Plq4JduQxI2nRTI21JPl6XdzFf-XAmCoTh61bJxhamxBD9P1ngX6uErQhQCoJDHdP5-fQimDCgeNOKnkze5psTIcxTfC6_GdBSPI68-ECDcxLxVxspquIF3i0xaKHenerwlx6JiuV5JwItl6czh0iZ-nzCyFwVOl6qfdNAeqhBxUuK_gEzF24yQg6VxbcIWi9e4rv90vlfFfFwBZgIyT338",
+      "category": "events",
+      "date": "2025-01-10",
+      "author": "admin",
+      "published": true,
+      "comments": []
+    },
+    {
+      "id": 4,
+      "title": "Мечта сбылась!",
+      "content": "Долго копил, много тренировался и вот — моя первая ласточка. Теперь на тренировки буду добираться еще быстрее (но без нарушений!).",
+      "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuBwK0D0hVeNCkFG0NL_gOdn_9agMIiEv4N6s8l4M0yqOmSz0IRz6l1g91eADM6P_BlXKCvoqKJtGHhfayMpteHTc4h8l8FAOxVURHJwISSoeQ6bCxBMp53Z_Bg6Iw6FymSdY0lzmsDKKeQmceluQbekl1pUpzwAllCvOu3lcf89oif5I-zJZVsM8ZtDV4O_xureXqQA4NV3T7QJ8_rDz1IlCQ4t5-W5S65rVtPBb96O8z3xhYwOXneiJ4i6spcxom7lEK-r8OCY4g0",
+      "category": "personal",
+      "date": "2025-01-08",
+      "author": "admin",
+      "published": true,
+      "comments": []
+    }
+  ],
+  "settings": {
+    "site_title": "РГСУ ВОЛЕЙБОЛ"
+  }
+}

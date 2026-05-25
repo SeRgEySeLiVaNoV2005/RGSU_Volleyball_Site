@@ -1,0 +1,444 @@
+<!DOCTYPE html><html class="light" lang="ru"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Админ-панель | РГСУ ВОЛЕЙБОЛ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"on-secondary-container": "#5b6576","secondary-fixed-dim": "#bdc7da","surface-tint": "#3456c1","on-secondary-fixed-variant": "#3d4757","on-error-container": "#93000a","surface-container-highest": "#e2e1eb","on-tertiary": "#ffffff","ice-blue": "#F0F5FF","outline-variant": "#c4c5d5","on-background": "#1a1b22","on-surface-variant": "#444653","on-primary": "#ffffff","surface-bright": "#faf8ff",outline: "#747684",surface: "#faf8ff","inverse-on-surface": "#f1f0f9","on-primary-container": "#8ea6ff","surface-container-low": "#f4f2fc","on-secondary-fixed": "#121c2a","surface-container": "#eeedf6","tertiary-fixed-dim": "#ffb5a0",background: "#faf8ff","primary-container": "#0033a0","on-tertiary-fixed": "#3b0900","on-primary-fixed-variant": "#133ca8","on-error": "#ffffff","tertiary-container": "#791d00","sky-blue": "#4A90E2","on-primary-fixed": "#001550","surface-dim": "#dad9e3","victory-gold": "#FFD700",white: "#FFFFFF","tertiary-fixed": "#ffdbd1",secondary: "#555f6f","on-tertiary-container": "#ff8a68","on-surface": "#1a1b22",error: "#ba1a1a",primary: "#00216e","secondary-fixed": "#d9e3f7","surface-variant": "#e2e1eb","inverse-surface": "#2f3037","on-tertiary-fixed-variant": "#842506","secondary-container": "#d9e3f7","primary-fixed-dim": "#b6c4ff","surface-container-high": "#e8e7f1","primary-fixed": "#dce1ff","royal-blue": "#0033A0",tertiary: "#531100","on-secondary": "#ffffff","inverse-primary": "#b6c4ff","error-container": "#ffdad6","surface-container-lowest": "#ffffff"},borderRadius: {DEFAULT: "1rem",lg: "2rem",xl: "3rem",full: "9999px"},fontFamily: {headline: ["Nunito Sans"],display: ["Nunito Sans"],body: ["Nunito Sans"],label: ["Nunito Sans"]}}}}</script>
+<style>
+  body { font-family: 'Nunito Sans', sans-serif; overflow-x: hidden; min-height: 100vh; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .sidebar-link.active { background-color: #0033A0; color: white; }
+  .sidebar-link.active .material-symbols-outlined { color: white; }
+  .modal-overlay { display: none; }
+  .modal-overlay.active { display: flex; }
+</style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-white">
+
+<!-- ===== LOGIN PAGE ===== -->
+<div id="page-login" class="page active min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-ice-blue to-surface">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <h1 class="text-headline-md font-bold tracking-tighter text-royal-blue">РГСУ ВОЛЕЙБОЛ</h1>
+      <p class="text-on-surface-variant mt-2 text-sm">Вход в панель управления</p>
+    </div>
+    <div class="bg-white rounded-xl p-8 shadow-xl shadow-royal-blue/10 border border-ice-blue">
+      <form id="login-form" class="space-y-6">
+        <div>
+          <label class="block text-label-sm font-bold text-on-surface mb-2 tracking-wider uppercase">Логин</label>
+          <input id="login-username" type="text" class="w-full px-4 py-3 rounded-full border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all" placeholder="Введите логин" value="admin">
+        </div>
+        <div>
+          <label class="block text-label-sm font-bold text-on-surface mb-2 tracking-wider uppercase">Пароль</label>
+          <input id="login-password" type="password" class="w-full px-4 py-3 rounded-full border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all" placeholder="Введите пароль" value="admin">
+        </div>
+        <div id="login-error" class="hidden bg-error-container text-error px-4 py-3 rounded-xl text-sm"></div>
+        <button type="submit" class="w-full bg-royal-blue text-white font-bold py-3 rounded-full hover:scale-[1.02] active:scale-95 transition-all shadow-md shadow-royal-blue/20 text-label-lg">Войти</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN DASHBOARD ===== -->
+<div id="page-admin" class="page min-h-screen bg-surface">
+  <!-- Top Bar -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-ice-blue">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <h2 class="font-headline-md font-bold text-royal-blue">РГСУ ВОЛЕЙБОЛ</h2>
+        <span class="bg-royal-blue text-white text-xs px-3 py-1 rounded-full font-bold">Админ</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="text-on-surface-variant text-sm hidden md:block">admin</span>
+        <button onclick="logout()" class="flex items-center gap-2 bg-error/10 text-error px-4 py-2 rounded-full hover:bg-error/20 transition-all text-sm font-bold"><span class="material-symbols-outlined text-lg">logout</span><span class="hidden md:inline">Выйти</span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row">
+    <!-- Sidebar -->
+    <aside class="md:w-56 bg-white border-r border-ice-blue p-4 md:min-h-[calc(100vh-64px)] flex md:flex-col gap-2 overflow-x-auto md:overflow-visible">
+      <button class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap" data-page="dashboard"><span class="material-symbols-outlined text-royal-blue">dashboard</span><span>Дашборд</span></button>
+      <button class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap" data-page="posts"><span class="material-symbols-outlined text-royal-blue">article</span><span>Посты</span></button>
+      <button class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap" data-page="comments"><span class="material-symbols-outlined text-royal-blue">forum</span><span>Комментарии</span></button>
+      <button class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap" data-page="settings"><span class="material-symbols-outlined text-royal-blue">settings</span><span>Настройки</span></button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-4 md:p-8">
+
+      <!-- Dashboard Page -->
+      <div id="sub-dashboard" class="subpage active">
+        <h2 class="font-headline-md text-royal-blue mb-6">Дашборд</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-ice-blue">
+            <div class="flex items-center gap-3 mb-2"><span class="material-symbols-outlined text-royal-blue">article</span><span class="text-on-surface-variant text-label-sm uppercase tracking-wider">Постов</span></div>
+            <p class="text-display-lg font-bold text-royal-blue" id="stat-posts">0</p>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-ice-blue">
+            <div class="flex items-center gap-3 mb-2"><span class="material-symbols-outlined text-royal-blue">forum</span><span class="text-on-surface-variant text-label-sm uppercase tracking-wider">Комментариев</span></div>
+            <p class="text-display-lg font-bold text-royal-blue" id="stat-comments">0</p>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-ice-blue">
+            <div class="flex items-center gap-3 mb-2"><span class="material-symbols-outlined text-royal-blue">check_circle</span><span class="text-on-surface-variant text-label-sm uppercase tracking-wider">Опубликовано</span></div>
+            <p class="text-display-lg font-bold text-royal-blue" id="stat-published">0</p>
+          </div>
+        </div>
+        <div class="bg-ice-blue/30 rounded-xl p-6 border border-ice-blue">
+          <h3 class="font-headline-md text-royal-blue mb-2">Добро пожаловать в админ-панель!</h3>
+          <p class="text-on-surface-variant">Здесь вы можете создавать и редактировать посты, управлять комментариями и настраивать сайт. Используйте боковое меню для навигации.</p>
+        </div>
+      </div>
+
+      <!-- Posts Page -->
+      <div id="sub-posts" class="subpage">
+        <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+          <h2 class="font-headline-md text-royal-blue">Управление постами</h2>
+          <button onclick="openPostModal()" class="bg-royal-blue text-white px-6 py-2 rounded-full font-bold hover:scale-105 active:scale-95 transition-all flex items-center gap-2"><span class="material-symbols-outlined">add</span>Создать пост</button>
+        </div>
+        <div id="posts-list" class="space-y-4"></div>
+        <p id="posts-empty" class="text-center text-on-surface-variant py-12 hidden">Нет постов. Создайте первый!</p>
+      </div>
+
+      <!-- Comments Page -->
+      <div id="sub-comments" class="subpage">
+        <h2 class="font-headline-md text-royal-blue mb-6">Комментарии</h2>
+        <div id="comments-list" class="space-y-6"></div>
+        <p id="comments-empty" class="text-center text-on-surface-variant py-12 hidden">Нет комментариев.</p>
+      </div>
+
+      <!-- Settings Page -->
+      <div id="sub-settings" class="subpage">
+        <h2 class="font-headline-md text-royal-blue mb-6">Настройки</h2>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-ice-blue max-w-lg">
+          <label class="block text-label-sm font-bold text-on-surface mb-2 tracking-wider uppercase">Название сайта</label>
+          <input id="settings-site-title" type="text" class="w-full px-4 py-3 rounded-full border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all mb-4" value="РГСУ ВОЛЕЙБОЛ">
+          <button onclick="saveSettings()" class="bg-royal-blue text-white px-6 py-2 rounded-full font-bold hover:scale-105 active:scale-95 transition-all">Сохранить</button>
+          <p id="settings-msg" class="text-green-600 mt-2 hidden text-sm">Сохранено!</p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ===== POST MODAL ===== -->
+<div id="post-modal" class="modal-overlay fixed inset-0 bg-black/40 z-50 items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+    <div class="p-6 border-b border-ice-blue flex justify-between items-center">
+      <h3 class="font-headline-md text-royal-blue" id="modal-title">Новый пост</h3>
+      <button onclick="closePostModal()" class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <form id="post-form" class="p-6 space-y-4">
+      <input id="post-id" type="hidden" value="">
+      <div>
+        <label class="block text-label-sm font-bold text-on-surface mb-2">Заголовок</label>
+        <input id="post-title" type="text" class="w-full px-4 py-3 rounded-full border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all" placeholder="Заголовок поста" required>
+      </div>
+      <div>
+        <label class="block text-label-sm font-bold text-on-surface mb-2">Категория</label>
+        <select id="post-category" class="w-full px-4 py-3 rounded-full border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white">
+          <option value="personal">Личное</option>
+          <option value="study">Учеба</option>
+          <option value="events">Мероприятия</option>
+          <option value="travel">Путешествия</option>
+          <option value="news">Новости</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-label-sm font-bold text-on-surface mb-2">Содержание</label>
+        <textarea id="post-content" rows="5" class="w-full px-4 py-3 rounded-2xl border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all resize-none" placeholder="Текст поста..." required></textarea>
+      </div>
+      <div>
+        <label class="block text-label-sm font-bold text-on-surface mb-2">URL изображения</label>
+        <input id="post-image" type="url" class="w-full px-4 py-3 rounded-full border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all" placeholder="https://...">
+      </div>
+      <div class="flex items-center gap-3">
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input id="post-published" type="checkbox" class="sr-only peer" checked>
+          <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-royal-blue/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-royal-blue"></div>
+        </label>
+        <span class="text-sm font-bold text-on-surface">Опубликовано</span>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="bg-royal-blue text-white px-6 py-2 rounded-full font-bold hover:scale-105 active:scale-95 transition-all flex-1 sm:flex-none">Сохранить</button>
+        <button type="button" onclick="closePostModal()" class="bg-ice-blue text-royal-blue px-6 py-2 rounded-full font-bold hover:bg-royal-blue/10 transition-all flex-1 sm:flex-none">Отмена</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== DELETE CONFIRM MODAL ===== -->
+<div id="delete-modal" class="modal-overlay fixed inset-0 bg-black/40 z-50 items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl text-center">
+    <span class="material-symbols-outlined text-5xl text-error mb-4" style="font-variation-settings:'FILL' 1">warning</span>
+    <h3 class="font-headline-md text-on-surface mb-2">Удалить пост?</h3>
+    <p class="text-on-surface-variant mb-6">Это действие нельзя отменить. Пост и все его комментарии будут удалены.</p>
+    <div class="flex gap-3 justify-center">
+      <button id="confirm-delete-btn" class="bg-error text-white px-6 py-2 rounded-full font-bold hover:scale-105 active:scale-95 transition-all">Удалить</button>
+      <button onclick="closeDeleteModal()" class="bg-ice-blue text-royal-blue px-6 py-2 rounded-full font-bold hover:bg-royal-blue/10 transition-all">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REPLY MODAL ===== -->
+<div id="reply-modal" class="modal-overlay fixed inset-0 bg-black/40 z-50 items-center justify-center p-4">
+  <div class="bg-white rounded-xl max-w-lg w-full p-6 shadow-2xl">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-headline-md text-royal-blue">Ответ на комментарий</h3>
+      <button onclick="closeReplyModal()" class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div id="reply-original" class="bg-ice-blue p-4 rounded-xl mb-4 text-sm text-on-surface-variant"></div>
+    <textarea id="reply-text" rows="3" class="w-full px-4 py-3 rounded-2xl border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all resize-none mb-4" placeholder="Ваш ответ..."></textarea>
+    <div class="flex gap-3">
+      <button onclick="submitReply()" class="bg-royal-blue text-white px-6 py-2 rounded-full font-bold hover:scale-105 active:scale-95 transition-all flex-1 sm:flex-none">Ответить</button>
+      <button onclick="closeReplyModal()" class="bg-ice-blue text-royal-blue px-6 py-2 rounded-full font-bold hover:bg-royal-blue/10 transition-all flex-1 sm:flex-none">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ===== STATE =====
+  var token = localStorage.getItem('admin_token');
+  var data = { posts: [], settings: { site_title: 'РГСУ ВОЛЕЙБОЛ' } };
+  var deleteTarget = null; // postId to delete
+  var replyTarget = null;  // { postId, commentId }
+
+  // ===== AUTH =====
+  function showLogin() { document.getElementById('page-login').classList.add('active'); document.getElementById('page-admin').classList.remove('active'); }
+  function showAdmin() { document.getElementById('page-login').classList.remove('active'); document.getElementById('page-admin').classList.add('active'); }
+
+  if (token) { showAdmin(); loadData(); } else { showLogin(); }
+
+  document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var login = document.getElementById('login-username').value;
+    var password = document.getElementById('login-password').value;
+    var errEl = document.getElementById('login-error');
+
+    fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login, password }) })
+      .then(function(r) { if (!r.ok) throw new Error('Неверный логин или пароль'); return r.json(); })
+      .then(function(res) { token = res.token; localStorage.setItem('admin_token', token); errEl.classList.add('hidden'); showAdmin(); loadData(); })
+      .catch(function(err) { errEl.textContent = err.message; errEl.classList.remove('hidden'); });
+  });
+
+  function logout() { token = null; localStorage.removeItem('admin_token'); showLogin(); }
+
+  // ===== SIDEBAR NAVIGATION =====
+  document.querySelectorAll('.sidebar-link').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.sidebar-link').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelectorAll('.subpage').forEach(function(p) { p.classList.remove('active'); });
+      document.getElementById('sub-' + btn.dataset.page).classList.add('active');
+    });
+  });
+
+  // ===== DATA LOADING =====
+  function loadData() {
+    fetch('/api/data', { headers: { 'Authorization': 'Bearer ' + token } })
+      .then(function(r) { if (r.status === 401) { logout(); return null; } return r.json(); })
+      .then(function(d) { if (d) { data = d; renderAll(); } })
+      .catch(function() { /* temporary offline fallback */ });
+  }
+
+  function saveData(callback) {
+    fetch('/api/data', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(data) })
+      .then(function(r) { return r.json(); })
+      .then(function(res) { if (res.success) data = res.data; if (callback) callback(); })
+      .catch(function() { if (callback) callback(); });
+  }
+
+  // ===== RENDER =====
+  function renderAll() {
+    renderStats();
+    renderPosts();
+    renderComments();
+    renderSettings();
+  }
+
+  function renderStats() {
+    var totalComments = 0;
+    data.posts.forEach(function(p) { if (p.comments) totalComments += p.comments.length; });
+    document.getElementById('stat-posts').textContent = data.posts.length;
+    document.getElementById('stat-comments').textContent = totalComments;
+    document.getElementById('stat-published').textContent = data.posts.filter(function(p) { return p.published; }).length;
+  }
+
+  function renderPosts() {
+    var container = document.getElementById('posts-list');
+    var empty = document.getElementById('posts-empty');
+    container.innerHTML = '';
+    if (data.posts.length === 0) { empty.classList.remove('hidden'); return; }
+    empty.classList.add('hidden');
+
+    // Show newest first
+    var sorted = data.posts.slice().reverse();
+    sorted.forEach(function(post) {
+      var card = document.createElement('div');
+      card.className = 'bg-white rounded-xl p-4 md:p-6 border border-ice-blue shadow-sm hover:shadow-md transition-all';
+      var statusBadge = post.published ? '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-bold">Опубликован</span>' : '<span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-xs font-bold">Черновик</span>';
+      card.innerHTML = '<div class="flex flex-col md:flex-row md:items-start justify-between gap-4"><div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-2 flex-wrap">' + statusBadge + '<span class="text-on-surface-variant text-xs">' + post.date + '</span><span class="bg-ice-blue text-royal-blue px-2 py-0.5 rounded-full text-xs font-bold">' + post.category + '</span></div><h3 class="font-bold text-royal-blue text-lg mb-1 truncate">' + post.title + '</h3><p class="text-on-surface-variant text-sm line-clamp-2">' + post.content + '</p><p class="text-on-surface-variant text-xs mt-2">Комментариев: ' + (post.comments ? post.comments.length : 0) + '</p></div><div class="flex gap-2 shrink-0"><button onclick="editPost(' + post.id + ')" class="bg-ice-blue text-royal-blue px-4 py-2 rounded-full text-sm font-bold hover:bg-royal-blue/10 transition-all"><span class="material-symbols-outlined text-base">edit</span></button><button onclick="confirmDelete(' + post.id + ')" class="bg-error/10 text-error px-4 py-2 rounded-full text-sm font-bold hover:bg-error/20 transition-all"><span class="material-symbols-outlined text-base">delete</span></button></div></div>';
+      container.appendChild(card);
+    });
+  }
+
+  function renderComments() {
+    var container = document.getElementById('comments-list');
+    var empty = document.getElementById('comments-empty');
+    container.innerHTML = '';
+    var hasComments = false;
+
+    data.posts.forEach(function(post) {
+      if (!post.comments || post.comments.length === 0) return;
+      hasComments = true;
+      var section = document.createElement('div');
+      section.innerHTML = '<h3 class="font-bold text-royal-blue mb-3 text-sm uppercase tracking-wider">' + post.title + '</h3>';
+      post.comments.forEach(function(comment) {
+        var repliesHtml = '';
+        if (comment.replies && comment.replies.length > 0) {
+          comment.replies.forEach(function(reply) {
+            repliesHtml += '<div class="ml-8 mt-2 p-3 bg-ice-blue/50 rounded-xl flex justify-between items-start"><div><p class="font-bold text-sm text-royal-blue">' + reply.author + '</p><p class="text-sm text-on-surface-variant">' + reply.text + '</p><p class="text-xs text-on-surface-variant mt-1">' + reply.date + '</p></div></div>';
+          });
+        }
+        var commentEl = document.createElement('div');
+        commentEl.className = 'bg-white p-4 rounded-xl border border-ice-blue mb-3';
+        commentEl.innerHTML = '<div class="flex justify-between items-start"><div><div class="flex items-center gap-2 mb-1"><span class="font-bold text-royal-blue text-sm">' + comment.author + '</span><span class="text-xs text-on-surface-variant">' + comment.date + '</span></div><p class="text-on-surface text-sm">' + comment.text + '</p></div><button onclick="openReply(' + post.id + ',' + comment.id + ')" class="text-sky-blue hover:text-royal-blue shrink-0 ml-2"><span class="material-symbols-outlined text-lg">reply</span></button></div>' + repliesHtml;
+        section.appendChild(commentEl);
+      });
+      container.appendChild(section);
+    });
+
+    if (!hasComments) empty.classList.remove('hidden');
+    else empty.classList.add('hidden');
+  }
+
+  function renderSettings() {
+    document.getElementById('settings-site-title').value = data.settings.site_title || 'РГСУ ВОЛЕЙБОЛ';
+  }
+
+  // ===== POST CRUD =====
+  function openPostModal(id) {
+    document.getElementById('modal-title').textContent = id ? 'Редактировать пост' : 'Новый пост';
+    document.getElementById('post-id').value = id || '';
+    if (id) {
+      var post = data.posts.find(function(p) { return p.id === id; });
+      if (post) {
+        document.getElementById('post-title').value = post.title;
+        document.getElementById('post-category').value = post.category;
+        document.getElementById('post-content').value = post.content;
+        document.getElementById('post-image').value = post.image || '';
+        document.getElementById('post-published').checked = post.published;
+      }
+    } else {
+      document.getElementById('post-form').reset();
+      document.getElementById('post-published').checked = true;
+    }
+    document.getElementById('post-modal').classList.add('active');
+  }
+
+  function closePostModal() {
+    document.getElementById('post-modal').classList.remove('active');
+  }
+
+  function editPost(id) { openPostModal(id); }
+
+  document.getElementById('post-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var id = document.getElementById('post-id').value;
+    var title = document.getElementById('post-title').value;
+    var category = document.getElementById('post-category').value;
+    var content = document.getElementById('post-content').value;
+    var image = document.getElementById('post-image').value;
+    var published = document.getElementById('post-published').checked;
+
+    if (id) {
+      var post = data.posts.find(function(p) { return p.id === parseInt(id); });
+      if (post) { post.title = title; post.category = category; post.content = content; post.image = image; post.published = published; }
+    } else {
+      var newId = data.posts.length > 0 ? Math.max.apply(null, data.posts.map(function(p) { return p.id; })) + 1 : 1;
+      data.posts.push({ id: newId, title: title, content: content, image: image, category: category, date: new Date().toISOString().slice(0,10), author: 'admin', published: published, comments: [] });
+    }
+
+    saveData(function() { renderAll(); });
+    closePostModal();
+  });
+
+  function confirmDelete(id) {
+    deleteTarget = id;
+    document.getElementById('delete-modal').classList.add('active');
+  }
+
+  function closeDeleteModal() {
+    document.getElementById('delete-modal').classList.remove('active');
+    deleteTarget = null;
+  }
+
+  document.getElementById('confirm-delete-btn').addEventListener('click', function() {
+    if (deleteTarget) {
+      data.posts = data.posts.filter(function(p) { return p.id !== deleteTarget; });
+      saveData(function() { renderAll(); });
+      closeDeleteModal();
+    }
+  });
+
+  // ===== COMMENTS =====
+  function openReply(postId, commentId) {
+    replyTarget = { postId: postId, commentId: commentId };
+    var post = data.posts.find(function(p) { return p.id === postId; });
+    var comment = post ? post.comments.find(function(c) { return c.id === commentId; }) : null;
+    document.getElementById('reply-original').innerHTML = '<span class="font-bold">' + (comment ? comment.author : '') + ':</span> ' + (comment ? comment.text : '');
+    document.getElementById('reply-text').value = '';
+    document.getElementById('reply-modal').classList.add('active');
+  }
+
+  function closeReplyModal() {
+    document.getElementById('reply-modal').classList.remove('active');
+    replyTarget = null;
+  }
+
+  function submitReply() {
+    var text = document.getElementById('reply-text').value.trim();
+    if (!text || !replyTarget) return;
+    var post = data.posts.find(function(p) { return p.id === replyTarget.postId; });
+    var comment = post ? post.comments.find(function(c) { return c.id === replyTarget.commentId; }) : null;
+    if (comment) {
+      if (!comment.replies) comment.replies = [];
+      comment.replies.push({ author: 'admin', text: text, date: new Date().toISOString().slice(0,10) });
+      saveData(function() { renderAll(); });
+    }
+    closeReplyModal();
+  }
+
+  // ===== SETTINGS =====
+  function saveSettings() {
+    var title = document.getElementById('settings-site-title').value;
+    data.settings.site_title = title;
+    saveData(function() {
+      document.getElementById('settings-msg').classList.remove('hidden');
+      setTimeout(function() { document.getElementById('settings-msg').classList.add('hidden'); }, 2000);
+    });
+  }
+
+  // Expose functions to global scope
+  window.logout = logout;
+  window.openPostModal = openPostModal;
+  window.closePostModal = closePostModal;
+  window.editPost = editPost;
+  window.confirmDelete = confirmDelete;
+  window.closeDeleteModal = closeDeleteModal;
+  window.openReply = openReply;
+  window.closeReplyModal = closeReplyModal;
+  window.submitReply = submitReply;
+  window.saveSettings = saveSettings;
+
+})();
+</script>
+</body></html>
