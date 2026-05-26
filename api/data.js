@@ -15,7 +15,22 @@ function readData() {
   try {
     return JSON.parse(fs.readFileSync(REPO_DATA, 'utf-8'));
   } catch {
-    return { posts: [], settings: { site_title: 'РГСУ ВОЛЕЙБОЛ' } };
+    return {
+      posts: [],
+      settings: { site_title: 'РГСУ ВОЛЕЙБОЛ' },
+      homepage: {
+        hero_title: 'Добро пожаловать, будущие чемпионы',
+        hero_subtitle: 'Присоединяйтесь к волейбольной семье РГСУ и достигайте новых высот вместе с нами.',
+        button_text: 'Подать заявку',
+        button_link: '/about',
+        hero_image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCCd00tUo0QcB3oXHn02WSNsadAAiNZv6JZA2SdcuhQ3mHk18E9LwbSEdGO5e2Mw6VfoZrA-r-Rpr-XoFPmX2r4Uzh74SpP18EuWMLPUET-qoJ50DK31jO6dWnKyn7IUZkoYdRNq6C9SBajTJHmEfDkVHb9YEbJqqi-WSvXNyAf1OigoLBaHnMDrmR32P84wuL7caFpzkxe63wehs73PXHCN5uYaRpsKTfWS5YMrCwxCeZ-ocn7cHVFc_b4UaxduzIxy0eOWxG6molYxQ',
+        footer_address: 'Москва, ул. Вильгельма Пика, д. 4, стр. 1',
+        footer_email: 'volleyball@rgsu.net',
+        footer_phone: '+7 (495) 123-45-67',
+        vk_link: 'https://vk.com/rgsu_volleyball',
+        tg_link: 'https://t.me/rgsu_sport'
+      }
+    };
   }
 }
 
@@ -47,15 +62,18 @@ export default function handler(req, res) {
     return;
   }
 
+  if (req.method === 'GET') {
+    const data = readData();
+    res.status(200).json(data);
+    return;
+  }
+
   if (!verifyToken(req.headers.authorization)) {
     res.status(401).json({ error: 'Неавторизован' });
     return;
   }
 
-  if (req.method === 'GET') {
-    const data = readData();
-    res.status(200).json(data);
-  } else if (req.method === 'POST') {
+  if (req.method === 'POST') {
     const newData = req.body;
     if (!newData) {
       res.status(400).json({ error: 'Нет данных' });
