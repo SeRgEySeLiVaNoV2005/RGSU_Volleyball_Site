@@ -916,34 +916,29 @@
     var login = document.getElementById('login-username').value;
     var password = document.getElementById('login-password').value;
     var errEl = document.getElementById('login-error');
-    var btn = this.querySelector('button[type="submit"]');
 
-    // Try Vercel API first
-    fetch('/api/auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ login: login, password: password })
-    })
-    .then(function(r) { if (!r.ok) throw new Error('Неверный логин или пароль'); return r.json(); })
-    .then(function(res) {
-      token = res.token;
+    // Local auth first (works offline and with file:// protocol)
+    if (login === 'admin' && password === 'admin') {
+      var fallbackToken = btoa(JSON.stringify({ user: 'admin', role: 'admin', exp: Date.now() + 86400000 }));
+      token = fallbackToken;
       localStorage.setItem('admin_token', token);
       errEl.classList.add('hidden');
       showAdmin();
-    })
-    .catch(function(err) {
-      // Fallback: local auth check for offline/dev
-      if (login === 'admin' && password === 'admin') {
-        var fallbackToken = btoa(JSON.stringify({ user: 'admin', role: 'admin', exp: Date.now() + 86400000 }));
-        token = fallbackToken;
-        localStorage.setItem('admin_token', token);
-        errEl.classList.add('hidden');
-        showAdmin();
-      } else {
-        errEl.textContent = err.message === 'Failed to fetch' ? 'Сервер недоступен. Попробуйте логин: admin / admin' : err.message;
-        errEl.classList.remove('hidden');
-      }
-    });
+
+      // Background attempt to sync with Vercel API (non-blocking)
+      fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ login: login, password: password })
+      }).then(function(r) {
+        if (r.ok) { return r.json().then(function(res) {
+          localStorage.setItem('admin_token', res.token);
+        }); }
+      }).catch(function() {});
+    } else {
+      errEl.textContent = 'Неверный логин или пароль';
+      errEl.classList.remove('hidden');
+    }
   });
 
   function logout() {
