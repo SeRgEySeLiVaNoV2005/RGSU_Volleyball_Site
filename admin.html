@@ -902,11 +902,15 @@
   // ===== AUTH =====
   function showLogin() {
     document.getElementById('page-login').classList.add('active');
+    document.getElementById('page-login').style.display = '';
     document.getElementById('page-admin').classList.remove('active');
+    document.getElementById('page-admin').style.display = 'none';
   }
   function showAdmin() {
     document.getElementById('page-login').classList.remove('active');
+    document.getElementById('page-login').style.display = 'none';
     document.getElementById('page-admin').classList.add('active');
+    document.getElementById('page-admin').style.display = '';
   }
 
   if (token) { showAdmin(); } else { showLogin(); }
