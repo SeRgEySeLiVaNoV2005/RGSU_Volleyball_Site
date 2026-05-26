@@ -3,202 +3,893 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>Админ-панель | РГСУ ВОЛЕЙБОЛ</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"on-secondary-container": "#5b6576","secondary-fixed-dim": "#bdc7da","surface-tint": "#3456c1","on-secondary-fixed-variant": "#3d4757","on-error-container": "#93000a","surface-container-highest": "#e2e1eb","on-tertiary": "#ffffff","ice-blue": "#F0F5FF","outline-variant": "#c4c5d5","on-background": "#1a1b22","on-surface-variant": "#444653","on-primary": "#ffffff","surface-bright": "#faf8ff",outline: "#747684",surface: "#faf8ff","inverse-on-surface": "#f1f0f9","on-primary-container": "#8ea6ff","surface-container-low": "#f4f2fc","on-secondary-fixed": "#121c2a","surface-container": "#eeedf6","tertiary-fixed-dim": "#ffb5a0",background: "#faf8ff","primary-container": "#0033a0","on-tertiary-fixed": "#3b0900","on-primary-fixed-variant": "#133ca8","on-error": "#ffffff","tertiary-container": "#791d00","sky-blue": "#4A90E2","on-primary-fixed": "#001550","surface-dim": "#dad9e3","victory-gold": "#FFD700",white: "#FFFFFF","tertiary-fixed": "#ffdbd1",secondary: "#555f6f","on-tertiary-container": "#ff8a68","on-surface": "#1a1b22",error: "#ba1a1a",primary: "#00216e","secondary-fixed": "#d9e3f7","surface-variant": "#e2e1eb","inverse-surface": "#2f3037","on-tertiary-fixed-variant": "#842506","secondary-container": "#d9e3f7","primary-fixed-dim": "#b6c4ff","surface-container-high": "#e8e7f1","primary-fixed": "#dce1ff","royal-blue": "#0033A0",tertiary: "#531100","on-secondary": "#ffffff","inverse-primary": "#b6c4ff","error-container": "#ffdad6","surface-container-lowest": "#ffffff"},borderRadius: {DEFAULT: "1rem",lg: "2rem",xl: "3rem",full: "9999px"},fontFamily: {headline: ["Nunito Sans"],display: ["Nunito Sans"],body: ["Nunito Sans"],label: ["Nunito Sans"]}}}}</script>
 <style>
-  body { font-family: 'Nunito Sans', sans-serif; overflow-x: hidden; min-height: 100vh; }
+  body { font-family: 'Nunito Sans', sans-serif; overflow-x: hidden; min-height: 100vh; background-color: #faf8ff; }
   .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
   .page { display: none; }
   .page.active { display: block; }
-  .sidebar-link.active { background-color: #0033A0; color: white; }
+  .subpage { display: none; }
+  .subpage.active { display: block; }
+  .net-pattern { background-color: #faf8ff; background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px); background-size: 40px 40px; background-position: center; }
+  .sidebar-link { transition: all 0.2s ease; }
+  .sidebar-link.active { background-color: #0033A0; color: white; border-left: 4px solid #b6c4ff; }
   .sidebar-link.active .material-symbols-outlined { color: white; }
   .modal-overlay { display: none; }
   .modal-overlay.active { display: flex; }
+  .modal-overlay .modal-content { transform: scale(0.95); transition: transform 0.3s ease; }
+  .modal-overlay.active .modal-content { transform: scale(1); }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #f4f2fc; }
+  ::-webkit-scrollbar-thumb { background: #c4c5d5; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: #747684; }
 </style>
 </head>
-<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-white">
+<body class="bg-background text-on-surface selection:bg-primary-container selection:text-white">
 
-<!-- ===== LOGIN PAGE ===== -->
-<div id="page-login" class="page active min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-ice-blue to-surface">
-  <div class="w-full max-w-md">
-    <div class="text-center mb-8">
-      <h1 class="text-headline-md font-bold tracking-tighter text-royal-blue">РГСУ ВОЛЕЙБОЛ</h1>
-      <p class="text-on-surface-variant mt-2 text-sm">Вход в панель управления</p>
-    </div>
-    <div class="bg-white rounded-xl p-8 shadow-xl shadow-royal-blue/10 border border-ice-blue">
-      <form id="login-form" class="space-y-6">
-        <div>
-          <label class="block text-label-sm font-bold text-on-surface mb-2 tracking-wider uppercase">Логин</label>
-          <input id="login-username" type="text" class="w-full px-4 py-3 rounded-full border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all" placeholder="Введите логин" value="admin">
+<!-- ===== LOGIN PAGE (Stitch design) ===== -->
+<div id="page-login" class="page active min-h-screen flex items-center justify-center p-4 net-pattern relative overflow-hidden">
+  <main class="w-full max-w-[440px] z-10">
+    <div class="bg-white/95 backdrop-blur-md rounded-xl border border-outline-variant shadow-[0px_8px_30px_rgba(0,33,110,0.06)] overflow-hidden">
+      <div class="pt-10 pb-6 px-8 flex flex-col items-center text-center">
+        <div class="w-20 h-20 mb-4 rounded-full bg-royal-blue flex items-center justify-center text-white shadow-lg shadow-royal-blue/20">
+          <span class="material-symbols-outlined" style="font-size:40px">sports_volleyball</span>
         </div>
-        <div>
-          <label class="block text-label-sm font-bold text-on-surface mb-2 tracking-wider uppercase">Пароль</label>
-          <input id="login-password" type="password" class="w-full px-4 py-3 rounded-full border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all" placeholder="Введите пароль" value="admin">
+        <h1 class="text-3xl font-extrabold text-royal-blue tracking-tight">РГСУ ВОЛЕЙБОЛ</h1>
+        <p class="text-sm font-bold text-secondary uppercase tracking-[0.2em] mt-1">Вход в панель управления</p>
+      </div>
+      <form class="px-8 pb-10 space-y-6" id="login-form">
+        <div class="space-y-4">
+          <div class="space-y-1.5">
+            <label class="text-xs font-bold text-on-surface-variant block uppercase tracking-wider" for="login-username">Логин</label>
+            <div class="relative group">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline group-focus-within:text-royal-blue transition-colors">
+                <span class="material-symbols-outlined text-xl">person</span>
+              </div>
+              <input id="login-username" class="w-full bg-surface border border-outline-variant rounded-lg py-3 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue transition-all placeholder:text-outline-variant" placeholder="Введите ваш логин" required type="text" value="admin">
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-center">
+              <label class="text-xs font-bold text-on-surface-variant block uppercase tracking-wider" for="login-password">Пароль</label>
+              <a class="text-xs font-bold text-royal-blue hover:underline transition-all cursor-pointer">Забыли пароль?</a>
+            </div>
+            <div class="relative group">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline group-focus-within:text-royal-blue transition-colors">
+                <span class="material-symbols-outlined text-xl">lock</span>
+              </div>
+              <input id="login-password" class="w-full bg-surface border border-outline-variant rounded-lg py-3 pl-10 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue transition-all placeholder:text-outline-variant" placeholder="••••••••" required type="password" value="admin">
+              <button class="absolute inset-y-0 right-0 pr-3 flex items-center text-outline hover:text-on-surface transition-colors" onclick="toggleLoginPassword()" type="button">
+                <span class="material-symbols-outlined text-xl" id="login-password-icon">visibility</span>
+              </button>
+            </div>
+          </div>
         </div>
-        <div id="login-error" class="hidden bg-error-container text-error px-4 py-3 rounded-xl text-sm"></div>
-        <button type="submit" class="w-full bg-royal-blue text-white font-bold py-3 rounded-full hover:scale-[1.02] active:scale-95 transition-all shadow-md shadow-royal-blue/20 text-label-lg">Войти</button>
+        <div id="login-error" class="hidden bg-error-container text-error px-4 py-3 rounded-xl text-sm font-bold"></div>
+        <button class="w-full bg-royal-blue hover:bg-primary-container text-white font-bold text-sm py-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center space-x-2 active:scale-[0.98]" type="submit"><span>Войти</span><span class="material-symbols-outlined text-lg">arrow_forward</span></button>
       </form>
+      <div class="bg-surface-container py-4 px-8 flex justify-center items-center border-t border-outline-variant">
+        <div class="flex items-center space-x-2 text-secondary">
+          <span class="material-symbols-outlined text-sm">verified_user</span>
+          <span class="text-xs font-bold uppercase tracking-wider">Доступ только для авторизованных сотрудников и тренеров РГСУ.</span>
+        </div>
+      </div>
     </div>
+    <p class="mt-8 text-center text-xs font-bold text-secondary uppercase tracking-wider">© 2024 РГСУ ВОЛЕЙБОЛ. ВСЕ ПРАВА ЗАЩИЩЕНЫ.</p>
+  </main>
+  <div class="fixed bottom-0 left-0 w-full opacity-[0.04] pointer-events-none overflow-hidden select-none">
+    <div class="flex whitespace-nowrap text-[180px] font-extrabold text-royal-blue select-none leading-none -mb-10">РГСУ РГСУ РГСУ РГСУ</div>
   </div>
 </div>
 
-<!-- ===== ADMIN DASHBOARD ===== -->
-<div id="page-admin" class="page min-h-screen bg-surface">
+<!-- ===== ADMIN WORKSPACE ===== -->
+<div id="page-admin" class="page min-h-screen bg-background">
+
+<!-- Sidebar -->
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-royal-blue flex flex-col py-6 z-50 shadow-xl">
+  <div class="px-6 mb-8">
+    <h1 class="text-xl font-extrabold text-white tracking-tight">РГСУ ВОЛЕЙБОЛ</h1>
+  </div>
+  <nav class="flex-1 space-y-1 px-3">
+    <button class="sidebar-link active flex items-center gap-3 w-full text-left px-4 py-3 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all" data-page="dashboard">
+      <span class="material-symbols-outlined">dashboard</span>
+      <span class="text-sm font-bold">Дашборд</span>
+    </button>
+    <button class="sidebar-link flex items-center gap-3 w-full text-left px-4 py-3 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all" data-page="homepage">
+      <span class="material-symbols-outlined">home</span>
+      <span class="text-sm font-bold">Главная страница</span>
+    </button>
+    <button class="sidebar-link flex items-center gap-3 w-full text-left px-4 py-3 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all" data-page="players">
+      <span class="material-symbols-outlined">groups</span>
+      <span class="text-sm font-bold">Состав команды</span>
+    </button>
+    <button class="sidebar-link flex items-center gap-3 w-full text-left px-4 py-3 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all" data-page="offfield">
+      <span class="material-symbols-outlined">newspaper</span>
+      <span class="text-sm font-bold">Мы вне поля</span>
+    </button>
+    <button class="sidebar-link flex items-center gap-3 w-full text-left px-4 py-3 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all" data-page="tournaments">
+      <span class="material-symbols-outlined">emoji_events</span>
+      <span class="text-sm font-bold">Турниры</span>
+    </button>
+  </nav>
+  <div class="mt-auto border-t border-white/10 pt-4 px-3 space-y-1">
+    <a class="flex items-center gap-3 text-white/70 hover:text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
+      <span class="material-symbols-outlined">help</span>
+      <span class="text-sm font-bold">Поддержка</span>
+    </a>
+    <button onclick="logout()" class="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl transition-all text-red-300 hover:text-red-200 hover:bg-red-500/10 cursor-pointer">
+      <span class="material-symbols-outlined">logout</span>
+      <span class="text-sm font-bold">Выйти</span>
+    </button>
+  </div>
+</aside>
+
+<!-- Main Area -->
+<div class="ml-[260px] flex flex-col min-h-screen">
   <!-- Top Bar -->
-  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-ice-blue">
-    <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <h2 class="font-headline-md font-bold text-royal-blue">РГСУ ВОЛЕЙБОЛ</h2>
-        <span class="bg-royal-blue text-white text-xs px-3 py-1 rounded-full font-bold">Админ</span>
+  <header class="sticky top-0 z-40 h-16 bg-white/80 backdrop-blur-xl border-b border-ice-blue flex justify-between items-center px-6">
+    <div class="flex items-center gap-4 flex-1">
+      <div class="relative w-full max-w-md">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
+        <input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-sm focus:ring-2 focus:ring-royal-blue/20 outline-none" placeholder="Поиск..." type="text">
       </div>
-      <div class="flex items-center gap-4">
-        <span class="text-on-surface-variant text-sm hidden md:block">admin</span>
-        <button onclick="logout()" class="flex items-center gap-2 bg-error/10 text-error px-4 py-2 rounded-full hover:bg-error/20 transition-all text-sm font-bold"><span class="material-symbols-outlined text-lg">logout</span><span class="hidden md:inline">Выйти</span></button>
+    </div>
+    <div class="flex items-center gap-4">
+      <button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors relative">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+      </button>
+      <div class="flex items-center gap-3 pl-4 border-l border-outline-variant">
+        <div class="text-right hidden sm:block">
+          <p class="text-sm font-bold text-on-surface leading-tight">Администратор</p>
+          <p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Super Admin</p>
+        </div>
+        <img alt="Администратор" class="w-10 h-10 rounded-full bg-surface-container-high ring-2 ring-royal-blue/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4NykVpzaI2LCJc8jMdXi48f3p4SLOEKjAzUouCCFsuAnTk_9CdDloazs_p7OUHDQghF780mlRF5SMjVEhGJAq4Vs5U8Nao2Sz3XJcx9IN0h053dGSxntlJk9riXWloRRmBB5WormN-Ac5GgbUswhWdhWb-wv77QOwCr7UAHsEOamMWHKUa8XXagxqpqExcl-3ni57h_7YQsF8osYmxZ-zUqR8l2NsFkHpncsQlI2LbLLjLASwkl2CAGkpbL7p13Y7p-YTCpXQjkc">
       </div>
     </div>
   </header>
 
-  <div class="max-w-7xl mx-auto flex flex-col md:flex-row">
-    <!-- Sidebar -->
-    <aside class="md:w-56 bg-white border-r border-ice-blue p-4 md:min-h-[calc(100vh-64px)] flex md:flex-col gap-2 overflow-x-auto md:overflow-visible">
-      <button class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap" data-page="dashboard"><span class="material-symbols-outlined text-royal-blue">dashboard</span><span>Дашборд</span></button>
-      <button class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap" data-page="posts"><span class="material-symbols-outlined text-royal-blue">article</span><span>Посты</span></button>
-      <button class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap" data-page="comments"><span class="material-symbols-outlined text-royal-blue">forum</span><span>Комментарии</span></button>
-      <button class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap" data-page="settings"><span class="material-symbols-outlined text-royal-blue">settings</span><span>Настройки</span></button>
-    </aside>
+  <main class="flex-1 p-8">
 
-    <!-- Main Content -->
-    <main class="flex-1 p-4 md:p-8">
-
-      <!-- Dashboard Page -->
-      <div id="sub-dashboard" class="subpage active">
-        <h2 class="font-headline-md text-royal-blue mb-6">Дашборд</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div class="bg-white p-6 rounded-xl shadow-sm border border-ice-blue">
-            <div class="flex items-center gap-3 mb-2"><span class="material-symbols-outlined text-royal-blue">article</span><span class="text-on-surface-variant text-label-sm uppercase tracking-wider">Постов</span></div>
-            <p class="text-display-lg font-bold text-royal-blue" id="stat-posts">0</p>
+    <!-- ===== DASHBOARD (from Stitch: Дашборд_Админ) ===== -->
+    <div id="sub-dashboard" class="subpage active">
+      <div class="relative w-full max-w-4xl mx-auto overflow-hidden pt-16 pb-16">
+        <div class="absolute -top-24 -left-24 w-64 h-64 bg-royal-blue/5 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-primary-container/5 rounded-full blur-3xl"></div>
+        <div class="relative z-10 bg-white/60 backdrop-blur-xl border border-white/40 rounded-[2rem] p-12 lg:p-20 shadow-2xl shadow-royal-blue/5 flex flex-col items-center text-center">
+          <div class="relative mb-10 group">
+            <div class="absolute inset-0 bg-primary-container/10 rounded-full scale-150 blur-2xl group-hover:bg-primary-container/20 transition-all duration-700"></div>
+            <div class="w-32 h-32 bg-royal-blue rounded-full flex items-center justify-center text-white relative shadow-xl transform group-hover:rotate-12 transition-transform duration-500">
+              <span class="material-symbols-outlined text-[64px]" style="font-variation-settings:'FILL' 0,'wght' 200;">construction</span>
+            </div>
+            <div class="absolute -bottom-2 -right-2 w-12 h-12 bg-on-primary-fixed-variant rounded-xl flex items-center justify-center text-white border-4 border-white shadow-lg animate-bounce">
+              <span class="material-symbols-outlined text-2xl">analytics</span>
+            </div>
           </div>
-          <div class="bg-white p-6 rounded-xl shadow-sm border border-ice-blue">
-            <div class="flex items-center gap-3 mb-2"><span class="material-symbols-outlined text-royal-blue">forum</span><span class="text-on-surface-variant text-label-sm uppercase tracking-wider">Комментариев</span></div>
-            <p class="text-display-lg font-bold text-royal-blue" id="stat-comments">0</p>
+          <div class="space-y-4 max-w-2xl">
+            <h2 class="text-4xl font-extrabold text-royal-blue tracking-tight">Раздел находится в разработке</h2>
+            <p class="text-lg text-on-surface-variant leading-relaxed">
+              Мы готовим детальную аналитику и отчеты для вашей команды.
+              <span class="block mt-2 font-bold text-royal-blue/70">Модуль визуализации данных будет доступен в ближайшем обновлении.</span>
+            </p>
           </div>
-          <div class="bg-white p-6 rounded-xl shadow-sm border border-ice-blue">
-            <div class="flex items-center gap-3 mb-2"><span class="material-symbols-outlined text-royal-blue">check_circle</span><span class="text-on-surface-variant text-label-sm uppercase tracking-wider">Опубликовано</span></div>
-            <p class="text-display-lg font-bold text-royal-blue" id="stat-published">0</p>
+          <div class="mt-12 flex flex-wrap justify-center gap-4">
+            <button class="px-8 py-3 bg-royal-blue text-white rounded-xl font-bold text-sm hover:bg-primary-container transition-all shadow-lg shadow-royal-blue/20 active:scale-95 flex items-center gap-2">
+              <span class="material-symbols-outlined text-lg">notifications</span>
+              УВЕДОМИТЬ О ГОТОВНОСТИ
+            </button>
+            <button class="px-8 py-3 bg-white text-royal-blue border border-royal-blue/20 rounded-xl font-bold text-sm hover:bg-surface-container-low transition-all active:scale-95 flex items-center gap-2">
+              <span class="material-symbols-outlined text-lg">arrow_back</span>
+              ВЕРНУТЬСЯ К РОСТЕРУ
+            </button>
           </div>
         </div>
-        <div class="bg-ice-blue/30 rounded-xl p-6 border border-ice-blue">
-          <h3 class="font-headline-md text-royal-blue mb-2">Добро пожаловать в админ-панель!</h3>
-          <p class="text-on-surface-variant">Здесь вы можете создавать и редактировать посты, управлять комментариями и настраивать сайт. Используйте боковое меню для навигации.</p>
+      </div>
+    </div>
+
+    <!-- ===== HOMEPAGE (from Stitch: Главный_экран_Админ) ===== -->
+    <div id="sub-homepage" class="subpage">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+          <div>
+            <h2 class="text-4xl font-extrabold text-royal-blue tracking-tight">Управление главной страницей</h2>
+            <p class="text-sm text-on-surface-variant mt-1">Настройте визуальный контент и SEO параметры вашего сайта.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="px-6 py-2.5 font-bold text-sm text-secondary border border-outline-variant rounded-lg hover:bg-surface-container-high transition-colors active:scale-95 duration-150">Отменить</button>
+            <button class="px-6 py-2.5 font-bold text-sm bg-royal-blue text-white rounded-lg shadow-md hover:opacity-90 transition-all active:scale-95 duration-150 flex items-center gap-2">
+              <span class="material-symbols-outlined text-lg">save</span>
+              Сохранить изменения
+            </button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div class="lg:col-span-8 space-y-8">
+            <!-- Hero Section -->
+            <section class="bg-white rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+              <div class="p-6 border-b border-outline-variant flex items-center justify-between bg-surface-container-low/30">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-royal-blue">view_carousel</span>
+                  <h3 class="text-xl font-bold text-royal-blue">Главный баннер</h3>
+                </div>
+                <span class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest">Hero Section</span>
+              </div>
+              <div class="p-6 space-y-6">
+                <div class="grid grid-cols-1 gap-6">
+                  <div>
+                    <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Заголовок баннера</label>
+                    <input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg text-sm focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/10 transition-all" type="text" value="Добро пожаловать, будущие чемпионы">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Подзаголовок</label>
+                    <textarea class="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg text-sm focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/10 transition-all" rows="2">Присоединяйтесь к волейбольной семье РГСУ и достигайте новых высот вместе с нами.</textarea>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Текст кнопки</label>
+                      <input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg text-sm focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/10 transition-all" type="text" value="Узнать больше">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Ссылка кнопки</label>
+                      <input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg text-sm focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/10 transition-all" type="text" value="/about">
+                    </div>
+                  </div>
+                </div>
+                <div class="pt-4">
+                  <label class="block text-xs font-bold text-on-surface-variant mb-3 uppercase tracking-wider">Фоновое изображение</label>
+                  <div class="relative group aspect-video rounded-xl overflow-hidden border-2 border-dashed border-outline-variant hover:border-royal-blue/50 transition-colors cursor-pointer bg-surface-container-high/20">
+                    <img alt="Banner Preview" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9iZaTBTcmGBBajG1GnkcYdKbqwwAQkcnVx3q89AdoG2TqUG0D_CN8Zgk30iV8R0UPJ-AIr4AkInylk0DZZDb1hcE2iPfDP1xWiY8KR8aaCPSK8d6jiN8cn68x_QxyQ15l6asrVteIK6YxeXkpoTCqJ6r1E17IjmQjAMT1ROTYF7CpOun3WzwAsPMdvdwYK0GL-UMzT-zr7X7G8Hu0Vl0LMCeCaAJ7lcOt8Ew0CfbyQkRPZUE9aPdfhZ_d_ytdvmAj9HBxystYswo">
+                    <div class="absolute inset-0 bg-royal-blue/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <button class="bg-white text-royal-blue px-6 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                        <span class="material-symbols-outlined text-xl">image</span>Сменить изображение
+                      </button>
+                    </div>
+                  </div>
+                  <p class="text-[11px] text-on-surface-variant mt-2 italic">Рекомендуемый размер: 1920x1080px. Макс. вес: 2МБ.</p>
+                </div>
+              </div>
+            </section>
+            <!-- Footer Section -->
+            <section class="bg-white rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+              <div class="p-6 border-b border-outline-variant flex items-center justify-between bg-surface-container-low/30">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-royal-blue">page_footer</span>
+                  <h3 class="text-xl font-bold text-royal-blue">Информация в футере</h3>
+                </div>
+                <span class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest">Footer Details</span>
+              </div>
+              <div class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Адрес организации</label>
+                    <div class="relative">
+                      <span class="material-symbols-outlined absolute left-3 top-3 text-xl text-on-surface-variant">location_on</span>
+                      <input class="w-full pl-10 pr-4 py-3 bg-white border border-outline-variant rounded-lg text-sm focus:border-royal-blue transition-all" type="text" value="Москва, ул. Вильгельма Пика, д. 4, стр. 1">
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Email для связи</label>
+                    <div class="relative">
+                      <span class="material-symbols-outlined absolute left-3 top-3 text-xl text-on-surface-variant">mail</span>
+                      <input class="w-full pl-10 pr-4 py-3 bg-white border border-outline-variant rounded-lg text-sm focus:border-royal-blue transition-all" type="email" value="volleyball@rgsu.net">
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Телефон</label>
+                    <div class="relative">
+                      <span class="material-symbols-outlined absolute left-3 top-3 text-xl text-on-surface-variant">call</span>
+                      <input class="w-full pl-10 pr-4 py-3 bg-white border border-outline-variant rounded-lg text-sm focus:border-royal-blue transition-all" type="tel" value="+7 (495) 123-45-67">
+                    </div>
+                  </div>
+                </div>
+                <div class="pt-4">
+                  <label class="block text-xs font-bold text-on-surface-variant mb-3 uppercase tracking-wider">Социальные сети</label>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-surface-container-high text-royal-blue font-bold">VK</div>
+                      <input class="flex-1 px-4 py-2.5 bg-white border border-outline-variant rounded-lg text-sm" type="text" value="https://vk.com/rgsu_volleyball">
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-surface-container-high text-royal-blue font-bold">TG</div>
+                      <input class="flex-1 px-4 py-2.5 bg-white border border-outline-variant rounded-lg text-sm" type="text" value="https://t.me/rgsu_sport">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+          <!-- SEO Column -->
+          <div class="lg:col-span-4 space-y-8">
+            <section class="bg-white rounded-xl border border-outline-variant shadow-sm sticky top-24">
+              <div class="p-6 border-b border-outline-variant bg-primary-container/5">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-royal-blue">search_check</span>
+                  <h3 class="text-xl font-bold text-royal-blue">SEO настройки</h3>
+                </div>
+              </div>
+              <div class="p-6 space-y-6">
+                <div class="p-4 bg-surface-container-low rounded-lg border border-outline-variant/50">
+                  <p class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest mb-2">Предпросмотр Google</p>
+                  <h4 class="text-[#1a0dab] font-bold text-lg leading-tight hover:underline cursor-pointer">РГСУ ВОЛЕЙБОЛ | Главная страница</h4>
+                  <p class="text-[#006621] text-sm truncate mb-1">volleyball.rgsu.net</p>
+                  <p class="text-on-surface-variant text-sm line-clamp-2">Официальный сайт волейбольной команды РГСУ. Информация для абитуриентов, расписание тренировок и результаты матчей.</p>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Мета-заголовок (Title)</label>
+                  <input class="w-full px-4 py-2.5 bg-white border border-outline-variant rounded-lg text-sm focus:border-royal-blue transition-all" type="text" value="РГСУ ВОЛЕЙБОЛ | Главная страница">
+                  <div class="flex justify-between mt-1">
+                    <span class="text-[10px] text-on-surface-variant">Рекомендуется до 60 знаков</span>
+                    <span class="text-[10px] font-bold text-royal-blue">31 / 60</span>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Мета-описание (Description)</label>
+                  <textarea class="w-full px-4 py-2.5 bg-white border border-outline-variant rounded-lg text-sm focus:border-royal-blue transition-all" rows="4">Официальный сайт волейбольной команды РГСУ. Информация для абитуриентов, расписание тренировок и результаты матчей.</textarea>
+                  <div class="flex justify-between mt-1">
+                    <span class="text-[10px] text-on-surface-variant">Рекомендуется до 160 знаков</span>
+                    <span class="text-[10px] font-bold text-royal-blue">108 / 160</span>
+                  </div>
+                </div>
+                <div class="pt-4">
+                  <button class="w-full py-3 bg-surface-container-high text-royal-blue font-bold text-sm rounded-lg hover:bg-royal-blue hover:text-white transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-lg">analytics</span>Проверить показатели
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Posts Page -->
-      <div id="sub-posts" class="subpage">
-        <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
-          <h2 class="font-headline-md text-royal-blue">Управление постами</h2>
-          <button onclick="openPostModal()" class="bg-royal-blue text-white px-6 py-2 rounded-full font-bold hover:scale-105 active:scale-95 transition-all flex items-center gap-2"><span class="material-symbols-outlined">add</span>Создать пост</button>
+    <!-- ===== PLAYERS / ROSTER (from Stitch: Игроки_Админ) ===== -->
+    <div id="sub-players" class="subpage">
+      <div class="max-w-6xl mx-auto space-y-6">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+          <div>
+            <h2 class="text-4xl font-extrabold text-royal-blue tracking-tight">Управление составом</h2>
+            <p class="text-sm text-on-surface-variant mt-1">Управляйте игроками, редактируйте профили и отслеживайте статистику команды.</p>
+          </div>
+          <button onclick="openPlayerModal()" class="bg-royal-blue text-white px-6 py-3 rounded-xl font-bold text-sm hover:shadow-lg active:scale-95 transition-all flex items-center gap-2">
+            <span class="material-symbols-outlined">add</span>Добавить игрока
+          </button>
         </div>
-        <div id="posts-list" class="space-y-4"></div>
-        <p id="posts-empty" class="text-center text-on-surface-variant py-12 hidden">Нет постов. Создайте первый!</p>
-      </div>
-
-      <!-- Comments Page -->
-      <div id="sub-comments" class="subpage">
-        <h2 class="font-headline-md text-royal-blue mb-6">Комментарии</h2>
-        <div id="comments-list" class="space-y-6"></div>
-        <p id="comments-empty" class="text-center text-on-surface-variant py-12 hidden">Нет комментариев.</p>
-      </div>
-
-      <!-- Settings Page -->
-      <div id="sub-settings" class="subpage">
-        <h2 class="font-headline-md text-royal-blue mb-6">Настройки</h2>
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-ice-blue max-w-lg">
-          <label class="block text-label-sm font-bold text-on-surface mb-2 tracking-wider uppercase">Название сайта</label>
-          <input id="settings-site-title" type="text" class="w-full px-4 py-3 rounded-full border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all mb-4" value="РГСУ ВОЛЕЙБОЛ">
-          <button onclick="saveSettings()" class="bg-royal-blue text-white px-6 py-2 rounded-full font-bold hover:scale-105 active:scale-95 transition-all">Сохранить</button>
-          <p id="settings-msg" class="text-green-600 mt-2 hidden text-sm">Сохранено!</p>
+        <!-- Stats Row -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm flex flex-col justify-between">
+            <span class="text-xs font-bold text-outline uppercase tracking-wider">ВСЕГО ИГРОКОВ</span>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="text-4xl font-extrabold text-royal-blue">18</span>
+              <span class="text-green-600 font-bold text-xs">+2 в этом сезоне</span>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm">
+            <span class="text-xs font-bold text-outline uppercase tracking-wider">СРЕДНИЙ РОСТ</span>
+            <div class="mt-2"><span class="text-4xl font-extrabold text-royal-blue">193 см</span></div>
+          </div>
+          <div class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm">
+            <span class="text-xs font-bold text-outline uppercase tracking-wider">АКТИВНЫЙ СОСТАВ</span>
+            <div class="mt-2"><span class="text-4xl font-extrabold text-royal-blue">14</span></div>
+          </div>
+          <div class="bg-white p-6 rounded-xl border-2 border-dashed border-outline-variant shadow-sm flex items-center justify-center hover:bg-surface-container transition-colors cursor-pointer group" onclick="openPlayerModal()">
+            <button class="flex flex-col items-center gap-1 group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined text-royal-blue scale-125">person_add</span>
+              <span class="text-xs font-bold text-royal-blue">Добавить игрока</span>
+            </button>
+          </div>
+        </div>
+        <!-- Players Table -->
+        <div class="bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+          <div class="p-6 border-b border-outline-variant flex justify-between items-center">
+            <h3 class="text-xl font-bold text-on-surface">Состав команды</h3>
+            <div class="flex gap-2">
+              <button class="flex items-center gap-2 px-3 py-1.5 border border-outline-variant rounded-lg text-xs font-bold hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-sm">filter_list</span> Фильтры</button>
+              <button class="flex items-center gap-2 px-3 py-1.5 border border-outline-variant rounded-lg text-xs font-bold hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-sm">download</span> Экспорт</button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-surface-container-low text-outline text-xs font-bold uppercase tracking-wider sticky top-0">
+                <tr>
+                  <th class="px-6 py-4">ФОТО</th><th class="px-6 py-4">№</th>
+                  <th class="px-6 py-4">ИМЯ</th><th class="px-6 py-4">РОЛЬ</th>
+                  <th class="px-6 py-4">ВОЗРАСТ</th><th class="px-6 py-4">СТАТУС</th>
+                  <th class="px-6 py-4 text-right">ДЕЙСТВИЯ</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-outline-variant">
+                <tr class="hover:bg-surface-container/30 transition-colors group">
+                  <td class="px-6 py-4"><img class="w-10 h-10 rounded-full border border-outline-variant object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOBatKmTmCFWCSkFv5abWTNcDbWzaiFNClqKF34PjxcO_Sg2ied_M1jxxmxXascREBMJrzCx86V2X0TlOSiVyKor-UA2SO3CcZ9xkiBqRsG5BlqhnalaeJzqrcKIl4caELHubCc49G6iWH9lwNNhwahvDdcoZbWeIKerEnh32vRuiTH7pKeZGu86i1jvtgc-OMiqdctwYTYcxae8cwnL9r8AS0toodN2teQh2e05ic1GUYm8PUuG1t6e7JM2Bynevz2MZ_cNXCM8A"></td>
+                  <td class="px-6 py-4 font-bold text-royal-blue">#23</td>
+                  <td class="px-6 py-4 font-bold text-on-surface">Marcus Sterling</td>
+                  <td class="px-6 py-4 text-on-surface-variant">Доигровщик</td>
+                  <td class="px-6 py-4 text-on-surface-variant">24</td>
+                  <td class="px-6 py-4"><span class="px-2 py-1 bg-green-100 text-green-800 text-[10px] font-bold rounded-full uppercase">АКТИВЕН</span></td>
+                  <td class="px-6 py-4 text-right"><button class="p-2 hover:bg-error-container/10 text-error rounded-lg transition-all"><span class="material-symbols-outlined text-sm">edit</span> Изменить</button></td>
+                </tr>
+                <tr class="bg-surface-container-low/30 hover:bg-surface-container/30 transition-colors group">
+                  <td class="px-6 py-4"><img class="w-10 h-10 rounded-full border border-outline-variant object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCR_o6yw7_60IGlW3kXsxaNpvHeCExcWswKN_jEX-YiTY7FX1RRE9G1UFYPVFJYac-FpegPt5wxHr6RhISGOtzq2vb4lD77_BTk7TWzmQCG-VJOGDEGOQuP438XOaUN3SZ4pdq3SOUNvGM-77AdvgVF-wu4HE9OWFLbsQ0KOVsnAh22Z2zpShpjeJdYSyPVSL3I2S8bZgmnV2lTEAWc6DFIshuuO6RWqNbGXmIXSwyEZsjLrABQnQrXt6dl4-r3oIYgB-hJ1tiVm2Y"></td>
+                  <td class="px-6 py-4 font-bold text-royal-blue">#8</td>
+                  <td class="px-6 py-4 font-bold text-on-surface">Alexei Kozlov</td>
+                  <td class="px-6 py-4 text-on-surface-variant">Центральный блокирующий</td>
+                  <td class="px-6 py-4 text-on-surface-variant">27</td>
+                  <td class="px-6 py-4"><span class="px-2 py-1 bg-green-100 text-green-800 text-[10px] font-bold rounded-full uppercase">АКТИВЕН</span></td>
+                  <td class="px-6 py-4 text-right"><button class="p-2 hover:bg-error-container/10 text-error rounded-lg transition-all"><span class="material-symbols-outlined text-sm">edit</span> Изменить</button></td>
+                </tr>
+                <tr class="hover:bg-surface-container/30 transition-colors group">
+                  <td class="px-6 py-4"><img class="w-10 h-10 rounded-full border border-outline-variant object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEbqem7jAXmKtZ-t92y7Q9oWp1fQT500PMh1pboXNlqGs5f5qT6t81urDnHbfhv4iwDLX0-pSaobPtgB9pTuBqT8T9DyhcYX3uuVeVD-xNkLRp5_yi2HN_GBMz4EjeTdJj6vezLMvS5aUswi3Y1Vh9IjDpWrq_27SC-90gqLKQDwufKYdV8vBBi6lX4ImZJGjbvKcLX56usnhIXquthKmuudO7M3UTUQ5SAQf1hWYsJJrD00vTx1cV0jbt7x8Z7LBScYzlS1HPQ8o"></td>
+                  <td class="px-6 py-4 font-bold text-royal-blue">#12</td>
+                  <td class="px-6 py-4 font-bold text-on-surface">David Wu</td>
+                  <td class="px-6 py-4 text-on-surface-variant">Либеро</td>
+                  <td class="px-6 py-4 text-on-surface-variant">22</td>
+                  <td class="px-6 py-4"><span class="px-2 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase">ТРАВМИРОВАН</span></td>
+                  <td class="px-6 py-4 text-right"><button class="p-2 hover:bg-error-container/10 text-error rounded-lg transition-all"><span class="material-symbols-outlined text-sm">edit</span> Изменить</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="p-4 border-t border-outline-variant bg-white flex justify-between items-center">
+            <span class="text-xs font-bold text-outline">Показано 1-3 из 18 игроков</span>
+            <div class="flex gap-1">
+              <button class="p-2 hover:bg-surface-container rounded-lg transition-colors text-outline"><span class="material-symbols-outlined">chevron_left</span></button>
+              <button class="px-3 py-1 bg-royal-blue text-white font-bold rounded-lg text-xs">1</button>
+              <button class="px-3 py-1 hover:bg-surface-container text-on-surface font-bold rounded-lg text-xs transition-colors">2</button>
+              <button class="px-3 py-1 hover:bg-surface-container text-on-surface font-bold rounded-lg text-xs transition-colors">3</button>
+              <button class="p-2 hover:bg-surface-container rounded-lg transition-colors text-outline"><span class="material-symbols-outlined">chevron_right</span></button>
+            </div>
+          </div>
         </div>
       </div>
+      <!-- Add Player Modal -->
+      <div class="modal-overlay fixed inset-0 z-[60] bg-inverse-surface/40 backdrop-blur-sm" id="player-modal">
+        <div class="modal-content bg-white rounded-2xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-outline-variant">
+          <div class="p-6 border-b border-outline-variant flex justify-between items-center">
+            <h3 class="text-xl font-bold text-royal-blue">Добавить игрока</h3>
+            <button onclick="closePlayerModal()" class="p-2 hover:bg-surface-container rounded-full transition-colors text-outline"><span class="material-symbols-outlined">close</span></button>
+          </div>
+          <form class="p-6 space-y-5">
+            <div class="flex flex-col items-center mb-6">
+              <div class="relative group cursor-pointer">
+                <div class="w-24 h-24 rounded-full bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center text-outline overflow-hidden group-hover:border-royal-blue transition-colors">
+                  <span class="material-symbols-outlined scale-125 group-hover:text-royal-blue">upload</span>
+                  <span class="text-[10px] mt-1 font-bold uppercase group-hover:text-royal-blue">Upload Photo</span>
+                </div>
+                <input class="absolute inset-0 opacity-0 cursor-pointer" type="file">
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="col-span-2">
+                <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Полное имя</label>
+                <input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="например, Иван Петров" type="text">
+              </div>
+              <div>
+                <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Роль / Позиция</label>
+                <select class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all">
+                  <option>Связующий</option><option>Доигровщик</option><option>Центральный блокирующий</option><option>Диагональный</option><option>Либеро</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Возраст</label>
+                <input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="24" type="number">
+              </div>
+              <div>
+                <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Рост (см)</label>
+                <input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="195" type="text">
+              </div>
+              <div>
+                <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Статус</label>
+                <select class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all">
+                  <option>Активен</option><option>Неактивен</option><option>Запасной</option><option>Травмирован</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Краткое описание</label>
+              <textarea class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all resize-none" placeholder="Ключевая статистика, достижения, заметки..." rows="3"></textarea>
+            </div>
+            <div class="pt-4 flex gap-3">
+              <button class="flex-1 py-3 border border-outline-variant text-on-surface font-bold rounded-xl hover:bg-surface-container transition-all" onclick="closePlayerModal()" type="button">Отмена</button>
+              <button class="flex-1 py-3 bg-royal-blue text-white font-bold rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all" type="submit">Сохранить</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
-    </main>
-  </div>
+    <!-- ===== OFF-FIELD (from Stitch: Мы_вне_площадки_Админ) ===== -->
+    <div id="sub-offfield" class="subpage">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-4xl font-extrabold text-royal-blue tracking-tight">Управление разделом «Мы вне поля»</h2>
+            <p class="text-sm text-on-surface-variant mt-1">Публикуйте новости, фотоотчеты и истории из жизни команды.</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-12 gap-6">
+          <!-- Stats Card -->
+          <div class="col-span-12 lg:col-span-4 bg-royal-blue text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between overflow-hidden relative group">
+            <div class="relative z-10">
+              <span class="text-xs uppercase tracking-widest opacity-80 font-bold">ОБЩАЯ АКТИВНОСТЬ</span>
+              <h3 class="text-4xl font-extrabold mt-2">1,284</h3>
+              <p class="text-sm mt-1 opacity-90">Взаимодействие читателей в этом месяце</p>
+            </div>
+            <div class="mt-8 flex gap-2 relative z-10">
+              <div class="flex-1 bg-white/10 p-3 rounded-xl backdrop-blur-md">
+                <span class="block text-xl font-bold">42</span>
+                <span class="text-xs opacity-70">Статьи</span>
+              </div>
+              <div class="flex-1 bg-white/10 p-3 rounded-xl backdrop-blur-md">
+                <span class="block text-xl font-bold">12</span>
+                <span class="text-xs opacity-70">Черновики</span>
+              </div>
+            </div>
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/5 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700"></div>
+          </div>
+          <!-- Create Post Trigger -->
+          <div class="col-span-12 lg:col-span-8 flex flex-col justify-center bg-white border-2 border-dashed border-outline-variant rounded-2xl p-6 shadow-sm hover:border-royal-blue transition-colors cursor-pointer" onclick="openOffFieldEditor()">
+            <div class="flex flex-col items-center gap-3">
+              <div class="w-14 h-14 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+                <span class="material-symbols-outlined text-3xl">add</span>
+              </div>
+              <div class="text-center">
+                <h4 class="text-xl font-bold text-royal-blue">Создать новый пост</h4>
+                <p class="text-sm text-on-surface-variant">Поделитесь моментом из жизни команды с болельщиками.</p>
+              </div>
+            </div>
+          </div>
+          <!-- News Table -->
+          <div class="col-span-12 bg-white border border-outline-variant rounded-2xl shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center">
+              <h3 class="text-xl font-bold text-on-surface">Недавние публикации</h3>
+              <div class="flex gap-2">
+                <button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors"><span class="material-symbols-outlined">filter_list</span></button>
+                <button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors"><span class="material-symbols-outlined">download</span></button>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-surface-container-low text-on-surface-variant text-xs font-bold border-b border-outline-variant">
+                    <th class="px-6 py-4 uppercase tracking-wider">ПРЕВЬЮ</th>
+                    <th class="px-6 py-4 uppercase tracking-wider">ЗАГОЛОВОК И ДАТА</th>
+                    <th class="px-6 py-4 uppercase tracking-wider">КАТЕГОРИЯ</th>
+                    <th class="px-6 py-4 uppercase tracking-wider">СТАТУС</th>
+                    <th class="px-6 py-4 uppercase tracking-wider">ДЕЙСТВИЯ</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-outline-variant">
+                  <tr class="hover:bg-surface-container-lowest transition-colors group">
+                    <td class="px-6 py-4">
+                      <div class="w-16 h-10 rounded-md overflow-hidden bg-surface-variant">
+                        <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJHCy6Bz7dBrPt4KZkqm80xcEG7tpssHYL_x04kXoAnhWvnkB28wQARE62Yz3JG0wpDxy55MHLBrVRE_4IVKTatdkcx61o5PXWDHKsn1jYLg-zEhXiALT-U1QplSw6RY8E5Vy9xWGrFWhiahb3WOxCgGQYpCyljqmbaMfcWxJCAhbNrvOYfyZsS_Y8j5FKcvQz3kxDHfcEp_7YFwh_g9_5w0gimmlcb2aJ9gJV-8299Zr4cd7U828_7vcp_AkwqJiuGkCIlgfh3RY">
+                      </div>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="text-base font-bold text-royal-blue group-hover:text-primary-container transition-colors">Поездка команды: Пункт назначения Италия</div>
+                      <div class="text-sm text-outline">Опубликовано 24 окт. 2023</div>
+                    </td>
+                    <td class="px-6 py-4"><span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed-variant rounded-full text-xs font-bold">Путешествия</span></td>
+                    <td class="px-6 py-4"><div class="flex items-center gap-1.5 text-green-600 text-xs font-bold"><span class="w-2 h-2 rounded-full bg-green-500"></span>Опубликовано</div></td>
+                    <td class="px-6 py-4">
+                      <div class="flex gap-2">
+                        <button class="p-1.5 text-outline hover:text-royal-blue transition-colors"><span class="material-symbols-outlined">edit</span></button>
+                        <button class="p-1.5 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined">delete</span></button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="bg-surface-container-low/30 hover:bg-surface-container-lowest transition-colors group">
+                    <td class="px-6 py-4">
+                      <div class="w-16 h-10 rounded-md overflow-hidden bg-surface-variant">
+                        <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDS70FYyDB3hzyhONnF751gAp-GwGcU1xP2ntmzHxR6qhLKltwvlavZffP30hAZ3bdmrMDurU9nBiHeKKziyB3hTAgt5od0Gs9QTrl5nrf7qxOBu2Tb407rm_Qi9j1VFEinlClU641GJM5LqAQCXWlmNed5kyTP4mOtH-oHXE8QNqMZ6AEHF3_z6xhXQBDhBbsEYerQQlfCu_ceapesHOqbCUpDem6ka33tToTR0wgcp9ixBYlKaI1X4Wqc5p9ESzhRnD7QKpYrgzc">
+                      </div>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="text-base font-bold text-royal-blue group-hover:text-primary-container transition-colors">Сессия: Баланс между учебой и тренировками</div>
+                      <div class="text-sm text-outline">Опубликовано 18 окт. 2023</div>
+                    </td>
+                    <td class="px-6 py-4"><span class="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed-variant rounded-full text-xs font-bold">Учеба</span></td>
+                    <td class="px-6 py-4"><div class="flex items-center gap-1.5 text-green-600 text-xs font-bold"><span class="w-2 h-2 rounded-full bg-green-500"></span>Опубликовано</div></td>
+                    <td class="px-6 py-4">
+                      <div class="flex gap-2">
+                        <button class="p-1.5 text-outline hover:text-royal-blue transition-colors"><span class="material-symbols-outlined">edit</span></button>
+                        <button class="p-1.5 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined">delete</span></button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-surface-container-lowest transition-colors group">
+                    <td class="px-6 py-4">
+                      <div class="w-16 h-10 rounded-md overflow-hidden bg-surface-variant">
+                        <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjYx6phuHV3oWwZBO9Z8D6uqDL9PgXdPx7eiKzCoiNwC4Soc2LRwEh_41s9Qnuqi9v9MgmXe_Xv094srsvmnS58XfMJJpsrofLdmEpjKMuFliqR-uWlWwulsjRl5ywSRJYQvyjYgo0a3igSUHsT7LdwKqmhScoIr2zfk7h0VVR0JbQtWA16P3GmajI5ULGm869DWZ1jQVY4_znOg7gT8ufQOJq5GBSbK6EVaKvhGz0eg3kwD0p4oc7I5YgVIrduYSK4Lm9PRVbRtU">
+                      </div>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="text-base font-bold text-royal-blue group-hover:text-primary-container transition-colors">Ежегодный гала-вечер 2023: Фотоотчет</div>
+                      <div class="text-sm text-outline">Опубликовано 12 окт. 2023</div>
+                    </td>
+                    <td class="px-6 py-4"><span class="px-3 py-1 bg-primary-fixed text-on-primary-fixed-variant rounded-full text-xs font-bold">Мероприятие</span></td>
+                    <td class="px-6 py-4"><div class="flex items-center gap-1.5 text-outline text-xs font-bold"><span class="w-2 h-2 rounded-full bg-outline-variant"></span>Черновик</div></td>
+                    <td class="px-6 py-4">
+                      <div class="flex gap-2">
+                        <button class="p-1.5 text-outline hover:text-royal-blue transition-colors"><span class="material-symbols-outlined">edit</span></button>
+                        <button class="p-1.5 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined">delete</span></button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- Off-Field Editor Modal -->
+        <div class="modal-overlay fixed inset-0 z-[70]" id="offfield-editor">
+          <div class="absolute inset-0 bg-royal-blue/20 backdrop-blur-sm" onclick="closeOffFieldEditor()"></div>
+          <div class="modal-content absolute right-0 top-0 h-full w-full max-w-2xl bg-white shadow-2xl flex flex-col">
+            <div class="border-b border-outline-variant flex justify-between items-center bg-white py-4 px-6">
+              <div>
+                <h2 class="text-xl font-bold text-royal-blue">Создать пост «Мы вне поля»</h2>
+              </div>
+              <button class="p-2 hover:bg-surface-container rounded-full" onclick="closeOffFieldEditor()">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+              <div class="space-y-3">
+                <label class="text-xs font-bold text-on-surface uppercase tracking-wider">Обложка публикации</label>
+                <div class="border-2 border-dashed border-outline-variant rounded-2xl h-48 flex flex-col items-center justify-center gap-2 hover:border-royal-blue transition-colors cursor-pointer group bg-surface-container-low">
+                  <span class="material-symbols-outlined text-4xl text-outline group-hover:text-royal-blue">cloud_upload</span>
+                  <p class="text-sm text-outline">Нажмите или перетащите изображение для загрузки (макс. 5МБ)</p>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="col-span-2 space-y-2">
+                  <label class="text-xs font-bold text-on-surface uppercase tracking-wider">Заголовок</label>
+                  <input class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4" placeholder="Введите заголовок..." type="text">
+                </div>
+                <div class="space-y-2">
+                  <label class="text-xs font-bold text-on-surface uppercase tracking-wider">Категория</label>
+                  <select class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4">
+                    <option>Жизнь</option><option>Учеба</option><option>Путешествия</option><option>Мероприятия</option>
+                  </select>
+                </div>
+                <div class="space-y-2">
+                  <label class="text-xs font-bold text-on-surface uppercase tracking-wider">Дата публикации</label>
+                  <input class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4" type="date">
+                </div>
+                <div class="col-span-2 space-y-2">
+                  <label class="text-xs font-bold text-on-surface uppercase tracking-wider">Основное содержание</label>
+                  <textarea class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4 resize-none" placeholder="Напишите историю здесь..." rows="6"></textarea>
+                </div>
+                <div class="col-span-2 flex items-center gap-3 p-1">
+                  <input type="checkbox" id="important-post" class="w-5 h-5 rounded border-outline-variant text-royal-blue focus:ring-royal-blue/20 transition-all cursor-pointer">
+                  <label for="important-post" class="text-xs font-bold text-on-surface cursor-pointer">Важный пост</label>
+                </div>
+                <div class="col-span-2 flex items-center justify-between p-4 bg-surface-container-low rounded-xl">
+                  <div class="flex flex-col">
+                    <span class="text-xs font-bold text-on-surface">Опубликовать немедленно</span>
+                    <span class="text-xs text-outline">Сделать этот пост доступным сразу после сохранения</span>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input checked class="sr-only peer" type="checkbox">
+                    <div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-royal-blue"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="p-6 border-t border-outline-variant bg-white flex gap-3">
+              <button class="flex-1 py-3 px-4 rounded-xl border border-outline-variant text-sm font-bold text-on-surface hover:bg-surface-container transition-all" onclick="closeOffFieldEditor()">Сохранить черновик</button>
+              <button class="flex-[2] py-3 px-4 rounded-xl bg-royal-blue text-white text-sm font-bold hover:bg-primary-container shadow-lg shadow-royal-blue/20 transition-all active:scale-[0.98]">Опубликовать</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TOURNAMENTS (from Stitch: Турниры_Админ) ===== -->
+    <div id="sub-tournaments" class="subpage">
+      <div class="max-w-6xl mx-auto space-y-6">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <h2 class="text-4xl font-extrabold text-royal-blue tracking-tight">Управление турнирами</h2>
+            <p class="text-sm text-on-surface-variant mt-1">Управляйте, отслеживайте и архивируйте все соревновательные события Сборной РГСУ по волейболу.</p>
+          </div>
+          <div class="flex gap-3">
+            <button class="flex items-center gap-2 px-6 py-2.5 bg-white border border-outline-variant text-royal-blue font-bold rounded-xl hover:bg-surface-container transition-all"><span class="material-symbols-outlined">filter_list</span> Фильтры</button>
+            <button class="flex items-center gap-2 px-6 py-2.5 bg-royal-blue text-white font-bold rounded-xl hover:shadow-lg active:scale-95 transition-all" onclick="openTournamentModal()"><span class="material-symbols-outlined">add_circle</span> Добавить турнир</button>
+          </div>
+        </div>
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+              <span class="material-symbols-outlined p-2 bg-primary-container/20 text-primary-container rounded-lg">event</span>
+              <span class="text-xs text-outline font-bold">В ЭТОМ МЕСЯЦЕ</span>
+            </div>
+            <div class="mt-4">
+              <h3 class="text-4xl font-extrabold text-royal-blue">04</h3>
+              <p class="text-sm text-outline">Предстоящие турниры</p>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+              <span class="material-symbols-outlined p-2 bg-green-100 text-green-700 rounded-lg">play_circle</span>
+              <span class="text-xs text-outline font-bold">АКТИВНЫЕ</span>
+            </div>
+            <div class="mt-4">
+              <h3 class="text-4xl font-extrabold text-royal-blue">01</h3>
+              <p class="text-sm text-outline">Текущие события</p>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm md:col-span-2 flex items-center justify-between overflow-hidden relative">
+            <div class="relative z-10">
+              <h3 class="text-xl font-bold text-royal-blue">Глобальная серия 2024</h3>
+              <p class="text-sm text-on-surface-variant max-w-[200px] mt-2">Регистрация на следующее крупное событие закрывается через 14 дней. Убедитесь, что все списки проверены.</p>
+              <button class="mt-4 text-royal-blue font-bold text-xs flex items-center gap-1 hover:gap-2 transition-all">Проверить регистрацию <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+            </div>
+            <div class="absolute right-0 top-0 h-full w-1/2 opacity-10 pointer-events-none">
+              <span class="material-symbols-outlined text-[140px] rotate-12">emoji_events</span>
+            </div>
+          </div>
+        </div>
+        <!-- Tournament Table -->
+        <div class="bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+          <div class="p-6 border-b border-outline-variant flex justify-between items-center">
+            <h2 class="text-xl font-bold text-royal-blue">Справочник турниров</h2>
+            <div class="flex gap-2">
+              <button class="px-3 py-1 bg-royal-blue text-white text-xs font-bold rounded-full">Все</button>
+              <button class="px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors">Предстоящие</button>
+              <button class="px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors">Архив</button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse">
+              <thead class="bg-surface-container-low sticky top-0">
+                <tr>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-outline uppercase tracking-wider">НАЗВАНИЕ ТУРНИРА</th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-outline uppercase tracking-wider">ДАТЫ</th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-outline uppercase tracking-wider">СТАТУС</th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-outline uppercase tracking-wider">УЧАСТНИКИ</th>
+                  <th class="px-6 py-4 text-right text-xs font-bold text-outline uppercase tracking-wider">ДЕЙСТВИЯ</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-outline-variant">
+                <tr class="hover:bg-royal-blue/5 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-lg bg-royal-blue/10 flex items-center justify-center text-royal-blue"><span class="material-symbols-outlined">sports_volleyball</span></div>
+                      <div>
+                        <p class="font-bold text-on-surface">Открытый кубок мастеров</p>
+                        <p class="text-xs text-outline">Региональный квалификатор</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-sm">12 окт - 20 окт, 2024</td>
+                  <td class="px-6 py-4"><span class="px-3 py-1 bg-green-100 text-green-800 text-[11px] font-bold rounded-full uppercase tracking-tight">ИДЕТ</span></td>
+                  <td class="px-6 py-4 text-sm">16 команд</td>
+                  <td class="px-6 py-4 text-right">
+                    <div class="flex justify-end gap-2">
+                      <button class="p-2 hover:bg-surface-container rounded-full text-royal-blue" title="Edit"><span class="material-symbols-outlined">edit</span></button>
+                      <button class="p-2 hover:bg-surface-container rounded-full text-outline" title="Gallery"><span class="material-symbols-outlined">image</span></button>
+                      <button class="p-2 hover:bg-surface-container rounded-full text-error" title="Delete"><span class="material-symbols-outlined">delete</span></button>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bg-white hover:bg-royal-blue/5 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary"><span class="material-symbols-outlined">tour</span></div>
+                      <div>
+                        <p class="font-bold text-on-surface">Осенний пригласительный турнир</p>
+                        <p class="text-xs text-outline">Только по приглашению</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-sm">05 ноя, 2024</td>
+                  <td class="px-6 py-4"><span class="px-3 py-1 bg-blue-100 text-blue-800 text-[11px] font-bold rounded-full uppercase tracking-tight">ОЖИДАЕТСЯ</span></td>
+                  <td class="px-6 py-4 text-sm">8 команд</td>
+                  <td class="px-6 py-4 text-right">
+                    <div class="flex justify-end gap-2">
+                      <button class="p-2 hover:bg-surface-container rounded-full text-royal-blue"><span class="material-symbols-outlined">edit</span></button>
+                      <button class="p-2 hover:bg-surface-container rounded-full text-outline"><span class="material-symbols-outlined">image</span></button>
+                      <button class="p-2 hover:bg-surface-container rounded-full text-error"><span class="material-symbols-outlined">delete</span></button>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bg-surface-container-low/30 hover:bg-royal-blue/5 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center text-outline"><span class="material-symbols-outlined">archive</span></div>
+                      <div>
+                        <p class="font-bold text-on-surface opacity-70">Летняя битва</p>
+                        <p class="text-xs text-outline">Архивное событие</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-sm opacity-70">15 авг - 20 авг, 2024</td>
+                  <td class="px-6 py-4"><span class="px-3 py-1 bg-surface-variant text-on-surface-variant text-[11px] font-bold rounded-full uppercase tracking-tight">ЗАВЕРШЕН</span></td>
+                  <td class="px-6 py-4 text-sm opacity-70">24 команды</td>
+                  <td class="px-6 py-4 text-right">
+                    <div class="flex justify-end gap-2">
+                      <button class="p-2 hover:bg-surface-container rounded-full text-royal-blue/40"><span class="material-symbols-outlined">edit</span></button>
+                      <button class="p-2 hover:bg-surface-container rounded-full text-outline"><span class="material-symbols-outlined">image</span></button>
+                      <button class="p-2 hover:bg-surface-container rounded-full text-error/40"><span class="material-symbols-outlined">delete</span></button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="p-4 border-t border-outline-variant flex items-center justify-between bg-white">
+            <p class="text-xs font-bold text-outline">Показано 3 из 42 турниров</p>
+            <div class="flex gap-2">
+              <button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-surface-container disabled:opacity-50" disabled>1</button>
+              <button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant bg-royal-blue text-white">2</button>
+              <button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-surface-container">3</button>
+              <button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-surface-container"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Tournament Modal -->
+      <div class="modal-overlay fixed inset-0 z-[80]" id="tournament-modal">
+        <div class="absolute inset-0 bg-inverse-surface/40 backdrop-blur-sm" onclick="closeTournamentModal()"></div>
+        <div class="modal-content relative bg-white w-full max-w-2xl mx-4 rounded-2xl shadow-2xl overflow-hidden">
+          <div class="bg-royal-blue p-6 flex justify-between items-center text-white">
+            <div>
+              <h2 class="text-xl font-bold">Создать новый турнир</h2>
+              <p class="text-xs text-primary-fixed-dim/80">Настройте детали события и медиа</p>
+            </div>
+            <button class="p-2 hover:bg-white/10 rounded-full transition-colors" onclick="closeTournamentModal()"><span class="material-symbols-outlined">close</span></button>
+          </div>
+          <div class="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
+            <div class="grid grid-cols-2 gap-6">
+              <div class="col-span-2">
+                <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Название турнира</label>
+                <input class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" placeholder="например, Global Masters Сборной РГСУ" type="text">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Дата события</label>
+                <input class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" type="date">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Статус</label>
+                <select class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white">
+                  <option>Предстоящий</option><option>Идет</option><option>Завершен</option>
+                </select>
+              </div>
+              <div class="col-span-2">
+                <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Описание</label>
+                <textarea class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" placeholder="Краткий обзор целей и места проведения турнира..." rows="3"></textarea>
+              </div>
+              <div class="col-span-2">
+                <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Галерея турнира</label>
+                <div class="border-2 border-dashed border-outline-variant rounded-xl p-8 flex flex-col items-center justify-center text-center group hover:border-royal-blue transition-colors cursor-pointer">
+                  <div class="w-12 h-12 bg-surface-container flex items-center justify-center rounded-full text-outline group-hover:text-royal-blue transition-colors mb-3"><span class="material-symbols-outlined">cloud_upload</span></div>
+                  <p class="font-bold text-on-surface">Нажмите для загрузки или перетащите файлы</p>
+                  <p class="text-xs text-outline mt-1">PNG, JPG или WEBP (макс. 5МБ на файл)</p>
+                </div>
+                <div class="mt-4 grid grid-cols-4 gap-3">
+                  <div class="relative group aspect-square rounded-lg overflow-hidden border border-outline-variant bg-surface-container">
+                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBggK6SQSJV-xObbYFlZ5FJiLRYRyFdSz4R26VHePZOmFPXBGj_b5TTqqvtZPIWo9Iu8ox1mrK5TZgfkfkY9QywGcOY4nYXjyq27z8VnXczFaXYgkjld__8jlXix-chXTw2xC3fDXbROFNL9WsWi5Co9G2hSz5fx6oniwJv3cyw5rGkX4rc4r2bGwABkmsi0_daY1bYT3d0prYPXF3O0LyXde81gtOVHxoEpFMsWGZEPjfKTLK91ABeowUuW7Siw6zhT6xazpAna7g">
+                    <button class="absolute top-1 right-1 p-1 bg-error text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-outlined text-xs">close</span></button>
+                  </div>
+                  <div class="aspect-square rounded-lg overflow-hidden border border-outline-variant bg-surface-container flex items-center justify-center text-outline"><span class="material-symbols-outlined">add</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-6 border-t border-outline-variant flex gap-3 justify-end bg-surface-container-low">
+            <button class="px-6 py-2.5 text-on-surface-variant font-bold hover:bg-surface-container rounded-xl transition-all" onclick="closeTournamentModal()">Отмена</button>
+            <button class="px-8 py-2.5 bg-royal-blue text-white font-bold rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all">Создать турнир</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
 </div>
-
-<!-- ===== POST MODAL ===== -->
-<div id="post-modal" class="modal-overlay fixed inset-0 bg-black/40 z-50 items-center justify-center p-4">
-  <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-    <div class="p-6 border-b border-ice-blue flex justify-between items-center">
-      <h3 class="font-headline-md text-royal-blue" id="modal-title">Новый пост</h3>
-      <button onclick="closePostModal()" class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined">close</span></button>
-    </div>
-    <form id="post-form" class="p-6 space-y-4">
-      <input id="post-id" type="hidden" value="">
-      <div>
-        <label class="block text-label-sm font-bold text-on-surface mb-2">Заголовок</label>
-        <input id="post-title" type="text" class="w-full px-4 py-3 rounded-full border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all" placeholder="Заголовок поста" required>
-      </div>
-      <div>
-        <label class="block text-label-sm font-bold text-on-surface mb-2">Категория</label>
-        <select id="post-category" class="w-full px-4 py-3 rounded-full border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white">
-          <option value="personal">Личное</option>
-          <option value="study">Учеба</option>
-          <option value="events">Мероприятия</option>
-          <option value="travel">Путешествия</option>
-          <option value="news">Новости</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-label-sm font-bold text-on-surface mb-2">Содержание</label>
-        <textarea id="post-content" rows="5" class="w-full px-4 py-3 rounded-2xl border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all resize-none" placeholder="Текст поста..." required></textarea>
-      </div>
-      <div>
-        <label class="block text-label-sm font-bold text-on-surface mb-2">URL изображения</label>
-        <input id="post-image" type="url" class="w-full px-4 py-3 rounded-full border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all" placeholder="https://...">
-      </div>
-      <div class="flex items-center gap-3">
-        <label class="relative inline-flex items-center cursor-pointer">
-          <input id="post-published" type="checkbox" class="sr-only peer" checked>
-          <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-royal-blue/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-royal-blue"></div>
-        </label>
-        <span class="text-sm font-bold text-on-surface">Опубликовано</span>
-      </div>
-      <div class="flex gap-3 pt-2">
-        <button type="submit" class="bg-royal-blue text-white px-6 py-2 rounded-full font-bold hover:scale-105 active:scale-95 transition-all flex-1 sm:flex-none">Сохранить</button>
-        <button type="button" onclick="closePostModal()" class="bg-ice-blue text-royal-blue px-6 py-2 rounded-full font-bold hover:bg-royal-blue/10 transition-all flex-1 sm:flex-none">Отмена</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- ===== DELETE CONFIRM MODAL ===== -->
-<div id="delete-modal" class="modal-overlay fixed inset-0 bg-black/40 z-50 items-center justify-center p-4">
-  <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl text-center">
-    <span class="material-symbols-outlined text-5xl text-error mb-4" style="font-variation-settings:'FILL' 1">warning</span>
-    <h3 class="font-headline-md text-on-surface mb-2">Удалить пост?</h3>
-    <p class="text-on-surface-variant mb-6">Это действие нельзя отменить. Пост и все его комментарии будут удалены.</p>
-    <div class="flex gap-3 justify-center">
-      <button id="confirm-delete-btn" class="bg-error text-white px-6 py-2 rounded-full font-bold hover:scale-105 active:scale-95 transition-all">Удалить</button>
-      <button onclick="closeDeleteModal()" class="bg-ice-blue text-royal-blue px-6 py-2 rounded-full font-bold hover:bg-royal-blue/10 transition-all">Отмена</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== REPLY MODAL ===== -->
-<div id="reply-modal" class="modal-overlay fixed inset-0 bg-black/40 z-50 items-center justify-center p-4">
-  <div class="bg-white rounded-xl max-w-lg w-full p-6 shadow-2xl">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="font-headline-md text-royal-blue">Ответ на комментарий</h3>
-      <button onclick="closeReplyModal()" class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined">close</span></button>
-    </div>
-    <div id="reply-original" class="bg-ice-blue p-4 rounded-xl mb-4 text-sm text-on-surface-variant"></div>
-    <textarea id="reply-text" rows="3" class="w-full px-4 py-3 rounded-2xl border border-outline-variant focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all resize-none mb-4" placeholder="Ваш ответ..."></textarea>
-    <div class="flex gap-3">
-      <button onclick="submitReply()" class="bg-royal-blue text-white px-6 py-2 rounded-full font-bold hover:scale-105 active:scale-95 transition-all flex-1 sm:flex-none">Ответить</button>
-      <button onclick="closeReplyModal()" class="bg-ice-blue text-royal-blue px-6 py-2 rounded-full font-bold hover:bg-royal-blue/10 transition-all flex-1 sm:flex-none">Отмена</button>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -207,29 +898,67 @@
 
   // ===== STATE =====
   var token = localStorage.getItem('admin_token');
-  var data = { posts: [], settings: { site_title: 'РГСУ ВОЛЕЙБОЛ' } };
-  var deleteTarget = null; // postId to delete
-  var replyTarget = null;  // { postId, commentId }
 
   // ===== AUTH =====
-  function showLogin() { document.getElementById('page-login').classList.add('active'); document.getElementById('page-admin').classList.remove('active'); }
-  function showAdmin() { document.getElementById('page-login').classList.remove('active'); document.getElementById('page-admin').classList.add('active'); }
+  function showLogin() {
+    document.getElementById('page-login').classList.add('active');
+    document.getElementById('page-admin').classList.remove('active');
+  }
+  function showAdmin() {
+    document.getElementById('page-login').classList.remove('active');
+    document.getElementById('page-admin').classList.add('active');
+  }
 
-  if (token) { showAdmin(); loadData(); } else { showLogin(); }
+  if (token) { showAdmin(); } else { showLogin(); }
 
   document.getElementById('login-form').addEventListener('submit', function(e) {
     e.preventDefault();
     var login = document.getElementById('login-username').value;
     var password = document.getElementById('login-password').value;
     var errEl = document.getElementById('login-error');
+    var btn = this.querySelector('button[type="submit"]');
 
-    fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login, password }) })
-      .then(function(r) { if (!r.ok) throw new Error('Неверный логин или пароль'); return r.json(); })
-      .then(function(res) { token = res.token; localStorage.setItem('admin_token', token); errEl.classList.add('hidden'); showAdmin(); loadData(); })
-      .catch(function(err) { errEl.textContent = err.message; errEl.classList.remove('hidden'); });
+    // Try Vercel API first
+    fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ login: login, password: password })
+    })
+    .then(function(r) { if (!r.ok) throw new Error('Неверный логин или пароль'); return r.json(); })
+    .then(function(res) {
+      token = res.token;
+      localStorage.setItem('admin_token', token);
+      errEl.classList.add('hidden');
+      showAdmin();
+    })
+    .catch(function(err) {
+      // Fallback: local auth check for offline/dev
+      if (login === 'admin' && password === 'admin') {
+        var fallbackToken = btoa(JSON.stringify({ user: 'admin', role: 'admin', exp: Date.now() + 86400000 }));
+        token = fallbackToken;
+        localStorage.setItem('admin_token', token);
+        errEl.classList.add('hidden');
+        showAdmin();
+      } else {
+        errEl.textContent = err.message === 'Failed to fetch' ? 'Сервер недоступен. Попробуйте логин: admin / admin' : err.message;
+        errEl.classList.remove('hidden');
+      }
+    });
   });
 
-  function logout() { token = null; localStorage.removeItem('admin_token'); showLogin(); }
+  function logout() {
+    token = null;
+    localStorage.removeItem('admin_token');
+    showLogin();
+  }
+
+  // ===== LOGIN PASSWORD TOGGLE =====
+  function toggleLoginPassword() {
+    var pwd = document.getElementById('login-password');
+    var icon = document.getElementById('login-password-icon');
+    if (pwd.type === 'password') { pwd.type = 'text'; icon.textContent = 'visibility_off'; }
+    else { pwd.type = 'password'; icon.textContent = 'visibility'; }
+  }
 
   // ===== SIDEBAR NAVIGATION =====
   document.querySelectorAll('.sidebar-link').forEach(function(btn) {
@@ -241,204 +970,36 @@
     });
   });
 
-  // ===== DATA LOADING =====
-  function loadData() {
-    fetch('/api/data', { headers: { 'Authorization': 'Bearer ' + token } })
-      .then(function(r) { if (r.status === 401) { logout(); return null; } return r.json(); })
-      .then(function(d) { if (d) { data = d; renderAll(); } })
-      .catch(function() { /* temporary offline fallback */ });
-  }
+  // ===== PLAYER MODAL =====
+  function openPlayerModal() { document.getElementById('player-modal').classList.add('active'); }
+  function closePlayerModal() { document.getElementById('player-modal').classList.remove('active'); }
 
-  function saveData(callback) {
-    fetch('/api/data', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(data) })
-      .then(function(r) { return r.json(); })
-      .then(function(res) { if (res.success) data = res.data; if (callback) callback(); })
-      .catch(function() { if (callback) callback(); });
-  }
+  // ===== OFF-FIELD EDITOR =====
+  function openOffFieldEditor() { document.getElementById('offfield-editor').classList.add('active'); }
+  function closeOffFieldEditor() { document.getElementById('offfield-editor').classList.remove('active'); }
 
-  // ===== RENDER =====
-  function renderAll() {
-    renderStats();
-    renderPosts();
-    renderComments();
-    renderSettings();
-  }
+  // ===== TOURNAMENT MODAL =====
+  function openTournamentModal() { document.getElementById('tournament-modal').classList.add('active'); }
+  function closeTournamentModal() { document.getElementById('tournament-modal').classList.remove('active'); }
 
-  function renderStats() {
-    var totalComments = 0;
-    data.posts.forEach(function(p) { if (p.comments) totalComments += p.comments.length; });
-    document.getElementById('stat-posts').textContent = data.posts.length;
-    document.getElementById('stat-comments').textContent = totalComments;
-    document.getElementById('stat-published').textContent = data.posts.filter(function(p) { return p.published; }).length;
-  }
-
-  function renderPosts() {
-    var container = document.getElementById('posts-list');
-    var empty = document.getElementById('posts-empty');
-    container.innerHTML = '';
-    if (data.posts.length === 0) { empty.classList.remove('hidden'); return; }
-    empty.classList.add('hidden');
-
-    // Show newest first
-    var sorted = data.posts.slice().reverse();
-    sorted.forEach(function(post) {
-      var card = document.createElement('div');
-      card.className = 'bg-white rounded-xl p-4 md:p-6 border border-ice-blue shadow-sm hover:shadow-md transition-all';
-      var statusBadge = post.published ? '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-bold">Опубликован</span>' : '<span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-xs font-bold">Черновик</span>';
-      card.innerHTML = '<div class="flex flex-col md:flex-row md:items-start justify-between gap-4"><div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-2 flex-wrap">' + statusBadge + '<span class="text-on-surface-variant text-xs">' + post.date + '</span><span class="bg-ice-blue text-royal-blue px-2 py-0.5 rounded-full text-xs font-bold">' + post.category + '</span></div><h3 class="font-bold text-royal-blue text-lg mb-1 truncate">' + post.title + '</h3><p class="text-on-surface-variant text-sm line-clamp-2">' + post.content + '</p><p class="text-on-surface-variant text-xs mt-2">Комментариев: ' + (post.comments ? post.comments.length : 0) + '</p></div><div class="flex gap-2 shrink-0"><button onclick="editPost(' + post.id + ')" class="bg-ice-blue text-royal-blue px-4 py-2 rounded-full text-sm font-bold hover:bg-royal-blue/10 transition-all"><span class="material-symbols-outlined text-base">edit</span></button><button onclick="confirmDelete(' + post.id + ')" class="bg-error/10 text-error px-4 py-2 rounded-full text-sm font-bold hover:bg-error/20 transition-all"><span class="material-symbols-outlined text-base">delete</span></button></div></div>';
-      container.appendChild(card);
-    });
-  }
-
-  function renderComments() {
-    var container = document.getElementById('comments-list');
-    var empty = document.getElementById('comments-empty');
-    container.innerHTML = '';
-    var hasComments = false;
-
-    data.posts.forEach(function(post) {
-      if (!post.comments || post.comments.length === 0) return;
-      hasComments = true;
-      var section = document.createElement('div');
-      section.innerHTML = '<h3 class="font-bold text-royal-blue mb-3 text-sm uppercase tracking-wider">' + post.title + '</h3>';
-      post.comments.forEach(function(comment) {
-        var repliesHtml = '';
-        if (comment.replies && comment.replies.length > 0) {
-          comment.replies.forEach(function(reply) {
-            repliesHtml += '<div class="ml-8 mt-2 p-3 bg-ice-blue/50 rounded-xl flex justify-between items-start"><div><p class="font-bold text-sm text-royal-blue">' + reply.author + '</p><p class="text-sm text-on-surface-variant">' + reply.text + '</p><p class="text-xs text-on-surface-variant mt-1">' + reply.date + '</p></div></div>';
-          });
-        }
-        var commentEl = document.createElement('div');
-        commentEl.className = 'bg-white p-4 rounded-xl border border-ice-blue mb-3';
-        commentEl.innerHTML = '<div class="flex justify-between items-start"><div><div class="flex items-center gap-2 mb-1"><span class="font-bold text-royal-blue text-sm">' + comment.author + '</span><span class="text-xs text-on-surface-variant">' + comment.date + '</span></div><p class="text-on-surface text-sm">' + comment.text + '</p></div><button onclick="openReply(' + post.id + ',' + comment.id + ')" class="text-sky-blue hover:text-royal-blue shrink-0 ml-2"><span class="material-symbols-outlined text-lg">reply</span></button></div>' + repliesHtml;
-        section.appendChild(commentEl);
-      });
-      container.appendChild(section);
-    });
-
-    if (!hasComments) empty.classList.remove('hidden');
-    else empty.classList.add('hidden');
-  }
-
-  function renderSettings() {
-    document.getElementById('settings-site-title').value = data.settings.site_title || 'РГСУ ВОЛЕЙБОЛ';
-  }
-
-  // ===== POST CRUD =====
-  function openPostModal(id) {
-    document.getElementById('modal-title').textContent = id ? 'Редактировать пост' : 'Новый пост';
-    document.getElementById('post-id').value = id || '';
-    if (id) {
-      var post = data.posts.find(function(p) { return p.id === id; });
-      if (post) {
-        document.getElementById('post-title').value = post.title;
-        document.getElementById('post-category').value = post.category;
-        document.getElementById('post-content').value = post.content;
-        document.getElementById('post-image').value = post.image || '';
-        document.getElementById('post-published').checked = post.published;
-      }
-    } else {
-      document.getElementById('post-form').reset();
-      document.getElementById('post-published').checked = true;
-    }
-    document.getElementById('post-modal').classList.add('active');
-  }
-
-  function closePostModal() {
-    document.getElementById('post-modal').classList.remove('active');
-  }
-
-  function editPost(id) { openPostModal(id); }
-
-  document.getElementById('post-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    var id = document.getElementById('post-id').value;
-    var title = document.getElementById('post-title').value;
-    var category = document.getElementById('post-category').value;
-    var content = document.getElementById('post-content').value;
-    var image = document.getElementById('post-image').value;
-    var published = document.getElementById('post-published').checked;
-
-    if (id) {
-      var post = data.posts.find(function(p) { return p.id === parseInt(id); });
-      if (post) { post.title = title; post.category = category; post.content = content; post.image = image; post.published = published; }
-    } else {
-      var newId = data.posts.length > 0 ? Math.max.apply(null, data.posts.map(function(p) { return p.id; })) + 1 : 1;
-      data.posts.push({ id: newId, title: title, content: content, image: image, category: category, date: new Date().toISOString().slice(0,10), author: 'admin', published: published, comments: [] });
-    }
-
-    saveData(function() { renderAll(); });
-    closePostModal();
-  });
-
-  function confirmDelete(id) {
-    deleteTarget = id;
-    document.getElementById('delete-modal').classList.add('active');
-  }
-
-  function closeDeleteModal() {
-    document.getElementById('delete-modal').classList.remove('active');
-    deleteTarget = null;
-  }
-
-  document.getElementById('confirm-delete-btn').addEventListener('click', function() {
-    if (deleteTarget) {
-      data.posts = data.posts.filter(function(p) { return p.id !== deleteTarget; });
-      saveData(function() { renderAll(); });
-      closeDeleteModal();
+  // Close modals on Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closePlayerModal();
+      closeOffFieldEditor();
+      closeTournamentModal();
     }
   });
 
-  // ===== COMMENTS =====
-  function openReply(postId, commentId) {
-    replyTarget = { postId: postId, commentId: commentId };
-    var post = data.posts.find(function(p) { return p.id === postId; });
-    var comment = post ? post.comments.find(function(c) { return c.id === commentId; }) : null;
-    document.getElementById('reply-original').innerHTML = '<span class="font-bold">' + (comment ? comment.author : '') + ':</span> ' + (comment ? comment.text : '');
-    document.getElementById('reply-text').value = '';
-    document.getElementById('reply-modal').classList.add('active');
-  }
-
-  function closeReplyModal() {
-    document.getElementById('reply-modal').classList.remove('active');
-    replyTarget = null;
-  }
-
-  function submitReply() {
-    var text = document.getElementById('reply-text').value.trim();
-    if (!text || !replyTarget) return;
-    var post = data.posts.find(function(p) { return p.id === replyTarget.postId; });
-    var comment = post ? post.comments.find(function(c) { return c.id === replyTarget.commentId; }) : null;
-    if (comment) {
-      if (!comment.replies) comment.replies = [];
-      comment.replies.push({ author: 'admin', text: text, date: new Date().toISOString().slice(0,10) });
-      saveData(function() { renderAll(); });
-    }
-    closeReplyModal();
-  }
-
-  // ===== SETTINGS =====
-  function saveSettings() {
-    var title = document.getElementById('settings-site-title').value;
-    data.settings.site_title = title;
-    saveData(function() {
-      document.getElementById('settings-msg').classList.remove('hidden');
-      setTimeout(function() { document.getElementById('settings-msg').classList.add('hidden'); }, 2000);
-    });
-  }
-
-  // Expose functions to global scope
+  // Expose to global scope
   window.logout = logout;
-  window.openPostModal = openPostModal;
-  window.closePostModal = closePostModal;
-  window.editPost = editPost;
-  window.confirmDelete = confirmDelete;
-  window.closeDeleteModal = closeDeleteModal;
-  window.openReply = openReply;
-  window.closeReplyModal = closeReplyModal;
-  window.submitReply = submitReply;
-  window.saveSettings = saveSettings;
-
+  window.toggleLoginPassword = toggleLoginPassword;
+  window.openPlayerModal = openPlayerModal;
+  window.closePlayerModal = closePlayerModal;
+  window.openOffFieldEditor = openOffFieldEditor;
+  window.closeOffFieldEditor = closeOffFieldEditor;
+  window.openTournamentModal = openTournamentModal;
+  window.closeTournamentModal = closeTournamentModal;
 })();
 </script>
 </body></html>
