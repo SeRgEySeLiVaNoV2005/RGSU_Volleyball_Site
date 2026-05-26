@@ -242,7 +242,7 @@
                   <div class="relative group aspect-video rounded-xl overflow-hidden border-2 border-dashed border-outline-variant hover:border-royal-blue/50 transition-colors cursor-pointer bg-surface-container-high/20">
                     <img id="homepage-hero-image-preview" alt="Banner Preview" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9iZaTBTcmGBBajG1GnkcYdKbqwwAQkcnVx3q89AdoG2TqUG0D_CN8Zgk30iV8R0UPJ-AIr4AkInylk0DZZDb1hcE2iPfDP1xWiY8KR8aaCPSK8d6jiN8cn68x_QxyQ15l6asrVteIK6YxeXkpoTCqJ6r1E17IjmQjAMT1ROTYF7CpOun3WzwAsPMdvdwYK0GL-UMzT-zr7X7G8Hu0Vl0LMCeCaAJ7lcOt8Ew0CfbyQkRPZUE9aPdfhZ_d_ytdvmAj9HBxystYswo">
                     <div class="absolute inset-0 bg-royal-blue/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <button class="bg-white text-royal-blue px-6 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                      <button id="homepage-change-image-btn" class="bg-white text-royal-blue px-6 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform">
                         <span class="material-symbols-outlined text-xl">image</span>Сменить изображение
                       </button>
                     </div>
@@ -1071,6 +1071,10 @@
   });
   document.getElementById('homepage-hero-image-url').addEventListener('input', function() {
     document.getElementById('homepage-hero-image-preview').src = this.value || DEFAULT_HOMEPAGE.hero_image;
+  });
+  document.getElementById('homepage-change-image-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('homepage-hero-image-url').focus();
   });
 
   // ===== PLAYER MODAL =====
