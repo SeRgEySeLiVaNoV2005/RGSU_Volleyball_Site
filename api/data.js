@@ -19,6 +19,7 @@ function readData() {
       posts: [],
       settings: { site_title: 'РГСУ ВОЛЕЙБОЛ' },
       players: [],
+      tournaments: [],
       homepage: {
         hero_title: 'Добро пожаловать, будущие чемпионы',
         hero_subtitle: 'Присоединяйтесь к волейбольной семье РГСУ и достигайте новых высот вместе с нами.',

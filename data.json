@@ -124,6 +124,44 @@
       "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuCPmCnVrkOeKYJ9kW2mzUGaSnGlzu2P6vunb0EdjqNR6ol75AaljxTCUMT3Bak6MX4XfC4ugt99Ld0NPdwwM1gORd2ct3R2m1MQo3NSNEPXwEcO0SJmcC5caKdtQuxx2ppaqHKlQG9a-dEXHpn-AyRmexqLmJTOxI8Hiq9rH1olFFg1SwVWyBDt1ODbvhdPkYPi3ikBoH9Cs-3ccscuFGq2dmDsw2wfOmTCuSNX_SYLQEm-jdCOdC9lXpIsiYxRksVRQPtCEt2pY8M"
     }
   ],
+  "tournaments": [
+    {
+      "id": 1,
+      "title": "Открытый кубок мастеров",
+      "subtitle": "Региональный квалификатор",
+      "date": "2024-10-12",
+      "endDate": "2024-10-20",
+      "status": "ongoing",
+      "participants": "16 команд",
+      "description": "Ежегодный региональный квалификационный турнир среди студенческих команд.",
+      "location": "Москва, СК «Олимпийский»",
+      "image": ""
+    },
+    {
+      "id": 2,
+      "title": "Осенний пригласительный турнир",
+      "subtitle": "Только по приглашению",
+      "date": "2024-11-05",
+      "endDate": "2024-11-05",
+      "status": "upcoming",
+      "participants": "8 команд",
+      "description": "Закрытый турнир для приглашённых команд. Участвуют сильнейшие сборные вузов.",
+      "location": "Москва, РГСУ",
+      "image": ""
+    },
+    {
+      "id": 3,
+      "title": "Летняя битва",
+      "subtitle": "Архивное событие",
+      "date": "2024-08-15",
+      "endDate": "2024-08-20",
+      "status": "completed",
+      "participants": "24 команды",
+      "description": "Масштабный летний турнир с участием команд со всей страны.",
+      "location": "Москва, СК «Динамо»",
+      "image": ""
+    }
+  ],
   "homepage": {
     "hero_title": "Добро пожаловать, будущие чемпионы",
     "hero_subtitle": "Присоединяйтесь к волейбольной семье РГСУ и достигайте новых высот вместе с нами.",

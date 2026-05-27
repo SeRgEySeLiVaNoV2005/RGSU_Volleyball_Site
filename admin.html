@@ -712,7 +712,7 @@
               <span class="text-xs text-outline font-bold">В ЭТОМ МЕСЯЦЕ</span>
             </div>
             <div class="mt-4">
-              <h3 class="text-4xl font-extrabold text-royal-blue">04</h3>
+              <h3 id="stat-upcoming-count" class="text-4xl font-extrabold text-royal-blue">0</h3>
               <p class="text-sm text-outline">Предстоящие турниры</p>
             </div>
           </div>
@@ -722,7 +722,7 @@
               <span class="text-xs text-outline font-bold">АКТИВНЫЕ</span>
             </div>
             <div class="mt-4">
-              <h3 class="text-4xl font-extrabold text-royal-blue">01</h3>
+              <h3 id="stat-ongoing-count" class="text-4xl font-extrabold text-royal-blue">0</h3>
               <p class="text-sm text-outline">Текущие события</p>
             </div>
           </div>
@@ -742,9 +742,9 @@
           <div class="p-6 border-b border-outline-variant flex justify-between items-center">
             <h2 class="text-xl font-bold text-royal-blue">Справочник турниров</h2>
             <div class="flex gap-2">
-              <button class="px-3 py-1 bg-royal-blue text-white text-xs font-bold rounded-full">Все</button>
-              <button class="px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors">Предстоящие</button>
-              <button class="px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors">Архив</button>
+              <button id="tournament-tab-all" class="px-3 py-1 bg-royal-blue text-white text-xs font-bold rounded-full" onclick="setTournamentTab('all')">Все</button>
+              <button id="tournament-tab-upcoming" class="px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors" onclick="setTournamentTab('upcoming')">Предстоящие</button>
+              <button id="tournament-tab-archive" class="px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors" onclick="setTournamentTab('archive')">Архив</button>
             </div>
           </div>
           <div class="overflow-x-auto">
@@ -758,81 +758,11 @@
                   <th class="px-6 py-4 text-right text-xs font-bold text-outline uppercase tracking-wider">ДЕЙСТВИЯ</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-outline-variant">
-                <tr class="hover:bg-royal-blue/5 transition-colors">
-                  <td class="px-6 py-4">
-                    <div class="flex items-center gap-3">
-                      <div class="w-10 h-10 rounded-lg bg-royal-blue/10 flex items-center justify-center text-royal-blue"><span class="material-symbols-outlined">sports_volleyball</span></div>
-                      <div>
-                        <p class="font-bold text-on-surface">Открытый кубок мастеров</p>
-                        <p class="text-xs text-outline">Региональный квалификатор</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 text-sm">12 окт - 20 окт, 2024</td>
-                  <td class="px-6 py-4"><span class="px-3 py-1 bg-green-100 text-green-800 text-[11px] font-bold rounded-full uppercase tracking-tight">ИДЕТ</span></td>
-                  <td class="px-6 py-4 text-sm">16 команд</td>
-                  <td class="px-6 py-4 text-right">
-                    <div class="flex justify-end gap-2">
-                      <button class="p-2 hover:bg-surface-container rounded-full text-royal-blue" title="Edit"><span class="material-symbols-outlined">edit</span></button>
-                      <button class="p-2 hover:bg-surface-container rounded-full text-outline" title="Gallery"><span class="material-symbols-outlined">image</span></button>
-                      <button class="p-2 hover:bg-surface-container rounded-full text-error" title="Delete"><span class="material-symbols-outlined">delete</span></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="bg-white hover:bg-royal-blue/5 transition-colors">
-                  <td class="px-6 py-4">
-                    <div class="flex items-center gap-3">
-                      <div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary"><span class="material-symbols-outlined">tour</span></div>
-                      <div>
-                        <p class="font-bold text-on-surface">Осенний пригласительный турнир</p>
-                        <p class="text-xs text-outline">Только по приглашению</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 text-sm">05 ноя, 2024</td>
-                  <td class="px-6 py-4"><span class="px-3 py-1 bg-blue-100 text-blue-800 text-[11px] font-bold rounded-full uppercase tracking-tight">ОЖИДАЕТСЯ</span></td>
-                  <td class="px-6 py-4 text-sm">8 команд</td>
-                  <td class="px-6 py-4 text-right">
-                    <div class="flex justify-end gap-2">
-                      <button class="p-2 hover:bg-surface-container rounded-full text-royal-blue"><span class="material-symbols-outlined">edit</span></button>
-                      <button class="p-2 hover:bg-surface-container rounded-full text-outline"><span class="material-symbols-outlined">image</span></button>
-                      <button class="p-2 hover:bg-surface-container rounded-full text-error"><span class="material-symbols-outlined">delete</span></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="bg-surface-container-low/30 hover:bg-royal-blue/5 transition-colors">
-                  <td class="px-6 py-4">
-                    <div class="flex items-center gap-3">
-                      <div class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center text-outline"><span class="material-symbols-outlined">archive</span></div>
-                      <div>
-                        <p class="font-bold text-on-surface opacity-70">Летняя битва</p>
-                        <p class="text-xs text-outline">Архивное событие</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 text-sm opacity-70">15 авг - 20 авг, 2024</td>
-                  <td class="px-6 py-4"><span class="px-3 py-1 bg-surface-variant text-on-surface-variant text-[11px] font-bold rounded-full uppercase tracking-tight">ЗАВЕРШЕН</span></td>
-                  <td class="px-6 py-4 text-sm opacity-70">24 команды</td>
-                  <td class="px-6 py-4 text-right">
-                    <div class="flex justify-end gap-2">
-                      <button class="p-2 hover:bg-surface-container rounded-full text-royal-blue/40"><span class="material-symbols-outlined">edit</span></button>
-                      <button class="p-2 hover:bg-surface-container rounded-full text-outline"><span class="material-symbols-outlined">image</span></button>
-                      <button class="p-2 hover:bg-surface-container rounded-full text-error/40"><span class="material-symbols-outlined">delete</span></button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
+              <tbody id="tournaments-table-body" class="divide-y divide-outline-variant"></tbody>
             </table>
           </div>
           <div class="p-4 border-t border-outline-variant flex items-center justify-between bg-white">
-            <p class="text-xs font-bold text-outline">Показано 3 из 42 турниров</p>
-            <div class="flex gap-2">
-              <button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-surface-container disabled:opacity-50" disabled>1</button>
-              <button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant bg-royal-blue text-white">2</button>
-              <button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-surface-container">3</button>
-              <button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-surface-container"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
-            </div>
+            <p id="tournaments-pagination-info" class="text-xs font-bold text-outline">Показано 0 из 0 турниров</p>
           </div>
         </div>
       </div>
@@ -842,51 +772,57 @@
         <div class="modal-content relative bg-white w-full max-w-2xl mx-4 rounded-2xl shadow-2xl overflow-hidden">
           <div class="bg-royal-blue p-6 flex justify-between items-center text-white">
             <div>
-              <h2 class="text-xl font-bold">Создать новый турнир</h2>
+              <h2 id="tournament-modal-title" class="text-xl font-bold">Создать новый турнир</h2>
               <p class="text-xs text-primary-fixed-dim/80">Настройте детали события и медиа</p>
             </div>
             <button class="p-2 hover:bg-white/10 rounded-full transition-colors" onclick="closeTournamentModal()"><span class="material-symbols-outlined">close</span></button>
           </div>
           <div class="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
+            <input id="tournament-id" type="hidden">
             <div class="grid grid-cols-2 gap-6">
               <div class="col-span-2">
                 <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Название турнира</label>
-                <input class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" placeholder="например, Global Masters Сборной РГСУ" type="text">
+                <input id="tournament-title" class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" placeholder="например, Global Masters Сборной РГСУ" type="text">
+              </div>
+              <div class="col-span-2">
+                <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Подзаголовок</label>
+                <input id="tournament-subtitle" class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" placeholder="например, Региональный квалификатор" type="text">
               </div>
               <div>
-                <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Дата события</label>
-                <input class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" type="date">
+                <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Дата начала</label>
+                <input id="tournament-date" class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" type="date">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Дата окончания</label>
+                <input id="tournament-end-date" class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" type="date">
               </div>
               <div>
                 <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Статус</label>
-                <select class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white">
-                  <option>Предстоящий</option><option>Идет</option><option>Завершен</option>
+                <select id="tournament-status" class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white">
+                  <option value="upcoming">Предстоящий</option><option value="ongoing">Идет</option><option value="completed">Завершен</option>
                 </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Участники</label>
+                <input id="tournament-participants" class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" placeholder="например, 16 команд" type="text">
+              </div>
+              <div class="col-span-2">
+                <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Место проведения</label>
+                <input id="tournament-location" class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" placeholder="например, Москва, СК «Олимпийский»" type="text">
               </div>
               <div class="col-span-2">
                 <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Описание</label>
-                <textarea class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" placeholder="Краткий обзор целей и места проведения турнира..." rows="3"></textarea>
+                <textarea id="tournament-description" class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" placeholder="Краткий обзор целей и места проведения турнира..." rows="3"></textarea>
               </div>
               <div class="col-span-2">
-                <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">Галерея турнира</label>
-                <div class="border-2 border-dashed border-outline-variant rounded-xl p-8 flex flex-col items-center justify-center text-center group hover:border-royal-blue transition-colors cursor-pointer">
-                  <div class="w-12 h-12 bg-surface-container flex items-center justify-center rounded-full text-outline group-hover:text-royal-blue transition-colors mb-3"><span class="material-symbols-outlined">cloud_upload</span></div>
-                  <p class="font-bold text-on-surface">Нажмите для загрузки или перетащите файлы</p>
-                  <p class="text-xs text-outline mt-1">PNG, JPG или WEBP (макс. 5МБ на файл)</p>
-                </div>
-                <div class="mt-4 grid grid-cols-4 gap-3">
-                  <div class="relative group aspect-square rounded-lg overflow-hidden border border-outline-variant bg-surface-container">
-                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBggK6SQSJV-xObbYFlZ5FJiLRYRyFdSz4R26VHePZOmFPXBGj_b5TTqqvtZPIWo9Iu8ox1mrK5TZgfkfkY9QywGcOY4nYXjyq27z8VnXczFaXYgkjld__8jlXix-chXTw2xC3fDXbROFNL9WsWi5Co9G2hSz5fx6oniwJv3cyw5rGkX4rc4r2bGwABkmsi0_daY1bYT3d0prYPXF3O0LyXde81gtOVHxoEpFMsWGZEPjfKTLK91ABeowUuW7Siw6zhT6xazpAna7g">
-                    <button class="absolute top-1 right-1 p-1 bg-error text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-outlined text-xs">close</span></button>
-                  </div>
-                  <div class="aspect-square rounded-lg overflow-hidden border border-outline-variant bg-surface-container flex items-center justify-center text-outline"><span class="material-symbols-outlined">add</span></div>
-                </div>
+                <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">URL изображения</label>
+                <input id="tournament-image" class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" placeholder="https://..." type="text">
               </div>
             </div>
           </div>
           <div class="p-6 border-t border-outline-variant flex gap-3 justify-end bg-surface-container-low">
             <button class="px-6 py-2.5 text-on-surface-variant font-bold hover:bg-surface-container rounded-xl transition-all" onclick="closeTournamentModal()">Отмена</button>
-            <button class="px-8 py-2.5 bg-royal-blue text-white font-bold rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all">Создать турнир</button>
+            <button class="px-8 py-2.5 bg-royal-blue text-white font-bold rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all" onclick="saveTournament()">Сохранить</button>
           </div>
         </div>
       </div>
@@ -917,6 +853,7 @@
     document.getElementById('page-admin').style.display = '';
     loadHomepageData();
     loadPlayersData();
+    loadTournamentsData();
   }
 
   if (token) { showAdmin(); } else { showLogin(); }
@@ -1367,9 +1304,220 @@
   function openOffFieldEditor() { document.getElementById('offfield-editor').classList.add('active'); }
   function closeOffFieldEditor() { document.getElementById('offfield-editor').classList.remove('active'); }
 
-  // ===== TOURNAMENT MODAL =====
-  function openTournamentModal() { document.getElementById('tournament-modal').classList.add('active'); }
+  // ===== TOURNAMENTS CRUD =====
+  var tournamentsData = [];
+  var tournamentTab = 'all';
+
+  function loadTournamentsData() {
+    fetch('/api/data')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        tournamentsData = data.tournaments || [];
+        renderTournamentsTable();
+        updateTournamentStats();
+      })
+      .catch(function() {});
+  }
+
+  function getFilteredTournaments() {
+    if (tournamentTab === 'upcoming') {
+      return tournamentsData.filter(function(t) { return t.status === 'upcoming'; });
+    }
+    if (tournamentTab === 'archive') {
+      return tournamentsData.filter(function(t) { return t.status === 'completed'; });
+    }
+    return tournamentsData;
+  }
+
+  function setTournamentTab(tab) {
+    tournamentTab = tab;
+    document.getElementById('tournament-tab-all').className = tab === 'all'
+      ? 'px-3 py-1 bg-royal-blue text-white text-xs font-bold rounded-full'
+      : 'px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors';
+    document.getElementById('tournament-tab-upcoming').className = tab === 'upcoming'
+      ? 'px-3 py-1 bg-royal-blue text-white text-xs font-bold rounded-full'
+      : 'px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors';
+    document.getElementById('tournament-tab-archive').className = tab === 'archive'
+      ? 'px-3 py-1 bg-royal-blue text-white text-xs font-bold rounded-full'
+      : 'px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors';
+    renderTournamentsTable();
+  }
+
+  function formatDateRange(dateStr, endDateStr) {
+    var months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+    var d = new Date(dateStr);
+    var day = d.getDate();
+    var month = months[d.getMonth()];
+    var year = d.getFullYear();
+    var start = day + ' ' + month;
+    if (endDateStr && endDateStr !== dateStr) {
+      var ed = new Date(endDateStr);
+      var eday = ed.getDate();
+      var emonth = months[ed.getMonth()];
+      var eyear = ed.getFullYear();
+      if (year !== eyear) {
+        return start + ', ' + year + ' - ' + eday + ' ' + emonth + ', ' + eyear;
+      }
+      return start + ' - ' + eday + ' ' + emonth + ', ' + year;
+    }
+    return start + ', ' + year;
+  }
+
+  function renderTournamentsTable() {
+    var filtered = getFilteredTournaments();
+    var tbody = document.getElementById('tournaments-table-body');
+    if (filtered.length === 0) {
+      var msg = tournamentTab === 'all'
+        ? 'Нет турниров. Нажмите «Добавить турнир», чтобы начать.'
+        : (tournamentTab === 'upcoming' ? 'Нет предстоящих турниров.' : 'Нет турниров в архиве.');
+      tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-outline text-sm">' + msg + '</td></tr>';
+    } else {
+      tbody.innerHTML = filtered.map(function(t) {
+        var icon = t.status === 'completed' ? 'archive' : (t.status === 'ongoing' ? 'sports_volleyball' : 'tour');
+        var iconBg = t.status === 'completed' ? 'bg-surface-variant text-outline' : (t.status === 'ongoing' ? 'bg-royal-blue/10 text-royal-blue' : 'bg-secondary/10 text-secondary');
+        var rowOpacity = t.status === 'completed' ? ' opacity-70' : '';
+        var statusBadge = t.status === 'ongoing'
+          ? '<span class="px-3 py-1 bg-green-100 text-green-800 text-[11px] font-bold rounded-full uppercase tracking-tight">ИДЕТ</span>'
+          : (t.status === 'upcoming'
+            ? '<span class="px-3 py-1 bg-blue-100 text-blue-800 text-[11px] font-bold rounded-full uppercase tracking-tight">ОЖИДАЕТСЯ</span>'
+            : '<span class="px-3 py-1 bg-surface-variant text-on-surface-variant text-[11px] font-bold rounded-full uppercase tracking-tight">ЗАВЕРШЕН</span>');
+        return '<tr class="hover:bg-royal-blue/5 transition-colors">' +
+          '<td class="px-6 py-4">' +
+            '<div class="flex items-center gap-3">' +
+              '<div class="w-10 h-10 rounded-lg flex items-center justify-center ' + iconBg + '"><span class="material-symbols-outlined">' + icon + '</span></div>' +
+              '<div>' +
+                '<p class="font-bold text-on-surface' + rowOpacity + '">' + t.title + '</p>' +
+                '<p class="text-xs text-outline">' + (t.subtitle || '') + '</p>' +
+              '</div>' +
+            '</div>' +
+          '</td>' +
+          '<td class="px-6 py-4 text-sm' + rowOpacity + '">' + formatDateRange(t.date, t.endDate) + '</td>' +
+          '<td class="px-6 py-4">' + statusBadge + '</td>' +
+          '<td class="px-6 py-4 text-sm' + rowOpacity + '">' + (t.participants || '—') + '</td>' +
+          '<td class="px-6 py-4 text-right">' +
+            '<div class="flex justify-end gap-2">' +
+              '<button class="p-2 hover:bg-surface-container rounded-full text-royal-blue" onclick="editTournament(' + t.id + ')" title="Редактировать"><span class="material-symbols-outlined text-sm">edit</span></button>' +
+              '<button class="p-2 hover:bg-error-container/10 text-error rounded-full transition-all" onclick="deleteTournament(' + t.id + ')" title="Удалить"><span class="material-symbols-outlined text-sm">delete</span></button>' +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+    }
+    document.getElementById('tournaments-pagination-info').textContent = 'Показано ' + filtered.length + ' из ' + tournamentsData.length + ' турниров';
+  }
+
+  function updateTournamentStats() {
+    document.getElementById('stat-upcoming-count').textContent = tournamentsData.filter(function(t) { return t.status === 'upcoming'; }).length;
+    document.getElementById('stat-ongoing-count').textContent = tournamentsData.filter(function(t) { return t.status === 'ongoing'; }).length;
+  }
+
+  function openTournamentModal() {
+    document.getElementById('tournament-id').value = '';
+    document.getElementById('tournament-modal-title').textContent = 'Создать новый турнир';
+    document.getElementById('tournament-title').value = '';
+    document.getElementById('tournament-subtitle').value = '';
+    document.getElementById('tournament-date').value = '';
+    document.getElementById('tournament-end-date').value = '';
+    document.getElementById('tournament-status').value = 'upcoming';
+    document.getElementById('tournament-participants').value = '';
+    document.getElementById('tournament-location').value = '';
+    document.getElementById('tournament-description').value = '';
+    document.getElementById('tournament-image').value = '';
+    document.getElementById('tournament-modal').classList.add('active');
+  }
+
   function closeTournamentModal() { document.getElementById('tournament-modal').classList.remove('active'); }
+
+  function saveTournament() {
+    var id = document.getElementById('tournament-id').value;
+    var tournament = {
+      id: id ? parseInt(id) : (tournamentsData.length > 0 ? Math.max.apply(null, tournamentsData.map(function(t) { return t.id; })) + 1 : 1),
+      title: document.getElementById('tournament-title').value.trim(),
+      subtitle: document.getElementById('tournament-subtitle').value.trim(),
+      date: document.getElementById('tournament-date').value,
+      endDate: document.getElementById('tournament-end-date').value,
+      status: document.getElementById('tournament-status').value,
+      participants: document.getElementById('tournament-participants').value.trim(),
+      location: document.getElementById('tournament-location').value.trim(),
+      description: document.getElementById('tournament-description').value.trim(),
+      image: document.getElementById('tournament-image').value.trim()
+    };
+
+    if (!tournament.title) { alert('Введите название турнира'); return; }
+    if (!tournament.date) { alert('Выберите дату начала'); return; }
+
+    fetch('/api/data')
+      .then(function(r) { return r.json(); })
+      .then(function(currentData) {
+        var updatedTournaments;
+        if (id) {
+          updatedTournaments = tournamentsData.map(function(t) { return t.id === tournament.id ? tournament : t; });
+        } else {
+          updatedTournaments = tournamentsData.concat([tournament]);
+        }
+        var merged = {
+          posts: currentData.posts || [],
+          settings: currentData.settings || { site_title: 'РГСУ ВОЛЕЙБОЛ' },
+          homepage: currentData.homepage || {},
+          players: currentData.players || [],
+          tournaments: updatedTournaments
+        };
+        return fetch('/api/data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify(merged)
+        });
+      })
+      .then(function(r) {
+        if (!r.ok) throw new Error('Save failed');
+        closeTournamentModal();
+        loadTournamentsData();
+      })
+      .catch(function() { alert('Ошибка при сохранении'); });
+  }
+
+  function editTournament(id) {
+    var tournament = tournamentsData.find(function(t) { return t.id === id; });
+    if (!tournament) return;
+    document.getElementById('tournament-id').value = tournament.id;
+    document.getElementById('tournament-modal-title').textContent = 'Редактировать турнир';
+    document.getElementById('tournament-title').value = tournament.title || '';
+    document.getElementById('tournament-subtitle').value = tournament.subtitle || '';
+    document.getElementById('tournament-date').value = tournament.date || '';
+    document.getElementById('tournament-end-date').value = tournament.endDate || '';
+    document.getElementById('tournament-status').value = tournament.status || 'upcoming';
+    document.getElementById('tournament-participants').value = tournament.participants || '';
+    document.getElementById('tournament-location').value = tournament.location || '';
+    document.getElementById('tournament-description').value = tournament.description || '';
+    document.getElementById('tournament-image').value = tournament.image || '';
+    document.getElementById('tournament-modal').classList.add('active');
+  }
+
+  function deleteTournament(id) {
+    if (!confirm('Вы уверены, что хотите удалить этот турнир?')) return;
+    fetch('/api/data')
+      .then(function(r) { return r.json(); })
+      .then(function(currentData) {
+        var updatedTournaments = tournamentsData.filter(function(t) { return t.id !== id; });
+        var merged = {
+          posts: currentData.posts || [],
+          settings: currentData.settings || { site_title: 'РГСУ ВОЛЕЙБОЛ' },
+          homepage: currentData.homepage || {},
+          players: currentData.players || [],
+          tournaments: updatedTournaments
+        };
+        return fetch('/api/data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify(merged)
+        });
+      })
+      .then(function(r) {
+        if (!r.ok) throw new Error('Delete failed');
+        loadTournamentsData();
+      })
+      .catch(function() { alert('Ошибка при удалении'); });
+  }
 
   // Close modals on Escape
   document.addEventListener('keydown', function(e) {
@@ -1396,6 +1544,10 @@
   window.closeOffFieldEditor = closeOffFieldEditor;
   window.openTournamentModal = openTournamentModal;
   window.closeTournamentModal = closeTournamentModal;
+  window.saveTournament = saveTournament;
+  window.editTournament = editTournament;
+  window.deleteTournament = deleteTournament;
+  window.setTournamentTab = setTournamentTab;
 })();
 </script>
 </body></html>
