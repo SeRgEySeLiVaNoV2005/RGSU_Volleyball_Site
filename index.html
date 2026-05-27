@@ -119,20 +119,7 @@
     <div class="order-1 lg:order-2">
       <h2 class="font-headline-lg text-headline-md md:text-headline-lg text-royal-blue mb-4 md:mb-6">Наш состав</h2>
       <p class="text-secondary text-body-md md:text-body-lg mb-6 md:mb-8">Наши игроки из разных уголков мира, но у нас одно сердце. Каждый участник приносит уникальную энергию, которая питает дух нашего университета.</p>
-      <div class="space-y-3 md:space-y-4">
-        <div class="group flex items-center justify-between p-3 md:p-4 bg-white rounded-xl shadow-sm hover:bg-ice-blue transition-all cursor-pointer">
-          <div class="flex items-center gap-3 md:gap-4"><div class="w-10 h-10 md:w-12 md:h-12 bg-surface-variant rounded-full flex items-center justify-center text-royal-blue font-bold text-sm md:text-base">07</div><span class="font-bold text-royal-blue text-sm md:text-base">Дмитрий Иванов</span></div>
-          <span class="text-secondary text-xs md:text-label-lg">21 год</span>
-        </div>
-        <div class="group flex items-center justify-between p-3 md:p-4 bg-white rounded-xl shadow-sm hover:bg-ice-blue transition-all cursor-pointer">
-          <div class="flex items-center gap-3 md:gap-4"><div class="w-10 h-10 md:w-12 md:h-12 bg-surface-variant rounded-full flex items-center justify-center text-royal-blue font-bold text-sm md:text-base">14</div><span class="font-bold text-royal-blue text-sm md:text-base">Игорь Соколов</span></div>
-          <span class="text-secondary text-xs md:text-label-lg">19 лет</span>
-        </div>
-        <div class="group flex items-center justify-between p-3 md:p-4 bg-white rounded-xl shadow-sm hover:bg-ice-blue transition-all cursor-pointer">
-          <div class="flex items-center gap-3 md:gap-4"><div class="w-10 h-10 md:w-12 md:h-12 bg-surface-variant rounded-full flex items-center justify-center text-royal-blue font-bold text-sm md:text-base">11</div><span class="font-bold text-royal-blue text-sm md:text-base">Сергей Волков</span></div>
-          <span class="text-secondary text-xs md:text-label-lg">22 года</span>
-        </div>
-      </div>
+      <div class="space-y-3 md:space-y-4" id="roster-list"></div>
       <a href="/players.html" class="mt-6 md:mt-8 bg-sky-blue text-white font-bold rounded-full px-6 md:px-8 py-3 hover:scale-105 transition-transform flex items-center justify-center gap-2 w-full sm:w-auto inline-block text-center">Весь состав <span class="material-symbols-outlined">trending_flat</span></a>
     </div>
   </div>
@@ -220,6 +207,14 @@
   });
   })();
   // ===== HOMEPAGE DATA LOADER =====
+  function getAgeWord(age) {
+    var n = age % 100;
+    if (n >= 11 && n <= 19) return 'лет';
+    var r = n % 10;
+    if (r === 1) return 'год';
+    if (r >= 2 && r <= 4) return 'года';
+    return 'лет';
+  }
   (function loadPublicHomepage() {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', '/api/data', true);
@@ -228,38 +223,59 @@
       try {
         var data = JSON.parse(xhr.responseText);
         var hp = data.homepage;
-        if (!hp) return;
 
         var el;
-        el = document.getElementById('hero-title');
-        if (el && hp.hero_title) el.textContent = hp.hero_title;
+        if (hp) {
+          el = document.getElementById('hero-title');
+          if (el && hp.hero_title) el.textContent = hp.hero_title;
 
-        el = document.getElementById('hero-subtitle');
-        if (el && hp.hero_subtitle) el.textContent = hp.hero_subtitle;
+          el = document.getElementById('hero-subtitle');
+          if (el && hp.hero_subtitle) el.textContent = hp.hero_subtitle;
 
-        el = document.getElementById('hero-btn-text');
-        if (el && hp.button_text) el.textContent = hp.button_text;
+          el = document.getElementById('hero-btn-text');
+          if (el && hp.button_text) el.textContent = hp.button_text;
 
-        el = document.getElementById('hero-btn-link');
-        if (el && hp.button_link) el.href = hp.button_link;
+          el = document.getElementById('hero-btn-link');
+          if (el && hp.button_link) el.href = hp.button_link;
 
-        el = document.getElementById('hero-image');
-        if (el && hp.hero_image) { el.src = hp.hero_image; el.style.transform = ''; }
+          el = document.getElementById('hero-image');
+          if (el && hp.hero_image) { el.src = hp.hero_image; el.style.transform = ''; }
 
-        el = document.getElementById('footer-address');
-        if (el && hp.footer_address) el.innerHTML = '<span class="material-symbols-outlined text-base align-text-bottom">location_on</span> ' + hp.footer_address;
+          el = document.getElementById('footer-address');
+          if (el && hp.footer_address) el.innerHTML = '<span class="material-symbols-outlined text-base align-text-bottom">location_on</span> ' + hp.footer_address;
 
-        el = document.getElementById('footer-email');
-        if (el && hp.footer_email) el.innerHTML = '<span class="material-symbols-outlined text-base align-text-bottom">mail</span> ' + hp.footer_email;
+          el = document.getElementById('footer-email');
+          if (el && hp.footer_email) el.innerHTML = '<span class="material-symbols-outlined text-base align-text-bottom">mail</span> ' + hp.footer_email;
 
-        el = document.getElementById('footer-phone');
-        if (el && hp.footer_phone) el.innerHTML = '<span class="material-symbols-outlined text-base align-text-bottom">call</span> ' + hp.footer_phone;
+          el = document.getElementById('footer-phone');
+          if (el && hp.footer_phone) el.innerHTML = '<span class="material-symbols-outlined text-base align-text-bottom">call</span> ' + hp.footer_phone;
 
-        el = document.getElementById('footer-vk-link');
-        if (el && hp.vk_link) el.href = hp.vk_link;
+          el = document.getElementById('footer-vk-link');
+          if (el && hp.vk_link) el.href = hp.vk_link;
 
-        el = document.getElementById('footer-tg-link');
-        if (el && hp.tg_link) el.href = hp.tg_link;
+          el = document.getElementById('footer-tg-link');
+          if (el && hp.tg_link) el.href = hp.tg_link;
+        }
+
+        // Render 3 random players in "Наш состав"
+        var players = data.players;
+        if (players && players.length > 0) {
+          var shuffled = players.slice().sort(function() { return Math.random() - 0.5; });
+          var picked = shuffled.slice(0, 3);
+          var rosterList = document.getElementById('roster-list');
+          if (rosterList) {
+            rosterList.innerHTML = picked.map(function(p) {
+              var initials = (p.name || '?').charAt(0).toUpperCase();
+              return '<div class="group flex items-center justify-between p-3 md:p-4 bg-white rounded-xl shadow-sm hover:bg-ice-blue transition-all cursor-pointer">' +
+                '<div class="flex items-center gap-3 md:gap-4">' +
+                  '<div class="w-10 h-10 md:w-12 md:h-12 bg-surface-variant rounded-full flex items-center justify-center text-royal-blue font-bold text-sm md:text-base">' + (p.number || initials) + '</div>' +
+                  '<span class="font-bold text-royal-blue text-sm md:text-base">' + p.name + '</span>' +
+                '</div>' +
+                '<span class="text-secondary text-xs md:text-label-lg">' + (p.age ? p.age + ' ' + getAgeWord(p.age) : '') + '</span>' +
+              '</div>';
+            }).join('');
+          }
+        }
       } catch(e) {}
     };
     xhr.send();
