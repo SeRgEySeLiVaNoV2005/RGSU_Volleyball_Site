@@ -25,6 +25,18 @@
   ::-webkit-scrollbar-track { background: #f4f2fc; }
   ::-webkit-scrollbar-thumb { background: #c4c5d5; border-radius: 10px; }
   ::-webkit-scrollbar-thumb:hover { background: #747684; }
+  /* Mobile sidebar */
+  @media (max-width: 1023px) {
+    .admin-sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+    .admin-sidebar.open { transform: translateX(0); }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 45; }
+    .sidebar-overlay.open { display: block; }
+    .admin-main { margin-left: 0 !important; }
+  }
+  @media (min-width: 1024px) {
+    .sidebar-overlay { display: none !important; }
+    .admin-sidebar { transform: translateX(0) !important; }
+  }
 </style>
 </head>
 <body class="bg-background text-on-surface selection:bg-primary-container selection:text-white">
@@ -88,9 +100,12 @@
 <div id="page-admin" class="page min-h-screen bg-background">
 
 <!-- Sidebar -->
-<aside class="fixed left-0 top-0 h-full w-[260px] bg-royal-blue flex flex-col py-6 z-50 shadow-xl">
-  <div class="px-6 mb-8">
+<aside id="admin-sidebar" class="admin-sidebar fixed left-0 top-0 h-full w-[260px] bg-royal-blue flex flex-col py-6 z-50 shadow-xl">
+  <div class="px-6 mb-8 flex items-center justify-between">
     <h1 class="text-xl font-extrabold text-white tracking-tight">РГСУ ВОЛЕЙБОЛ</h1>
+    <button class="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors" onclick="closeSidebar()" aria-label="Закрыть меню">
+      <span class="material-symbols-outlined text-xl">close</span>
+    </button>
   </div>
   <nav class="flex-1 space-y-1 px-3">
     <button class="sidebar-link active flex items-center gap-3 w-full text-left px-4 py-3 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all" data-page="dashboard">
@@ -126,11 +141,17 @@
   </div>
 </aside>
 
+<!-- Sidebar overlay for mobile -->
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
 <!-- Main Area -->
-<div class="ml-[260px] flex flex-col min-h-screen">
+<div id="admin-main" class="admin-main ml-[260px] flex flex-col min-h-screen">
   <!-- Top Bar -->
-  <header class="sticky top-0 z-40 h-16 bg-white/80 backdrop-blur-xl border-b border-ice-blue flex justify-between items-center px-6">
-    <div class="flex items-center gap-4 flex-1">
+  <header class="sticky top-0 z-40 h-16 bg-white/80 backdrop-blur-xl border-b border-ice-blue flex justify-between items-center px-4 md:px-6">
+    <div class="flex items-center gap-3 flex-1">
+      <button class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors" onclick="toggleSidebar()" aria-label="Меню">
+        <span class="material-symbols-outlined text-2xl" id="sidebar-menu-icon">menu</span>
+      </button>
       <div class="relative w-full max-w-md">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
         <input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-sm focus:ring-2 focus:ring-royal-blue/20 outline-none" placeholder="Поиск..." type="text">
@@ -151,14 +172,14 @@
     </div>
   </header>
 
-  <main class="flex-1 p-8">
+  <main class="flex-1 p-4 md:p-8">
 
     <!-- ===== DASHBOARD (from Stitch: Дашборд_Админ) ===== -->
     <div id="sub-dashboard" class="subpage active">
-      <div class="relative w-full max-w-4xl mx-auto overflow-hidden pt-16 pb-16">
+      <div class="relative w-full max-w-4xl mx-auto overflow-hidden pt-8 pb-8 lg:pt-16 lg:pb-16">
         <div class="absolute -top-24 -left-24 w-64 h-64 bg-royal-blue/5 rounded-full blur-3xl"></div>
         <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-primary-container/5 rounded-full blur-3xl"></div>
-        <div class="relative z-10 bg-white/60 backdrop-blur-xl border border-white/40 rounded-[2rem] p-12 lg:p-20 shadow-2xl shadow-royal-blue/5 flex flex-col items-center text-center">
+        <div class="relative z-10 bg-white/60 backdrop-blur-xl border border-white/40 rounded-2xl lg:rounded-[2rem] p-8 lg:p-20 shadow-2xl shadow-royal-blue/5 flex flex-col items-center text-center">
           <div class="relative mb-10 group">
             <div class="absolute inset-0 bg-primary-container/10 rounded-full scale-150 blur-2xl group-hover:bg-primary-container/20 transition-all duration-700"></div>
             <div class="w-32 h-32 bg-royal-blue rounded-full flex items-center justify-center text-white relative shadow-xl transform group-hover:rotate-12 transition-transform duration-500">
@@ -169,7 +190,7 @@
             </div>
           </div>
           <div class="space-y-4 max-w-2xl">
-            <h2 class="text-4xl font-extrabold text-royal-blue tracking-tight">Раздел находится в разработке</h2>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-royal-blue tracking-tight">Раздел находится в разработке</h2>
             <p class="text-lg text-on-surface-variant leading-relaxed">
               Мы готовим детальную аналитику и отчеты для вашей команды.
               <span class="block mt-2 font-bold text-royal-blue/70">Модуль визуализации данных будет доступен в ближайшем обновлении.</span>
@@ -194,7 +215,7 @@
       <div class="max-w-6xl mx-auto">
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
           <div>
-            <h2 class="text-4xl font-extrabold text-royal-blue tracking-tight">Управление главной страницей</h2>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-royal-blue tracking-tight">Управление главной страницей</h2>
             <p class="text-sm text-on-surface-variant mt-1">Настройте визуальный контент и SEO параметры вашего сайта.</p>
           </div>
           <div class="flex items-center gap-3">
@@ -354,7 +375,7 @@
         <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
           <div>
-            <h2 class="text-4xl font-extrabold text-royal-blue tracking-tight">Управление составом</h2>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-royal-blue tracking-tight">Управление составом</h2>
             <p class="text-sm text-on-surface-variant mt-1">Управляйте игроками, редактируйте профили и отслеживайте статистику команды.</p>
           </div>
           <button onclick="openPlayerModal()" class="bg-royal-blue text-white px-6 py-3 rounded-xl font-bold text-sm hover:shadow-lg active:scale-95 transition-all flex items-center gap-2">
@@ -362,20 +383,20 @@
           </button>
         </div>
         <!-- Stats Row -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           <div class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm flex flex-col justify-between">
             <span class="text-xs font-bold text-outline uppercase tracking-wider">ВСЕГО ИГРОКОВ</span>
             <div class="mt-2 flex items-baseline gap-2">
-              <span class="text-4xl font-extrabold text-royal-blue" id="stat-total">0</span>
+              <span class="text-2xl md:text-4xl font-extrabold text-royal-blue" id="stat-total">0</span>
             </div>
           </div>
           <div class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm">
             <span class="text-xs font-bold text-outline uppercase tracking-wider">СРЕДНИЙ РОСТ</span>
-            <div class="mt-2"><span class="text-4xl font-extrabold text-royal-blue" id="stat-avg-height">0 см</span></div>
+            <div class="mt-2"><span class="text-2xl md:text-4xl font-extrabold text-royal-blue" id="stat-avg-height">0 см</span></div>
           </div>
           <div class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm">
             <span class="text-xs font-bold text-outline uppercase tracking-wider">АКТИВНЫЙ СОСТАВ</span>
-            <div class="mt-2"><span class="text-4xl font-extrabold text-royal-blue" id="stat-active">0</span></div>
+            <div class="mt-2"><span class="text-2xl md:text-4xl font-extrabold text-royal-blue" id="stat-active">0</span></div>
           </div>
           <div class="bg-white p-6 rounded-xl border-2 border-dashed border-outline-variant shadow-sm flex items-center justify-center hover:bg-surface-container transition-colors cursor-pointer group" onclick="openPlayerModal()">
             <button class="flex flex-col items-center gap-1 group-hover:scale-105 transition-transform" type="button">
@@ -508,7 +529,7 @@
       <div class="max-w-6xl mx-auto">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
-            <h2 class="text-4xl font-extrabold text-royal-blue tracking-tight">Управление разделом «Мы вне поля»</h2>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-royal-blue tracking-tight">Управление разделом «Мы вне поля»</h2>
             <p class="text-sm text-on-surface-variant mt-1">Публикуйте новости, фотоотчеты и истории из жизни команды.</p>
           </div>
         </div>
@@ -666,7 +687,7 @@
       <div class="max-w-6xl mx-auto space-y-6">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h2 class="text-4xl font-extrabold text-royal-blue tracking-tight">Управление турнирами</h2>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-royal-blue tracking-tight">Управление турнирами</h2>
             <p class="text-sm text-on-surface-variant mt-1">Управляйте, отслеживайте и архивируйте все соревновательные события Сборной РГСУ по волейболу.</p>
           </div>
           <div class="flex gap-3">
@@ -675,14 +696,14 @@
           </div>
         </div>
         <!-- Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
           <div class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm flex flex-col justify-between">
             <div class="flex justify-between items-start">
               <span class="material-symbols-outlined p-2 bg-primary-container/20 text-primary-container rounded-lg">event</span>
               <span class="text-xs text-outline font-bold">В ЭТОМ МЕСЯЦЕ</span>
             </div>
             <div class="mt-4">
-              <h3 id="stat-upcoming-count" class="text-4xl font-extrabold text-royal-blue">0</h3>
+              <h3 id="stat-upcoming-count" class="text-2xl md:text-4xl font-extrabold text-royal-blue">0</h3>
               <p class="text-sm text-outline">Предстоящие турниры</p>
             </div>
           </div>
@@ -692,7 +713,7 @@
               <span class="text-xs text-outline font-bold">АКТИВНЫЕ</span>
             </div>
             <div class="mt-4">
-              <h3 id="stat-ongoing-count" class="text-4xl font-extrabold text-royal-blue">0</h3>
+              <h3 id="stat-ongoing-count" class="text-2xl md:text-4xl font-extrabold text-royal-blue">0</h3>
               <p class="text-sm text-outline">Текущие события</p>
             </div>
           </div>
@@ -984,6 +1005,35 @@
     else { pwd.type = 'password'; icon.textContent = 'visibility'; }
   }
 
+  // ===== MOBILE SIDEBAR TOGGLE =====
+  function toggleSidebar() {
+    var sidebar = document.getElementById('admin-sidebar');
+    var overlay = document.getElementById('sidebar-overlay');
+    var icon = document.getElementById('sidebar-menu-icon');
+    var isOpen = sidebar.classList.contains('open');
+    if (isOpen) {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+      if (icon) icon.textContent = 'menu';
+      document.body.style.overflow = '';
+    } else {
+      sidebar.classList.add('open');
+      overlay.classList.add('open');
+      if (icon) icon.textContent = 'close';
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeSidebar() {
+    var sidebar = document.getElementById('admin-sidebar');
+    var overlay = document.getElementById('sidebar-overlay');
+    var icon = document.getElementById('sidebar-menu-icon');
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+    if (icon) icon.textContent = 'menu';
+    document.body.style.overflow = '';
+  }
+
   // ===== SIDEBAR NAVIGATION =====
   document.querySelectorAll('.sidebar-link').forEach(function(btn) {
     btn.addEventListener('click', function() {
@@ -991,6 +1041,7 @@
       btn.classList.add('active');
       document.querySelectorAll('.subpage').forEach(function(p) { p.classList.remove('active'); });
       document.getElementById('sub-' + btn.dataset.page).classList.add('active');
+      if (window.innerWidth < 1024) closeSidebar();
     });
   });
 
@@ -1876,6 +1927,7 @@
   // Close modals on Escape
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
+      closeSidebar();
       closePlayerModal();
       closePostEditor();
       closeTournamentModal();
@@ -1883,6 +1935,8 @@
   });
 
   // Expose to global scope
+  window.toggleSidebar = toggleSidebar;
+  window.closeSidebar = closeSidebar;
   window.logout = logout;
   window.toggleLoginPassword = toggleLoginPassword;
   window.openPlayerModal = openPlayerModal;

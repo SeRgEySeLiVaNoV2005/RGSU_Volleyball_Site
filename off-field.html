@@ -20,6 +20,7 @@
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   .modal-overlay { display: none; }
   .modal-overlay.active { display: block; }
+  .pb-safe { padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)); }
 </style>
 </head>
 <body class="text-on-surface selection:bg-primary-container selection:text-white overflow-x-hidden flex flex-col min-h-screen">
@@ -179,10 +180,10 @@
 
   <!-- Mobile Bottom Nav -->
   <nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-2 bg-white/95 dark:bg-inverse-surface/95 backdrop-blur-md shadow-[0_-4px_10px_rgba(0,0,0,0.05)] rounded-t-xl">
-    <a class="flex flex-col items-center justify-center text-on-surface-variant py-2" href="/"><span class="material-symbols-outlined">home</span><span class="font-label-sm text-[10px]">Home</span></a>
-    <a class="flex flex-col items-center justify-center bg-royal-blue text-white rounded-xl px-5 py-2 -mt-4 shadow-md shadow-royal-blue/30" href="/off-field.html"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">diversity_1</span><span class="font-label-sm text-[10px]">Social</span></a>
-    <a class="flex flex-col items-center justify-center text-on-surface-variant py-2" href="/tournaments.html"><span class="material-symbols-outlined">calendar_today</span><span class="font-label-sm text-[10px]">Schedule</span></a>
-    <a class="flex flex-col items-center justify-center text-on-surface-variant py-2" href="/players.html"><span class="material-symbols-outlined">groups</span><span class="font-label-sm text-[10px]">Team</span></a>
+    <a class="flex flex-col items-center justify-center text-on-surface-variant py-2" href="/"><span class="material-symbols-outlined">home</span><span class="font-label-sm text-[10px]">Главная</span></a>
+    <a class="flex flex-col items-center justify-center bg-royal-blue text-white rounded-xl px-5 py-2 -mt-4 shadow-md shadow-royal-blue/30" href="/off-field.html"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">diversity_1</span><span class="font-label-sm text-[10px]">Блог</span></a>
+    <a class="flex flex-col items-center justify-center text-on-surface-variant py-2" href="/tournaments.html"><span class="material-symbols-outlined">calendar_today</span><span class="font-label-sm text-[10px]">Турниры</span></a>
+    <a class="flex flex-col items-center justify-center text-on-surface-variant py-2" href="/players.html"><span class="material-symbols-outlined">groups</span><span class="font-label-sm text-[10px]">Состав</span></a>
   </nav>
 </main>
 
