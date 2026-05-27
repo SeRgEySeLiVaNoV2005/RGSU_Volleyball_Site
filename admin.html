@@ -366,20 +366,19 @@
           <div class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm flex flex-col justify-between">
             <span class="text-xs font-bold text-outline uppercase tracking-wider">ВСЕГО ИГРОКОВ</span>
             <div class="mt-2 flex items-baseline gap-2">
-              <span class="text-4xl font-extrabold text-royal-blue">18</span>
-              <span class="text-green-600 font-bold text-xs">+2 в этом сезоне</span>
+              <span class="text-4xl font-extrabold text-royal-blue" id="stat-total">0</span>
             </div>
           </div>
           <div class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm">
             <span class="text-xs font-bold text-outline uppercase tracking-wider">СРЕДНИЙ РОСТ</span>
-            <div class="mt-2"><span class="text-4xl font-extrabold text-royal-blue">193 см</span></div>
+            <div class="mt-2"><span class="text-4xl font-extrabold text-royal-blue" id="stat-avg-height">0 см</span></div>
           </div>
           <div class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm">
             <span class="text-xs font-bold text-outline uppercase tracking-wider">АКТИВНЫЙ СОСТАВ</span>
-            <div class="mt-2"><span class="text-4xl font-extrabold text-royal-blue">14</span></div>
+            <div class="mt-2"><span class="text-4xl font-extrabold text-royal-blue" id="stat-active">0</span></div>
           </div>
           <div class="bg-white p-6 rounded-xl border-2 border-dashed border-outline-variant shadow-sm flex items-center justify-center hover:bg-surface-container transition-colors cursor-pointer group" onclick="openPlayerModal()">
-            <button class="flex flex-col items-center gap-1 group-hover:scale-105 transition-transform">
+            <button class="flex flex-col items-center gap-1 group-hover:scale-105 transition-transform" type="button">
               <span class="material-symbols-outlined text-royal-blue scale-125">person_add</span>
               <span class="text-xs font-bold text-royal-blue">Добавить игрока</span>
             </button>
@@ -404,99 +403,76 @@
                   <th class="px-6 py-4 text-right">ДЕЙСТВИЯ</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-outline-variant">
-                <tr class="hover:bg-surface-container/30 transition-colors group">
-                  <td class="px-6 py-4"><img class="w-10 h-10 rounded-full border border-outline-variant object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOBatKmTmCFWCSkFv5abWTNcDbWzaiFNClqKF34PjxcO_Sg2ied_M1jxxmxXascREBMJrzCx86V2X0TlOSiVyKor-UA2SO3CcZ9xkiBqRsG5BlqhnalaeJzqrcKIl4caELHubCc49G6iWH9lwNNhwahvDdcoZbWeIKerEnh32vRuiTH7pKeZGu86i1jvtgc-OMiqdctwYTYcxae8cwnL9r8AS0toodN2teQh2e05ic1GUYm8PUuG1t6e7JM2Bynevz2MZ_cNXCM8A"></td>
-                  <td class="px-6 py-4 font-bold text-royal-blue">#23</td>
-                  <td class="px-6 py-4 font-bold text-on-surface">Marcus Sterling</td>
-                  <td class="px-6 py-4 text-on-surface-variant">Доигровщик</td>
-                  <td class="px-6 py-4 text-on-surface-variant">24</td>
-                  <td class="px-6 py-4"><span class="px-2 py-1 bg-green-100 text-green-800 text-[10px] font-bold rounded-full uppercase">АКТИВЕН</span></td>
-                  <td class="px-6 py-4 text-right"><button class="p-2 hover:bg-error-container/10 text-error rounded-lg transition-all"><span class="material-symbols-outlined text-sm">edit</span> Изменить</button></td>
-                </tr>
-                <tr class="bg-surface-container-low/30 hover:bg-surface-container/30 transition-colors group">
-                  <td class="px-6 py-4"><img class="w-10 h-10 rounded-full border border-outline-variant object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCR_o6yw7_60IGlW3kXsxaNpvHeCExcWswKN_jEX-YiTY7FX1RRE9G1UFYPVFJYac-FpegPt5wxHr6RhISGOtzq2vb4lD77_BTk7TWzmQCG-VJOGDEGOQuP438XOaUN3SZ4pdq3SOUNvGM-77AdvgVF-wu4HE9OWFLbsQ0KOVsnAh22Z2zpShpjeJdYSyPVSL3I2S8bZgmnV2lTEAWc6DFIshuuO6RWqNbGXmIXSwyEZsjLrABQnQrXt6dl4-r3oIYgB-hJ1tiVm2Y"></td>
-                  <td class="px-6 py-4 font-bold text-royal-blue">#8</td>
-                  <td class="px-6 py-4 font-bold text-on-surface">Alexei Kozlov</td>
-                  <td class="px-6 py-4 text-on-surface-variant">Центральный блокирующий</td>
-                  <td class="px-6 py-4 text-on-surface-variant">27</td>
-                  <td class="px-6 py-4"><span class="px-2 py-1 bg-green-100 text-green-800 text-[10px] font-bold rounded-full uppercase">АКТИВЕН</span></td>
-                  <td class="px-6 py-4 text-right"><button class="p-2 hover:bg-error-container/10 text-error rounded-lg transition-all"><span class="material-symbols-outlined text-sm">edit</span> Изменить</button></td>
-                </tr>
-                <tr class="hover:bg-surface-container/30 transition-colors group">
-                  <td class="px-6 py-4"><img class="w-10 h-10 rounded-full border border-outline-variant object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEbqem7jAXmKtZ-t92y7Q9oWp1fQT500PMh1pboXNlqGs5f5qT6t81urDnHbfhv4iwDLX0-pSaobPtgB9pTuBqT8T9DyhcYX3uuVeVD-xNkLRp5_yi2HN_GBMz4EjeTdJj6vezLMvS5aUswi3Y1Vh9IjDpWrq_27SC-90gqLKQDwufKYdV8vBBi6lX4ImZJGjbvKcLX56usnhIXquthKmuudO7M3UTUQ5SAQf1hWYsJJrD00vTx1cV0jbt7x8Z7LBScYzlS1HPQ8o"></td>
-                  <td class="px-6 py-4 font-bold text-royal-blue">#12</td>
-                  <td class="px-6 py-4 font-bold text-on-surface">David Wu</td>
-                  <td class="px-6 py-4 text-on-surface-variant">Либеро</td>
-                  <td class="px-6 py-4 text-on-surface-variant">22</td>
-                  <td class="px-6 py-4"><span class="px-2 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase">ТРАВМИРОВАН</span></td>
-                  <td class="px-6 py-4 text-right"><button class="p-2 hover:bg-error-container/10 text-error rounded-lg transition-all"><span class="material-symbols-outlined text-sm">edit</span> Изменить</button></td>
-                </tr>
+              <tbody class="divide-y divide-outline-variant" id="players-table-body">
               </tbody>
             </table>
           </div>
           <div class="p-4 border-t border-outline-variant bg-white flex justify-between items-center">
-            <span class="text-xs font-bold text-outline">Показано 1-3 из 18 игроков</span>
-            <div class="flex gap-1">
-              <button class="p-2 hover:bg-surface-container rounded-lg transition-colors text-outline"><span class="material-symbols-outlined">chevron_left</span></button>
-              <button class="px-3 py-1 bg-royal-blue text-white font-bold rounded-lg text-xs">1</button>
-              <button class="px-3 py-1 hover:bg-surface-container text-on-surface font-bold rounded-lg text-xs transition-colors">2</button>
-              <button class="px-3 py-1 hover:bg-surface-container text-on-surface font-bold rounded-lg text-xs transition-colors">3</button>
-              <button class="p-2 hover:bg-surface-container rounded-lg transition-colors text-outline"><span class="material-symbols-outlined">chevron_right</span></button>
-            </div>
+            <span class="text-xs font-bold text-outline" id="players-pagination-info">Показано 0 из 0 игроков</span>
           </div>
         </div>
       </div>
-      <!-- Add Player Modal -->
-      <div class="modal-overlay fixed inset-0 z-[60] bg-inverse-surface/40 backdrop-blur-sm" id="player-modal">
+      <!-- Add/Edit Player Modal -->
+      <div class="modal-overlay fixed inset-0 z-[60] bg-inverse-surface/40 backdrop-blur-sm" id="player-modal" onclick="if(event.target===this)closePlayerModal()">
         <div class="modal-content bg-white rounded-2xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-outline-variant">
           <div class="p-6 border-b border-outline-variant flex justify-between items-center">
-            <h3 class="text-xl font-bold text-royal-blue">Добавить игрока</h3>
-            <button onclick="closePlayerModal()" class="p-2 hover:bg-surface-container rounded-full transition-colors text-outline"><span class="material-symbols-outlined">close</span></button>
+            <h3 class="text-xl font-bold text-royal-blue" id="player-modal-title">Добавить игрока</h3>
+            <button onclick="closePlayerModal()" class="p-2 hover:bg-surface-container rounded-full transition-colors text-outline" type="button"><span class="material-symbols-outlined">close</span></button>
           </div>
-          <form class="p-6 space-y-5">
+          <form class="p-6 space-y-5" id="player-form" onsubmit="return false;">
+            <input type="hidden" id="player-id">
             <div class="flex flex-col items-center mb-6">
-              <div class="relative group cursor-pointer">
-                <div class="w-24 h-24 rounded-full bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center text-outline overflow-hidden group-hover:border-royal-blue transition-colors">
-                  <span class="material-symbols-outlined scale-125 group-hover:text-royal-blue">upload</span>
-                  <span class="text-[10px] mt-1 font-bold uppercase group-hover:text-royal-blue">Upload Photo</span>
-                </div>
-                <input class="absolute inset-0 opacity-0 cursor-pointer" type="file">
+              <img class="w-24 h-24 rounded-full border-2 border-outline-variant object-cover mb-2" id="player-photo-preview" src="" alt="Фото игрока" style="display:none;">
+              <div class="w-24 h-24 rounded-full bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center text-outline" id="player-photo-placeholder">
+                <span class="material-symbols-outlined scale-125">person</span>
+                <span class="text-[10px] mt-1 font-bold uppercase">Фото</span>
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div class="col-span-2">
+                <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">URL фото</label>
+                <input id="player-image" class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="https://... Ссылка на фото игрока" type="text">
+              </div>
+              <div class="col-span-2">
                 <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Полное имя</label>
-                <input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="например, Иван Петров" type="text">
+                <input id="player-name" class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="например, Иван Петров" type="text">
+              </div>
+              <div>
+                <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Номер</label>
+                <input id="player-number" class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="4" type="text">
               </div>
               <div>
                 <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Роль / Позиция</label>
-                <select class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all">
+                <select id="player-position" class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all">
                   <option>Связующий</option><option>Доигровщик</option><option>Центральный блокирующий</option><option>Диагональный</option><option>Либеро</option>
                 </select>
               </div>
               <div>
                 <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Возраст</label>
-                <input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="24" type="number">
+                <input id="player-age" class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="24" type="number">
               </div>
               <div>
                 <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Рост (см)</label>
-                <input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="195" type="text">
+                <input id="player-height" class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="195" type="text">
+              </div>
+              <div>
+                <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Вес (кг)</label>
+                <input id="player-weight" class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="85" type="text">
               </div>
               <div>
                 <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Статус</label>
-                <select class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all">
+                <select id="player-status" class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all">
                   <option>Активен</option><option>Неактивен</option><option>Запасной</option><option>Травмирован</option>
                 </select>
               </div>
             </div>
             <div>
               <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Краткое описание</label>
-              <textarea class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all resize-none" placeholder="Ключевая статистика, достижения, заметки..." rows="3"></textarea>
+              <textarea id="player-desc" class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all resize-none" placeholder="Ключевая статистика, достижения, заметки..." rows="3"></textarea>
             </div>
             <div class="pt-4 flex gap-3">
               <button class="flex-1 py-3 border border-outline-variant text-on-surface font-bold rounded-xl hover:bg-surface-container transition-all" onclick="closePlayerModal()" type="button">Отмена</button>
-              <button class="flex-1 py-3 bg-royal-blue text-white font-bold rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all" type="submit">Сохранить</button>
+              <button class="flex-1 py-3 bg-royal-blue text-white font-bold rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all" onclick="savePlayer()" type="button">Сохранить</button>
             </div>
           </form>
         </div>
@@ -916,6 +892,7 @@
     document.getElementById('page-admin').classList.add('active');
     document.getElementById('page-admin').style.display = '';
     loadHomepageData();
+    loadPlayersData();
   }
 
   if (token) { showAdmin(); } else { showLogin(); }
@@ -982,7 +959,8 @@
         var merged = {
           posts: currentData.posts || [],
           settings: currentData.settings || { site_title: 'РГСУ ВОЛЕЙБОЛ' },
-          homepage: hp
+          homepage: hp,
+          players: currentData.players || []
         };
         return fetch('/api/data', {
           method: 'POST',
@@ -1078,8 +1056,191 @@
   });
 
   // ===== PLAYER MODAL =====
-  function openPlayerModal() { document.getElementById('player-modal').classList.add('active'); }
+  function openPlayerModal() {
+    document.getElementById('player-id').value = '';
+    document.getElementById('player-modal-title').textContent = 'Добавить игрока';
+    document.getElementById('player-name').value = '';
+    document.getElementById('player-number').value = '';
+    document.getElementById('player-position').value = 'Связующий';
+    document.getElementById('player-age').value = '';
+    document.getElementById('player-height').value = '';
+    document.getElementById('player-weight').value = '';
+    document.getElementById('player-status').value = 'Активен';
+    document.getElementById('player-desc').value = '';
+    document.getElementById('player-image').value = '';
+    document.getElementById('player-photo-preview').style.display = 'none';
+    document.getElementById('player-photo-placeholder').style.display = 'flex';
+    document.getElementById('player-modal').classList.add('active');
+  }
   function closePlayerModal() { document.getElementById('player-modal').classList.remove('active'); }
+
+  // ===== PLAYERS CRUD =====
+  var playersData = [];
+
+  function loadPlayersData() {
+    fetch('/api/data')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        playersData = data.players || [];
+        renderPlayersTable();
+        updatePlayerStats();
+      })
+      .catch(function() {});
+  }
+
+  function renderPlayersTable() {
+    var tbody = document.getElementById('players-table-body');
+    if (playersData.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center text-outline text-sm">Нет игроков. Нажмите «Добавить игрока», чтобы начать.</td></tr>';
+    } else {
+      tbody.innerHTML = playersData.map(function(p) {
+        var statusClass = p.status === 'Активен' ? 'bg-green-100 text-green-800' :
+                          p.status === 'Травмирован' ? 'bg-amber-100 text-amber-800' :
+                          p.status === 'Запасной' ? 'bg-blue-100 text-blue-800' :
+                          'bg-gray-100 text-gray-800';
+        return '<tr class="hover:bg-surface-container/30 transition-colors group">' +
+          '<td class="px-6 py-4"><img class="w-10 h-10 rounded-full border border-outline-variant object-cover" src="' + (p.image || '') + '" alt="' + p.name + '" onerror="this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%2224 24 48 48%22%3E%3Ccircle cx=%2248%22 cy=%2248%22 r=%2224%22 fill=%22%23e2e1eb%22/%3E%3Ctext x=%2248%22 y=%2254%22 text-anchor=%22middle%22 fill=%22%23747684%22 font-size=%2220%22 font-family=%22sans-serif%22%3E' + (p.name ? p.name.charAt(0).toUpperCase() : '?') + '%3C/text%3E%3C/svg%3E\'"></td>' +
+          '<td class="px-6 py-4 font-bold text-royal-blue">#' + p.number + '</td>' +
+          '<td class="px-6 py-4 font-bold text-on-surface">' + p.name + '</td>' +
+          '<td class="px-6 py-4 text-on-surface-variant">' + p.position + '</td>' +
+          '<td class="px-6 py-4 text-on-surface-variant">' + p.age + '</td>' +
+          '<td class="px-6 py-4"><span class="px-2 py-1 text-[10px] font-bold rounded-full uppercase ' + statusClass + '">' + p.status.toUpperCase() + '</span></td>' +
+          '<td class="px-6 py-4 text-right">' +
+            '<button class="p-2 hover:bg-surface-container text-on-surface-variant rounded-lg transition-all mr-1" onclick="editPlayer(' + p.id + ')" title="Редактировать"><span class="material-symbols-outlined text-sm">edit</span></button>' +
+            '<button class="p-2 hover:bg-error-container/10 text-error rounded-lg transition-all" onclick="deletePlayer(' + p.id + ')" title="Удалить"><span class="material-symbols-outlined text-sm">delete</span></button>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+    }
+    document.getElementById('players-pagination-info').textContent = 'Показано ' + playersData.length + ' из ' + playersData.length + ' игроков';
+  }
+
+  function updatePlayerStats() {
+    document.getElementById('stat-total').textContent = playersData.length;
+    var activeCount = playersData.filter(function(p) { return p.status === 'Активен'; }).length;
+    document.getElementById('stat-active').textContent = activeCount;
+    if (playersData.length > 0) {
+      var heights = playersData.map(function(p) { return parseInt(p.height) || 0; }).filter(function(h) { return h > 0; });
+      var avg = heights.length > 0 ? Math.round(heights.reduce(function(a, b) { return a + b; }, 0) / heights.length) : 0;
+      document.getElementById('stat-avg-height').textContent = avg + ' см';
+    } else {
+      document.getElementById('stat-avg-height').textContent = '0 см';
+    }
+  }
+
+  function savePlayer() {
+    var id = document.getElementById('player-id').value;
+    var player = {
+      id: id ? parseInt(id) : (playersData.length > 0 ? Math.max.apply(null, playersData.map(function(p) { return p.id; })) + 1 : 1),
+      name: document.getElementById('player-name').value.trim(),
+      number: document.getElementById('player-number').value.trim(),
+      position: document.getElementById('player-position').value,
+      age: parseInt(document.getElementById('player-age').value) || 0,
+      height: document.getElementById('player-height').value.trim(),
+      weight: document.getElementById('player-weight').value.trim(),
+      status: document.getElementById('player-status').value,
+      desc: document.getElementById('player-desc').value.trim(),
+      image: document.getElementById('player-image').value.trim()
+    };
+
+    if (!player.name) { alert('Введите имя игрока'); return; }
+
+    // First get current data to preserve other sections
+    fetch('/api/data')
+      .then(function(r) { return r.json(); })
+      .then(function(currentData) {
+        var updatedPlayers;
+        if (id) {
+          // Edit existing
+          updatedPlayers = playersData.map(function(p) { return p.id === player.id ? player : p; });
+        } else {
+          // Add new
+          updatedPlayers = playersData.concat([player]);
+        }
+        var merged = {
+          posts: currentData.posts || [],
+          settings: currentData.settings || { site_title: 'РГСУ ВОЛЕЙБОЛ' },
+          homepage: currentData.homepage || {},
+          players: updatedPlayers
+        };
+        return fetch('/api/data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify(merged)
+        });
+      })
+      .then(function(r) {
+        if (!r.ok) throw new Error('Save failed');
+        closePlayerModal();
+        loadPlayersData();
+      })
+      .catch(function() { alert('Ошибка при сохранении'); });
+  }
+
+  function editPlayer(id) {
+    var player = playersData.find(function(p) { return p.id === id; });
+    if (!player) return;
+    document.getElementById('player-id').value = player.id;
+    document.getElementById('player-modal-title').textContent = 'Редактировать игрока';
+    document.getElementById('player-name').value = player.name || '';
+    document.getElementById('player-number').value = player.number || '';
+    document.getElementById('player-position').value = player.position || 'Связующий';
+    document.getElementById('player-age').value = player.age || '';
+    document.getElementById('player-height').value = player.height || '';
+    document.getElementById('player-weight').value = player.weight || '';
+    document.getElementById('player-status').value = player.status || 'Активен';
+    document.getElementById('player-desc').value = player.desc || '';
+    document.getElementById('player-image').value = player.image || '';
+    if (player.image) {
+      document.getElementById('player-photo-preview').src = player.image;
+      document.getElementById('player-photo-preview').style.display = 'block';
+      document.getElementById('player-photo-placeholder').style.display = 'none';
+    } else {
+      document.getElementById('player-photo-preview').style.display = 'none';
+      document.getElementById('player-photo-placeholder').style.display = 'flex';
+    }
+    document.getElementById('player-modal').classList.add('active');
+  }
+
+  function deletePlayer(id) {
+    if (!confirm('Вы уверены, что хотите удалить этого игрока?')) return;
+    fetch('/api/data')
+      .then(function(r) { return r.json(); })
+      .then(function(currentData) {
+        var updatedPlayers = playersData.filter(function(p) { return p.id !== id; });
+        var merged = {
+          posts: currentData.posts || [],
+          settings: currentData.settings || { site_title: 'РГСУ ВОЛЕЙБОЛ' },
+          homepage: currentData.homepage || {},
+          players: updatedPlayers
+        };
+        return fetch('/api/data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify(merged)
+        });
+      })
+      .then(function(r) {
+        if (!r.ok) throw new Error('Delete failed');
+        loadPlayersData();
+      })
+      .catch(function() { alert('Ошибка при удалении'); });
+  }
+
+  // Live preview for image URL
+  document.getElementById('player-image').addEventListener('input', function() {
+    var url = this.value.trim();
+    var preview = document.getElementById('player-photo-preview');
+    var placeholder = document.getElementById('player-photo-placeholder');
+    if (url) {
+      preview.src = url;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+    } else {
+      preview.style.display = 'none';
+      placeholder.style.display = 'flex';
+    }
+  });
 
   // ===== OFF-FIELD EDITOR =====
   function openOffFieldEditor() { document.getElementById('offfield-editor').classList.add('active'); }
@@ -1103,6 +1264,9 @@
   window.toggleLoginPassword = toggleLoginPassword;
   window.openPlayerModal = openPlayerModal;
   window.closePlayerModal = closePlayerModal;
+  window.savePlayer = savePlayer;
+  window.editPlayer = editPlayer;
+  window.deletePlayer = deletePlayer;
   window.openOffFieldEditor = openOffFieldEditor;
   window.closeOffFieldEditor = closeOffFieldEditor;
   window.openTournamentModal = openTournamentModal;

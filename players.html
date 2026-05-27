@@ -221,19 +221,14 @@
   });
 
   // Players 3D Carousel
-  var players = [
-    {name: "Селиванов Сергей", number: "4", position: "Центральный блокирующий", height: "188 см", weight: "86 кг", desc: "Капитан команды и лидер на площадке. Обладает исключительным игровым чутьем.", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBasmchgp266aEGSRcstu0cY0wQts7YhqoBqbC4FaPjxvaCKjIXP0PhQRwZDfqYnNsQEo--NNzIgiAPws8q1LAFI8GIFUf1G3KuL9_CSH7YqQnmz-sf8O_5hFaie5QyWXQVP2Q3hRhQ9IOIQRaGoBvK03RgWX5goLBGoHX-vDj9U04AakrDBRih6XZ0W6Jl9uNTw34QVhVVtgwP-h0frfRiZc-RbyY40YMJr70375ve2b0KbHc63E_2KwkcN9CX0xUhH9-eZdvfoqdTYA"},
-    {name: "Дмитрий Иванов", number: "5", position: "Либеро", height: "185 см", weight: "75 кг", desc: "Мастер приема и защиты. Молниеносная реакция и невероятное чтение игры.", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAJpYZdI8ZYBFvsrHOkvkpYchomeFzPUdjpVGkRCc-yJyjL1xYvmO4GM2qxsbrgUE1fdCN41P0O8YcIReivvuwKyZNJbm60CYaJEPGuXX-R0l1aqbdJgBwCxc3TBdPUg3SIspiuP1quNst4Q0-kqjZnqaU2moVeKrtI2aRO26E4arzNO6sZzDNxMCVPXwJoxMTtUNyLfQfXGH75K1wQ69KS6Hbw74MxWj8pRtiCaH4xHNZCho2G5jnYeyWPAOy75_KjAFCy1st-h24"},
-    {name: "Игорь Соколов", number: "8", position: "Диагональный", height: "204 см", weight: "98 кг", desc: "Основная атакующая сила команды. Способен пробить любой блок соперника.", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF2yOGnmJOq65NPrUFgC2Lizgugj7HyFzA2QeJd6wvU30AMxN7_cWdphnvuXiauT7EICi8R9CL4f4hJBx2oEY2igXqiGbmgByE1SQ2zvvgg2_wuL6GSK0iPyrZGWBRj5vWkolSGzbgC6OEVjd2Ta-fLXjYSuVJ-qGdGPNRApn-lftLzzAymzrESMSn1wBQPpL_NFEuWI6-06x1KcnK-OuWNkcxzw0UwOKLw-amuTJqUiiz6EVe0w0ujdhvi_wVuyWLOYI9RDHAtns"},
-    {name: "Сергей Волков", number: "7", position: "Доигровщик", height: "195 см", weight: "86 кг", desc: "Универсальный игрок с отличным балансом между атакой и защитными действиями.", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAJpYZdI8ZYBFvsrHOkvkpYchomeFzPUdjpVGkRCc-yJyjL1xYvmO4GM2qxsbrgUE1fdCN41P0O8YcIReivvuwKyZNJbm60CYaJEPGuXX-R0l1aqbdJgBwCxc3TBdPUg3SIspiuP1quNst4Q0-kqjZnqaU2moVeKrtI2aRO26E4arzNO6sZzDNxMCVPXwJoxMTtUNyLfQfXGH75K1wQ69KS6Hbw74MxWj8pRtiCaH4xHNZCho2G5jnYeyWPAOy75_KjAFCy1st-h24"},
-    {name: "Алексей Морозов", number: "15", position: "Блокирующий", height: "210 см", weight: "102 кг", desc: "Стена нашей команды. Лучший по количеству результативных блоков в сезоне.", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF2yOGnmJOq65NPrUFgC2Lizgugj7HyFzA2QeJd6wvU30AMxN7_cWdphnvuXiauT7EICi8R9CL4f4hJBx2oEY2igXqiGbmgByE1SQ2zvvgg2_wuL6GSK0iPyrZGWBRj5vWkolSGzbgC6OEVjd2Ta-fLXjYSuVJ-qGdGPNRApn-lftLzzAymzrESMSn1wBQPpL_NFEuWI6-06x1KcnK-OuWNkcxzw0UwOKLw-amuTJqUiiz6EVe0w0ujdhvi_wVuyWLOYI9RDHAtns"},
-    {name: "Максим Петров", number: "3", position: "Связующий", height: "192 см", weight: "82 кг", desc: "Мозг команды. Его передачи всегда точны и непредсказуемы для соперника.", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCPmCnVrkOeKYJ9kW2mzUGaSnGlzu2P6vunb0EdjqNR6ol75AaljxTCUMT3Bak6MX4XfC4ugt99Ld0NPdwwM1gORd2ct3R2m1MQo3NSNEPXwEcO0SJmcC5caKdtQuxx2ppaqHKlQG9a-dEXHpn-AyRmexqLmJTOxI8Hiq9rH1olFFg1SwVWyBDt1ODbvhdPkYPi3ikBoH9Cs-3ccscuFGq2dmDsw2wfOmTCuSNX_SYLQEm-jdCOdC9lXpIsiYxRksVRQPtCEt2pY8M"}
-  ];
+  var players = [];
   var currentIndex = 0;
   var wrapper = document.getElementById('carousel-wrapper');
   var dotsContainer = document.getElementById('dot-indicators');
 
   function initCarousel() {
+    wrapper.innerHTML = '';
+    dotsContainer.innerHTML = '';
     players.forEach(function(player, index) {
       var card = document.createElement('div');
       card.className = 'player-card-3d';
@@ -265,8 +260,8 @@
     Array.from(dots).forEach(function(dot, index) { dot.classList.toggle('bg-primary', index === currentIndex); dot.classList.toggle('bg-primary-fixed', index !== currentIndex); });
   }
 
-  function rotateCarousel(dir) { currentIndex = (currentIndex + dir + players.length) % players.length; updateCarousel(); }
-  function goToPlayer(index) { currentIndex = index; updateCarousel(); }
+  function rotateCarousel(dir) { if (!players.length) return; currentIndex = (currentIndex + dir + players.length) % players.length; updateCarousel(); }
+  function goToPlayer(index) { if (!players.length) return; currentIndex = index; updateCarousel(); }
 
   document.getElementById('prev-btn').onclick = function() { rotateCarousel(-1); };
   document.getElementById('next-btn').onclick = function() { rotateCarousel(1); };
@@ -286,7 +281,18 @@
     if (b2) b2.style.transform = 'translate(-25%, 25%) translateY(' + (-s * 0.1) + 'px)';
   });
 
-  initCarousel();
+  // Load players from API then init carousel
+  fetch('/api/data')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.players && data.players.length > 0) {
+        players = data.players;
+      }
+      initCarousel();
+    })
+    .catch(function() {
+      initCarousel();
+    });
 })();
 </script>
 </body></html>
