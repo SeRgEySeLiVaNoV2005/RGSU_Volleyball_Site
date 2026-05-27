@@ -4,62 +4,62 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Авторизация VK ID</title>
-<script src="https://vk.com/js/api/openapi.js?169"></script>
 </head>
-<body>
+<body style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;text-align:center;">
+<div>
+  <p style="font-size:18px;color:#333;">Авторизация...</p>
+  <p style="font-size:14px;color:#999;">Пожалуйста, подождите</p>
+</div>
 <script>
 (function() {
   'use strict';
 
-  // VK SDK callback — fires after VK.Auth.login completes in this popup window
-  function onVkReady() {
-    try {
-      VK.init({});
+  // Parse hash fragment from VK OAuth redirect
+  var hash = window.location.hash.substring(1);
+  var params = new URLSearchParams(hash);
+  var accessToken = params.get('access_token');
+  var userId = params.get('user_id');
 
-      VK.Auth.getLoginStatus(function(response) {
-        if (response.status === 'connected' && response.session && response.session.user) {
-          var user = response.session.user;
-          var userData = {
-            id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            photo: user.photo || '',
-            photo_rec: user.photo_rec || ''
-          };
-
-          // Pass user data to parent window
-          if (window.opener && !window.opener.closed) {
-            window.opener.postMessage({
-              type: 'vk-auth-success',
-              user: userData
-            }, '*');
-          } else if (window.parent && window.parent !== window) {
-            window.parent.postMessage({
-              type: 'vk-auth-success',
-              user: userData
-            }, '*');
-          }
-
-          // Also save to localStorage for same-origin persistence
-          try {
-            localStorage.setItem('vk_user', JSON.stringify(userData));
-          } catch(e) {}
-
-          // Close popup
-          window.close();
-        }
-      });
-    } catch(e) {
-      window.close();
-    }
+  if (!accessToken || !userId) {
+    document.body.innerHTML = '<div style="padding:40px;"><p style="font-size:18px;color:#c00;">Ошибка авторизации</p><p style="font-size:14px;color:#666;">Не удалось получить данные от VK. Попробуйте ещё раз.</p></div>';
+    setTimeout(function() { window.close(); }, 3000);
+    return;
   }
 
-  // VK SDK fires vkAsyncInit when ready, or we call directly
-  if (typeof VK !== 'undefined') {
-    onVkReady();
-  } else {
-    window.vkAsyncInit = onVkReady;
-  }
+  // Fetch user info from VK API
+  fetch('https://api.vk.com/method/users.get?user_ids=' + userId + '&fields=photo_200,photo_100&access_token=' + accessToken + '&v=5.199')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var user = (data.response || [])[0];
+      if (!user) throw new Error('No user data');
+
+      var userData = {
+        id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        photo: user.photo_200 || '',
+        photo_rec: user.photo_100 || ''
+      };
+
+      // Save to localStorage
+      try {
+        localStorage.setItem('vk_user', JSON.stringify(userData));
+      } catch(e) {}
+
+      // Pass to parent window
+      if (window.opener && !window.opener.closed) {
+        window.opener.postMessage({ type: 'vk-auth-success', user: userData }, '*');
+      } else if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'vk-auth-success', user: userData }, '*');
+      }
+
+      document.body.innerHTML = '<div style="padding:40px;"><p style="font-size:18px;color:#4caf50;">Авторизация успешна!</p><p style="font-size:14px;color:#666;">Окно закроется автоматически.</p></div>';
+      setTimeout(function() { window.close(); }, 1000);
+    })
+    .catch(function() {
+      document.body.innerHTML = '<div style="padding:40px;"><p style="font-size:18px;color:#c00;">Ошибка загрузки профиля</p><p style="font-size:14px;color:#666;">Попробуйте ещё раз.</p></div>';
+      setTimeout(function() { window.close(); }, 3000);
+    });
 })();
 </script>
 </body>

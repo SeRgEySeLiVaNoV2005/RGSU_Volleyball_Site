@@ -214,7 +214,6 @@
   </div>
 </footer>
 
-<script src="https://vk.com/js/api/openapi.js?169"></script>
 <script>
 (function() {
   'use strict';
@@ -246,18 +245,8 @@
   var catIcons = { personal: 'person', study: 'school', travel: 'flight', events: 'groups' };
 
   // ===== VK AUTH =====
-  function initVk() {
-    fetch('/api/data')
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        VK_APP_ID = (data.settings && data.settings.vk_app_id) || '';
-        if (VK_APP_ID) {
-          try { VK.init({ apiId: parseInt(VK_APP_ID) }); } catch(e) {}
-        }
-        restoreVkUser();
-      })
-      .catch(function() {});
-  }
+  var VK_APP_ID = '54611743';
+  var VK_REDIRECT = window.location.origin + '/auth-callback.html';
 
   function restoreVkUser() {
     var saved = localStorage.getItem('vk_user');
@@ -270,28 +259,21 @@
   }
 
   function vkLogin() {
-    if (!VK_APP_ID) {
-      alert('VK ID не настроен. Администратор должен указать VK App ID в настройках.');
-      return;
-    }
-    try {
-      VK.Auth.login(function(response) {
-        if (response.session && response.session.user) {
-          var user = response.session.user;
-          vkUser = {
-            id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            photo: user.photo || '',
-            photo_rec: user.photo_rec || ''
-          };
-          localStorage.setItem('vk_user', JSON.stringify(vkUser));
-          updateVkUI();
-        }
-      });
-    } catch(e) {
-      // Fallback: redirect to VK OAuth
-      window.open('https://oauth.vk.com/authorize?client_id=' + VK_APP_ID + '&redirect_uri=' + encodeURIComponent(window.location.origin + '/auth-callback.html') + '&response_type=token&v=5.131&display=popup', 'vk-auth', 'width=700,height=500');
+    var url = 'https://oauth.vk.com/authorize'
+      + '?client_id=' + VK_APP_ID
+      + '&redirect_uri=' + encodeURIComponent(VK_REDIRECT)
+      + '&response_type=token'
+      + '&v=5.199'
+      + '&display=popup'
+      + '&scope=0';
+
+    var w = 700, h = 500;
+    var left = (screen.width - w) / 2;
+    var top = (screen.height - h) / 2;
+    var popup = window.open(url, 'vk-auth', 'width=' + w + ',height=' + h + ',left=' + left + ',top=' + top);
+
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+      alert('Пожалуйста, разрешите всплывающие окна для этого сайта, чтобы войти через VK.');
     }
   }
 
@@ -331,12 +313,8 @@
     }
   });
 
-  // Init VK on SDK load
-  if (typeof VK !== 'undefined') {
-    initVk();
-  } else {
-    window.vkAsyncInit = initVk;
-  }
+  // Restore VK user from localStorage on page load
+  restoreVkUser();
 
   // ===== DATA LOADING =====
   function loadPosts() {
