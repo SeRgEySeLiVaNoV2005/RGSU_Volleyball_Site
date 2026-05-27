@@ -17,7 +17,7 @@ function readData() {
   } catch {
     return {
       posts: [],
-      settings: { site_title: 'РГСУ ВОЛЕЙБОЛ', vk_app_id: '' },
+      settings: { site_title: 'РГСУ ВОЛЕЙБОЛ', yandex_app_id: '' },
       players: [],
       tournaments: [],
       homepage: {
@@ -90,8 +90,8 @@ export default function handler(req, res) {
       }
 
       if (body.action === 'comment') {
-        if (!body.text || !body.vkUser || !body.vkUser.id) {
-          res.status(400).json({ error: 'Требуется текст комментария и VK авторизация' });
+        if (!body.text || !body.yandexUser || !body.yandexUser.id) {
+          res.status(400).json({ error: 'Требуется текст комментария и Яндекс авторизация' });
           return;
         }
         const post = (data.posts || []).find(function(p) { return p.id === body.postId; });
@@ -104,12 +104,12 @@ export default function handler(req, res) {
           id: post.comments.length > 0
             ? Math.max.apply(null, post.comments.map(function(c) { return c.id; })) + 1
             : 1,
-          author: body.vkUser.first_name + ' ' + body.vkUser.last_name,
+          author: body.yandexUser.first_name + ' ' + body.yandexUser.last_name,
           text: body.text,
           date: new Date().toISOString().split('T')[0],
           approved: false,
-          vkUserId: body.vkUser.id,
-          vkPhoto: body.vkUser.photo_rec || '',
+          yandexUserId: body.yandexUser.id,
+          yandexPhoto: body.yandexUser.photo || '',
           replies: []
         };
         post.comments.push(newComment);

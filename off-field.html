@@ -152,11 +152,11 @@
             <p id="comment-pending-msg" class="text-xs text-outline mt-2" style="display:none;">Комментарий отправлен и появится после проверки модератором.</p>
           </div>
           <div id="comment-login-prompt" class="bg-surface-container-low rounded-xl p-4 text-center">
-            <p class="text-sm text-on-surface-variant mb-3">Войдите через VK ID, чтобы оставить комментарий</p>
-            <button class="bg-[#0077FF] text-white px-6 py-2 rounded-full font-bold hover:bg-[#0066DD] transition-colors active:scale-[0.98]" onclick="vkLogin()">
+            <p class="text-sm text-on-surface-variant mb-3">Войдите через Яндекс ID, чтобы оставить комментарий</p>
+            <button class="bg-[#FC3F1D] text-white px-6 py-2 rounded-full font-bold hover:bg-[#E03010] transition-colors active:scale-[0.98]" onclick="yandexLogin()">
               <span class="flex items-center gap-2 justify-center">
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M21.579 6.855c.544-.004.862-.403.981-.678.103-.331-.006-.728-.376-.985-.399-.278-.832-.302-1.291-.213h-.007c-2.646.874-5.063 2.87-6.681 5.115-.98-1.008-1.89-2.088-2.723-3.227-.285-.385-.693-.668-1.15-.663-.439-.008-.89.167-1.169.477-.355.387-.376.991-.046 1.442.932 1.29 1.936 2.52 3.007 3.69-1.371 2.264-3.208 4.041-5.637 5.147-.436.198-.695.676-.538 1.152.121.362.448.6.819.6.162.001.322-.047.467-.141 1.039-.618 1.925-1.355 2.742-2.184l.011-.011c1.157 1.446 2.613 2.62 4.283 3.444.329.162.722.09.966-.178.204-.224.262-.543.147-.817-.275-.658-.715-1.416-1.082-2.066 1.444-1.66 2.603-3.568 3.42-5.655.538-1.352 1.486-2.366 2.682-2.908.426-.192.896-.239 1.351-.135z"/></svg>
-                Войти через VK
+                <span style="font-size:20px;line-height:1;">Я</span>
+                Войти через Яндекс
               </span>
             </button>
           </div>
@@ -238,61 +238,58 @@
   // ===== STATE =====
   var allPosts = [];
   var currentCategory = 'all';
-  var vkUser = null;
+  var yandexUser = null;
   var currentPostId = null;
-  var VK_APP_ID = '';
+  
   var categories = { personal: 'Личное', study: 'Учеба', travel: 'Путешествия', events: 'Мероприятия' };
   var catIcons = { personal: 'person', study: 'school', travel: 'flight', events: 'groups' };
 
-  // ===== VK AUTH =====
-  var VK_APP_ID = '54611743';
-  var VK_REDIRECT = window.location.origin + '/auth-callback.html';
+  // ===== YANDEX AUTH =====
+  var YANDEX_APP_ID = '27e68fb7f21146f5b0a616cb57e382e8';
+  var YANDEX_REDIRECT = window.location.origin + '/auth-callback.html';
 
-  function restoreVkUser() {
-    var saved = localStorage.getItem('vk_user');
+  function restoreYandexUser() {
+    var saved = localStorage.getItem('yandex_user');
     if (saved) {
       try {
-        vkUser = JSON.parse(saved);
-        updateVkUI();
-      } catch(e) { vkUser = null; }
+        yandexUser = JSON.parse(saved);
+        updateYandexUI();
+      } catch(e) { yandexUser = null; }
     }
   }
 
-  function vkLogin() {
-    var url = 'https://oauth.vk.com/authorize'
-      + '?client_id=' + VK_APP_ID
-      + '&redirect_uri=' + encodeURIComponent(VK_REDIRECT)
-      + '&response_type=token'
-      + '&v=5.199'
-      + '&display=popup'
-      + '&scope=0';
+  function yandexLogin() {
+    var url = 'https://oauth.yandex.ru/authorize'
+      + '?client_id=' + YANDEX_APP_ID
+      + '&redirect_uri=' + encodeURIComponent(YANDEX_REDIRECT)
+      + '&response_type=token';
 
     var w = 700, h = 500;
     var left = (screen.width - w) / 2;
     var top = (screen.height - h) / 2;
-    var popup = window.open(url, 'vk-auth', 'width=' + w + ',height=' + h + ',left=' + left + ',top=' + top);
+    var popup = window.open(url, 'yandex-auth', 'width=' + w + ',height=' + h + ',left=' + left + ',top=' + top);
 
     if (!popup || popup.closed || typeof popup.closed === 'undefined') {
-      alert('Пожалуйста, разрешите всплывающие окна для этого сайта, чтобы войти через VK.');
+      alert('Пожалуйста, разрешите всплывающие окна для этого сайта, чтобы войти через Яндекс.');
     }
   }
 
-  function vkLogout() {
-    vkUser = null;
-    localStorage.removeItem('vk_user');
-    updateVkUI();
+  function yandexLogout() {
+    yandexUser = null;
+    localStorage.removeItem('yandex_user');
+    updateYandexUI();
     updateCommentForm();
   }
 
-  function updateVkUI() {
-    var info = document.getElementById('vk-user-info');
-    var loginBtn = document.getElementById('vk-login-btn');
-    var logoutBtn = document.getElementById('vk-logout-btn');
-    if (vkUser) {
-      var photo = document.getElementById('vk-user-photo');
-      var name = document.getElementById('vk-user-name');
-      if (photo) photo.src = vkUser.photo_rec || '';
-      if (name) name.textContent = vkUser.first_name + ' ' + vkUser.last_name;
+  function updateYandexUI() {
+    var info = document.getElementById('yandex-user-info');
+    var loginBtn = document.getElementById('yandex-login-btn');
+    var logoutBtn = document.getElementById('yandex-logout-btn');
+    if (yandexUser) {
+      var photo = document.getElementById('yandex-user-photo');
+      var name = document.getElementById('yandex-user-name');
+      if (photo) photo.src = yandexUser.photo || '';
+      if (name) name.textContent = yandexUser.first_name + ' ' + yandexUser.last_name;
       if (info) info.style.display = '';
       if (loginBtn) loginBtn.style.display = 'none';
       if (logoutBtn) logoutBtn.style.display = '';
@@ -303,18 +300,18 @@
     }
   }
 
-  // Listen for VK auth callback from popup
+  // Listen for Yandex auth callback from popup
   window.addEventListener('message', function(event) {
-    if (event.data && event.data.type === 'vk-auth-success') {
-      vkUser = event.data.user;
-      localStorage.setItem('vk_user', JSON.stringify(vkUser));
-      updateVkUI();
+    if (event.data && event.data.type === 'yandex-auth-success') {
+      yandexUser = event.data.user;
+      localStorage.setItem('yandex_user', JSON.stringify(yandexUser));
+      updateYandexUI();
       updateCommentForm();
     }
   });
 
-  // Restore VK user from localStorage on page load
-  restoreVkUser();
+  // Restore Yandex user from localStorage on page load
+  restoreYandexUser();
 
   // ===== DATA LOADING =====
   function loadPosts() {
@@ -495,8 +492,8 @@
       return;
     }
     list.innerHTML = approved.map(function(c) {
-      var photoHtml = c.vkPhoto
-        ? '<img class="w-8 h-8 rounded-full" src="' + c.vkPhoto + '" alt="">'
+      var photoHtml = c.yandexPhoto
+        ? '<img class="w-8 h-8 rounded-full" src="' + c.yandexPhoto + '" alt="">'
         : '<div class="w-8 h-8 rounded-full bg-royal-blue/10 flex items-center justify-center"><span class="material-symbols-outlined text-royal-blue text-sm">person</span></div>';
       return '<div class="bg-surface-container-low rounded-xl p-3">'
         + '<div class="flex items-center gap-2 mb-1">' + photoHtml + '<span class="text-sm font-bold">' + (c.author || 'Аноним') + '</span>'
@@ -508,11 +505,11 @@
   function updateCommentForm() {
     var form = document.getElementById('comment-form');
     var prompt = document.getElementById('comment-login-prompt');
-    if (vkUser) {
+    if (yandexUser) {
       form.style.display = '';
       prompt.style.display = 'none';
-      document.getElementById('comment-user-photo').src = vkUser.photo_rec || '';
-      document.getElementById('comment-user-name').textContent = vkUser.first_name + ' ' + vkUser.last_name;
+      document.getElementById('comment-user-photo').src = yandexUser.photo || '';
+      document.getElementById('comment-user-name').textContent = yandexUser.first_name + ' ' + yandexUser.last_name;
     } else {
       form.style.display = 'none';
       prompt.style.display = '';
@@ -520,7 +517,7 @@
   }
 
   function submitComment() {
-    if (!vkUser) { alert('Войдите через VK ID'); return; }
+    if (!yandexUser) { alert('Войдите через Яндекс ID'); return; }
     if (!currentPostId) return;
     var text = document.getElementById('comment-input').value.trim();
     if (!text) return;
@@ -532,7 +529,7 @@
         action: 'comment',
         postId: currentPostId,
         text: text,
-        vkUser: vkUser
+        yandexUser: yandexUser
       })
     })
     .then(function(r) { return r.json(); })
@@ -578,8 +575,8 @@
   });
 
   // Expose to global scope
-  window.vkLogin = vkLogin;
-  window.vkLogout = vkLogout;
+  window.yandexLogin = yandexLogin;
+  window.yandexLogout = yandexLogout;
   window.openPostDetail = openPostDetail;
   window.closePostDetail = closePostDetail;
   window.submitComment = submitComment;

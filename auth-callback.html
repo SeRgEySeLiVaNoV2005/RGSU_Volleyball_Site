@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Авторизация VK ID</title>
+<title>Авторизация Яндекс ID</title>
 </head>
 <body style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;text-align:center;">
 <div>
@@ -14,43 +14,47 @@
 (function() {
   'use strict';
 
-  // Parse hash fragment from VK OAuth redirect
+  // Parse hash fragment from Yandex OAuth redirect
   var hash = window.location.hash.substring(1);
   var params = new URLSearchParams(hash);
   var accessToken = params.get('access_token');
-  var userId = params.get('user_id');
 
-  if (!accessToken || !userId) {
-    document.body.innerHTML = '<div style="padding:40px;"><p style="font-size:18px;color:#c00;">Ошибка авторизации</p><p style="font-size:14px;color:#666;">Не удалось получить данные от VK. Попробуйте ещё раз.</p></div>';
+  if (!accessToken) {
+    document.body.innerHTML = '<div style="padding:40px;"><p style="font-size:18px;color:#c00;">Ошибка авторизации</p><p style="font-size:14px;color:#666;">Не удалось получить данные от Яндекса. Попробуйте ещё раз.</p></div>';
     setTimeout(function() { window.close(); }, 3000);
     return;
   }
 
-  // Fetch user info from VK API
-  fetch('https://api.vk.com/method/users.get?user_ids=' + userId + '&fields=photo_200,photo_100&access_token=' + accessToken + '&v=5.199')
+  // Fetch user info from Yandex API
+  fetch('https://login.yandex.ru/info?format=json&oauth_token=' + accessToken)
     .then(function(r) { return r.json(); })
-    .then(function(data) {
-      var user = (data.response || [])[0];
-      if (!user) throw new Error('No user data');
+    .then(function(user) {
+      if (!user || !user.id) throw new Error('No user data');
+
+      var avatarUrl = '';
+      if (user.default_avatar_id) {
+        avatarUrl = 'https://avatars.yandex.net/get-yapic/' + user.default_avatar_id + '/islands-200';
+      }
 
       var userData = {
         id: user.id,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        photo: user.photo_200 || '',
-        photo_rec: user.photo_100 || ''
+        first_name: user.first_name || '',
+        last_name: user.last_name || '',
+        display_name: user.display_name || '',
+        photo: avatarUrl,
+        email: user.default_email || ''
       };
 
       // Save to localStorage
       try {
-        localStorage.setItem('vk_user', JSON.stringify(userData));
+        localStorage.setItem('yandex_user', JSON.stringify(userData));
       } catch(e) {}
 
       // Pass to parent window
       if (window.opener && !window.opener.closed) {
-        window.opener.postMessage({ type: 'vk-auth-success', user: userData }, '*');
+        window.opener.postMessage({ type: 'yandex-auth-success', user: userData }, '*');
       } else if (window.parent && window.parent !== window) {
-        window.parent.postMessage({ type: 'vk-auth-success', user: userData }, '*');
+        window.parent.postMessage({ type: 'yandex-auth-success', user: userData }, '*');
       }
 
       document.body.innerHTML = '<div style="padding:40px;"><p style="font-size:18px;color:#4caf50;">Авторизация успешна!</p><p style="font-size:14px;color:#666;">Окно закроется автоматически.</p></div>';
