@@ -438,8 +438,10 @@
   }
 
   function handleLike(postId) {
+    if (pendingLikes[postId]) return;
     var liked = isLiked(postId);
     var action = liked ? "unlike" : "like";
+    pendingLikes[postId] = true;
     fetch("/api/data", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -460,11 +462,14 @@
         renderFeed();
         if (currentPostId === postId) updateDetailLikes(res.likes);
       }
+      pendingLikes[postId] = false;
     })
-    .catch(function() {});
+    .catch(function() { pendingLikes[postId] = false; });
   }
 
-  // ===== POST DETAIL MODAL =====
+    var pendingLikes = {};
+
+// ===== POST DETAIL MODAL =====
   function openPostDetail(postId) {
     currentPostId = postId;
     var post = allPosts.find(function(p) { return p.id === postId; });
@@ -544,16 +549,16 @@
   }
 
   function submitComment() {
-    if (!yandexUser) { alert('Войдите через Яндекс ID'); return; }
+    if (!yandexUser) { alert("Войдите через Яндекс ID"); return; }
     if (!currentPostId) return;
-    var text = document.getElementById('comment-input').value.trim();
+    var text = document.getElementById("comment-input").value.trim();
     if (!text) return;
 
-    fetch('/api/data', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    fetch("/api/data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        action: 'comment',
+        action: "comment",
         postId: currentPostId,
         text: text,
         yandexUser: yandexUser
@@ -562,18 +567,20 @@
     .then(function(r) { return r.json(); })
     .then(function(res) {
       if (res.success) {
-        document.getElementById('comment-input').value = '';
-        document.getElementById('comment-pending-msg').style.display = '';
-        // Add to local state
+        document.getElementById("comment-input").value = "";
+        document.getElementById("comment-pending-msg").style.display = "";
         var post = allPosts.find(function(p) { return p.id === currentPostId; });
         if (post) {
           if (!post.comments) post.comments = [];
           post.comments.push(res.comment);
           renderDetailComments(post);
+          var approved = (post.comments || []).filter(function(c) { return c.approved; });
+          document.getElementById("detail-comments-count").textContent = approved.length;
+          renderFeed();
         }
       }
     })
-    .catch(function() { alert('Ошибка при отправке комментария'); });
+    .catch(function() { alert("Ошибка при отправке комментария"); });
   }
 
   // ===== UTILS =====
