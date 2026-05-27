@@ -18,6 +18,8 @@
   .custom-scrollbar::-webkit-scrollbar-thumb { background: #0033A0; border-radius: 10px; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .modal-overlay { display: none; }
+  .modal-overlay.active { display: block; }
 </style>
 </head>
 <body class="text-on-surface selection:bg-primary-container selection:text-white overflow-x-hidden flex flex-col min-h-screen">
@@ -141,17 +143,26 @@
         <div class="px-6 pb-6 border-t border-outline-variant/30 pt-6">
           <h4 class="text-sm font-bold text-on-surface uppercase tracking-wider mb-4">Комментарии</h4>
           <div id="detail-comments-list" class="space-y-3 mb-6"></div>
-          <!-- Comment form (shown only when logged in) -->
+          <!-- Write comment button -->
+          <button id="comment-trigger-btn" class="w-full bg-ice-blue text-royal-blue px-6 py-3 rounded-xl font-bold hover:bg-royal-blue/10 transition-colors flex items-center justify-center gap-2" onclick="showCommentInput()">
+            <span class="material-symbols-outlined">edit</span>
+            Написать комментарий
+          </button>
+          <!-- Comment form (hidden by default) -->
           <div id="comment-form" style="display:none;">
             <div class="flex items-center gap-3 mb-3">
               <img id="comment-user-photo" class="w-8 h-8 rounded-full" src="" alt="">
               <span id="comment-user-name" class="text-sm font-bold"></span>
             </div>
             <textarea id="comment-input" class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4 resize-none text-sm" placeholder="Напишите комментарий..." rows="3"></textarea>
-            <button class="mt-3 bg-royal-blue text-white px-6 py-2 rounded-full font-bold hover:bg-primary-container transition-colors active:scale-[0.98]" onclick="submitComment()">Отправить</button>
+            <div class="flex items-center gap-3 mt-3">
+              <button class="bg-royal-blue text-white px-6 py-2 rounded-full font-bold hover:bg-primary-container transition-colors active:scale-[0.98]" onclick="submitComment()">Отправить</button>
+              <button class="text-on-surface-variant text-sm hover:text-on-surface transition-colors" onclick="hideCommentInput()">Отмена</button>
+            </div>
             <p id="comment-pending-msg" class="text-xs text-outline mt-2" style="display:none;">Комментарий отправлен и появится после проверки модератором.</p>
           </div>
-          <div id="comment-login-prompt" class="bg-surface-container-low rounded-xl p-4 text-center">
+          <!-- Login prompt (hidden by default, shown when not logged in and trying to comment) -->
+          <div id="comment-login-prompt" class="bg-surface-container-low rounded-xl p-4 text-center" style="display:none;">
             <p class="text-sm text-on-surface-variant mb-3">Войдите через Яндекс ID, чтобы оставить комментарий</p>
             <button class="bg-[#FC3F1D] text-white px-6 py-2 rounded-full font-bold hover:bg-[#E03010] transition-colors active:scale-[0.98]" onclick="yandexLogin()">
               <span class="flex items-center gap-2 justify-center">
@@ -159,6 +170,7 @@
                 Войти через Яндекс
               </span>
             </button>
+            <button class="block mx-auto mt-2 text-on-surface-variant text-sm hover:text-on-surface transition-colors" onclick="hideCommentInput()">Отмена</button>
           </div>
         </div>
       </div>
@@ -278,7 +290,7 @@
     yandexUser = null;
     localStorage.removeItem('yandex_user');
     updateYandexUI();
-    updateCommentForm();
+    hideCommentInput();
   }
 
   function updateYandexUI() {
@@ -306,7 +318,7 @@
       yandexUser = event.data.user;
       localStorage.setItem('yandex_user', JSON.stringify(yandexUser));
       updateYandexUI();
-      updateCommentForm();
+      showCommentInput();
     }
   });
 
@@ -471,7 +483,7 @@
     likeBtn.onclick = function() { handleLike(postId); };
 
     renderDetailComments(post);
-    updateCommentForm();
+    hideCommentInput();
     document.getElementById('post-detail-modal').classList.add('active');
   }
 
@@ -502,18 +514,29 @@
     }).join('');
   }
 
-  function updateCommentForm() {
-    var form = document.getElementById('comment-form');
-    var prompt = document.getElementById('comment-login-prompt');
+  function showCommentInput() {
+    var triggerBtn = document.getElementById("comment-trigger-btn");
+    var form = document.getElementById("comment-form");
+    var prompt = document.getElementById("comment-login-prompt");
+    triggerBtn.style.display = "none";
     if (yandexUser) {
-      form.style.display = '';
-      prompt.style.display = 'none';
-      document.getElementById('comment-user-photo').src = yandexUser.photo || '';
-      document.getElementById('comment-user-name').textContent = yandexUser.first_name + ' ' + yandexUser.last_name;
+      form.style.display = "";
+      prompt.style.display = "none";
+      document.getElementById("comment-user-photo").src = yandexUser.photo || "";
+      document.getElementById("comment-user-name").textContent = yandexUser.first_name + " " + yandexUser.last_name;
     } else {
-      form.style.display = 'none';
-      prompt.style.display = '';
+      form.style.display = "none";
+      prompt.style.display = "";
     }
+  }
+
+  function hideCommentInput() {
+    var triggerBtn = document.getElementById("comment-trigger-btn");
+    var form = document.getElementById("comment-form");
+    var prompt = document.getElementById("comment-login-prompt");
+    triggerBtn.style.display = "";
+    form.style.display = "none";
+    prompt.style.display = "none";
   }
 
   function submitComment() {
@@ -581,6 +604,8 @@
   window.closePostDetail = closePostDetail;
   window.submitComment = submitComment;
   window.handleLike = handleLike;
+  window.showCommentInput = showCommentInput;
+  window.hideCommentInput = hideCommentInput;
 
   // ===== INIT =====
   loadPosts();
