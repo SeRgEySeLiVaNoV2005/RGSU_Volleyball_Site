@@ -700,7 +700,7 @@
             <p class="text-sm text-on-surface-variant mt-1">Управляйте, отслеживайте и архивируйте все соревновательные события Сборной РГСУ по волейболу.</p>
           </div>
           <div class="flex gap-3">
-            <button class="flex items-center gap-2 px-6 py-2.5 bg-white border border-outline-variant text-royal-blue font-bold rounded-xl hover:bg-surface-container transition-all"><span class="material-symbols-outlined">filter_list</span> Фильтры</button>
+            <button id="tournaments-filter-toggle" class="flex items-center gap-2 px-6 py-2.5 bg-white border border-outline-variant text-royal-blue font-bold rounded-xl hover:bg-surface-container transition-all" onclick="toggleTournamentFilters()"><span class="material-symbols-outlined">filter_list</span> Фильтры</button>
             <button class="flex items-center gap-2 px-6 py-2.5 bg-royal-blue text-white font-bold rounded-xl hover:shadow-lg active:scale-95 transition-all" onclick="openTournamentModal()"><span class="material-symbols-outlined">add_circle</span> Добавить турнир</button>
           </div>
         </div>
@@ -736,6 +736,25 @@
               <span class="material-symbols-outlined text-[140px] rotate-12">emoji_events</span>
             </div>
           </div>
+        </div>
+        <!-- Tournament Filter Bar -->
+        <div id="tournaments-filter-bar" class="bg-white rounded-xl border border-outline-variant shadow-sm p-4 flex flex-wrap gap-3 items-end" style="display:none;">
+          <div class="flex-1 min-w-[200px]">
+            <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Поиск по названию</label>
+            <input id="tournaments-filter-name" class="w-full px-4 py-2.5 bg-white border border-outline-variant rounded-lg text-sm focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/10 outline-none transition-all" placeholder="Введите название..." type="text" oninput="filterTournaments()">
+          </div>
+          <div class="min-w-[160px]">
+            <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Статус</label>
+            <select id="tournaments-filter-status" class="w-full px-4 py-2.5 bg-white border border-outline-variant rounded-lg text-sm focus:border-royal-blue focus:ring-2 focus:ring-royal-blue/10 outline-none transition-all" onchange="filterTournaments()">
+              <option value="">Все статусы</option>
+              <option value="upcoming">Предстоящий</option>
+              <option value="ongoing">Идет</option>
+              <option value="completed">Завершен</option>
+            </select>
+          </div>
+          <button class="px-4 py-2.5 border border-outline-variant text-on-surface-variant font-bold rounded-lg hover:bg-surface-container transition-all text-sm" onclick="clearTournamentFilters()">
+            <span class="material-symbols-outlined text-sm align-middle">clear_all</span> Сбросить
+          </button>
         </div>
         <!-- Tournament Table -->
         <div class="bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden">
@@ -1320,13 +1339,19 @@
   }
 
   function getFilteredTournaments() {
-    if (tournamentTab === 'upcoming') {
-      return tournamentsData.filter(function(t) { return t.status === 'upcoming'; });
-    }
-    if (tournamentTab === 'archive') {
-      return tournamentsData.filter(function(t) { return t.status === 'completed'; });
-    }
-    return tournamentsData;
+    var nameFilter = (document.getElementById('tournaments-filter-name').value || '').toLowerCase();
+    var statusFilter = document.getElementById('tournaments-filter-status').value;
+
+    return tournamentsData.filter(function(t) {
+      // Tab filter
+      if (tournamentTab === 'upcoming' && t.status !== 'upcoming') return false;
+      if (tournamentTab === 'archive' && t.status !== 'completed') return false;
+      // Name search
+      if (nameFilter && (t.title || '').toLowerCase().indexOf(nameFilter) === -1) return false;
+      // Status filter (additional, overrides tab for "Все" only)
+      if (statusFilter && tournamentTab === 'all' && t.status !== statusFilter) return false;
+      return true;
+    });
   }
 
   function setTournamentTab(tab) {
@@ -1340,6 +1365,31 @@
     document.getElementById('tournament-tab-archive').className = tab === 'archive'
       ? 'px-3 py-1 bg-royal-blue text-white text-xs font-bold rounded-full'
       : 'px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors';
+    renderTournamentsTable();
+  }
+
+  function toggleTournamentFilters() {
+    var bar = document.getElementById('tournaments-filter-bar');
+    var btn = document.getElementById('tournaments-filter-toggle');
+    if (bar.style.display === 'none') {
+      bar.style.display = '';
+      btn.classList.add('bg-royal-blue', 'text-white');
+      btn.classList.remove('border-outline-variant');
+      btn.classList.add('border-royal-blue');
+    } else {
+      bar.style.display = 'none';
+      btn.classList.remove('bg-royal-blue', 'text-white', 'border-royal-blue');
+      btn.classList.add('border-outline-variant');
+    }
+  }
+
+  function filterTournaments() {
+    renderTournamentsTable();
+  }
+
+  function clearTournamentFilters() {
+    document.getElementById('tournaments-filter-name').value = '';
+    document.getElementById('tournaments-filter-status').value = '';
     renderTournamentsTable();
   }
 
@@ -1367,9 +1417,17 @@
     var filtered = getFilteredTournaments();
     var tbody = document.getElementById('tournaments-table-body');
     if (filtered.length === 0) {
-      var msg = tournamentTab === 'all'
-        ? 'Нет турниров. Нажмите «Добавить турнир», чтобы начать.'
-        : (tournamentTab === 'upcoming' ? 'Нет предстоящих турниров.' : 'Нет турниров в архиве.');
+      var hasFilters = document.getElementById('tournaments-filter-name').value || document.getElementById('tournaments-filter-status').value;
+      var msg;
+      if (hasFilters) {
+        msg = 'Нет турниров, соответствующих фильтрам.';
+      } else if (tournamentTab === 'all') {
+        msg = 'Нет турниров. Нажмите «Добавить турнир», чтобы начать.';
+      } else if (tournamentTab === 'upcoming') {
+        msg = 'Нет предстоящих турниров.';
+      } else {
+        msg = 'Нет турниров в архиве.';
+      }
       tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-outline text-sm">' + msg + '</td></tr>';
     } else {
       tbody.innerHTML = filtered.map(function(t) {
@@ -1548,6 +1606,9 @@
   window.editTournament = editTournament;
   window.deleteTournament = deleteTournament;
   window.setTournamentTab = setTournamentTab;
+  window.toggleTournamentFilters = toggleTournamentFilters;
+  window.filterTournaments = filterTournaments;
+  window.clearTournamentFilters = clearTournamentFilters;
 })();
 </script>
 </body></html>
