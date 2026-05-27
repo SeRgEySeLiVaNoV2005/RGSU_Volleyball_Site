@@ -15,6 +15,7 @@
   #mobile-menu.open { transform: translateX(0); }
   .nav-link.active { color: #0033A0; }
   .nav-link.active::after { content: ''; display: block; width: 100%; height: 2px; background: #0033A0; margin-top: 2px; border-radius: 1px; }
+  .roster-fade { transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
 </style>
 </head>
 <body class="bg-background text-on-surface selection:bg-primary-container selection:text-white overflow-x-hidden flex flex-col min-h-screen">
@@ -107,8 +108,8 @@
     <div class="relative order-2 lg:order-1">
       <div class="absolute -top-10 -left-10 w-64 h-64 bg-royal-blue/5 rounded-full blur-3xl"></div>
       <div class="relative z-10 glass-panel rounded-xl p-1 shadow-2xl">
-        <img id="roster-player-img" class="rounded-lg w-full aspect-[4/5] object-cover transition-opacity duration-300" src="" alt="">
-        <div id="roster-info-card" class="absolute bottom-4 md:bottom-6 left-4 md:left-6 right-4 md:right-6 p-4 md:p-6 bg-white/90 backdrop-blur-md rounded-xl border border-white/50 transition-opacity duration-300">
+        <img id="roster-player-img" class="rounded-lg w-full aspect-[4/5] object-cover roster-fade" src="" alt="">
+        <div id="roster-info-card" class="absolute bottom-4 md:bottom-6 left-4 md:left-6 right-4 md:right-6 p-4 md:p-6 bg-white/90 backdrop-blur-md rounded-xl border border-white/50 roster-fade">
           <div class="flex justify-between items-center">
             <div><h3 id="roster-player-name" class="font-bold text-royal-blue text-body-lg md:text-headline-md"></h3><span id="roster-player-position" class="bg-sky-blue/20 text-royal-blue px-2 md:px-3 py-1 rounded-full text-xs md:text-label-sm inline-block mt-1"></span></div>
             <div id="roster-player-number" class="bg-royal-blue text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-bold text-sm md:text-base shrink-0 ml-2"></div>
@@ -207,31 +208,37 @@
   });
   })();
   // ===== HOMEPAGE DATA LOADER =====
+  var _rosterBusy = false;
   function showRosterPlayer(index) {
+    if (_rosterBusy) return;
     var p = window._rosterPlayers && window._rosterPlayers[index];
     if (!p) return;
     var img = document.getElementById('roster-player-img');
     var card = document.getElementById('roster-info-card');
+    if (!img || !card) return;
 
-    if (img) img.style.opacity = '0';
-    if (card) card.style.opacity = '0';
+    _rosterBusy = true;
+    img.style.opacity = '0';
+    img.style.transform = 'translateY(8px)';
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(8px)';
 
     setTimeout(function() {
-      if (img && p.image) img.src = p.image;
-      var el;
-      el = document.getElementById('roster-player-name');
-      if (el && p.name) el.textContent = p.name;
-      el = document.getElementById('roster-player-position');
-      if (el && p.position) el.textContent = p.position;
-      el = document.getElementById('roster-player-number');
-      if (el && p.number) el.textContent = p.number;
+      if (p.image) img.src = p.image;
+      document.getElementById('roster-player-name').textContent = p.name || '';
+      document.getElementById('roster-player-position').textContent = p.position || '';
+      document.getElementById('roster-player-number').textContent = p.number || '';
 
-      if (img) {
-        if (img.complete) { img.style.opacity = '1'; }
-        else { img.onload = function() { img.style.opacity = '1'; }; }
-      }
-      if (card) card.style.opacity = '1';
-    }, 180);
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          img.style.opacity = '1';
+          img.style.transform = 'translateY(0)';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+          setTimeout(function() { _rosterBusy = false; }, 360);
+        });
+      });
+    }, 360);
   }
   function getAgeWord(age) {
     var n = age % 100;
