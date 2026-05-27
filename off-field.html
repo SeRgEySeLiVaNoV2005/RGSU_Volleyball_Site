@@ -56,18 +56,18 @@
 
 <main class="flex-grow">
   <section class="max-w-7xl mx-auto px-4 md:px-gutter pb-section-gap pt-8">
-    <!-- Hero -->
-    <section class="mb-section-gap relative rounded-xl overflow-hidden shadow-xl group">
+    <!-- Hero (dynamic) -->
+    <section id="hero-section" class="mb-section-gap relative rounded-xl overflow-hidden shadow-xl group">
       <div class="aspect-[4/3] sm:aspect-video md:aspect-[21/9] w-full overflow-hidden relative">
-        <img alt="Поздравляем капитана" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3RAA1yYJi8tq8vpf7AjFsSMXY0kV0va7bIopvjfe8JMCSbAoeLMQwI5JT25LtL_TtNiPbmtfg1__4-u9ifYU87VngGgMVa7-tHIFEpbpk-sEYywJn_NqI1FrkA_NEA31yfMpjLGQQqfTf0uUr-E8dmeCZeo4H8Q8-U9UvAHAjZAM0-p00vKbZdh9ItUXpLqaOwrQqj2_xU0SMXWju7PFPYkPaEccAnFNFDwCdUPglowR7C8fO2e7HxOdLlBFksHJUDJ24wZbgrzQ">
+        <img id="hero-image" alt="" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" src="">
         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
         <div class="absolute bottom-0 left-0 p-6 sm:p-8 md:p-12 w-full flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div class="max-w-2xl">
-            <span class="bg-victory-gold text-primary font-bold px-3 py-1 rounded-full text-label-sm uppercase tracking-wider mb-4 inline-block">Важное событие</span>
-            <h1 class="font-display-lg text-headline-lg-mobile md:text-display-lg text-white mb-4">Поздравляем капитана с прибавлением в семье!</h1>
-            <p class="font-body-lg text-white/80 max-w-xl hidden sm:block">Наш капитан Андрей стал папой! Вся команда желает малышу крепкого здоровья, а родителям — терпения и как можно больше спокойных ночей.</p>
+            <span id="hero-badge" class="bg-victory-gold text-primary font-bold px-3 py-1 rounded-full text-label-sm uppercase tracking-wider mb-4 inline-block"></span>
+            <h1 id="hero-title" class="font-display-lg text-headline-lg-mobile md:text-display-lg text-white mb-4"></h1>
+            <p id="hero-subtitle" class="font-body-lg text-white/80 max-w-xl hidden sm:block"></p>
           </div>
-          <button class="flex w-full md:w-auto justify-center items-center gap-3 bg-white text-royal-blue px-8 py-4 rounded-full font-black hover:scale-110 transition-transform active:scale-95"><span class="material-symbols-outlined">favorite</span>Поздравить</button>
+          <button id="hero-like-btn" class="flex w-full md:w-auto justify-center items-center gap-3 bg-white text-royal-blue px-8 py-4 rounded-full font-black hover:scale-110 transition-transform active:scale-95"><span class="material-symbols-outlined">favorite</span><span id="hero-like-text">Мне нравится</span></button>
         </div>
       </div>
     </section>
@@ -83,53 +83,8 @@
       </div>
     </section>
 
-    <!-- Social Feed -->
+    <!-- Social Feed (dynamic) -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-section-gap" id="social-feed">
-      <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow group cursor-pointer" data-category="study">
-        <div class="relative aspect-[4/3] sm:aspect-square overflow-hidden">
-          <img alt="Выпускной" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoq3ducr9e8OcmRhpQqpQ8GLKBqT6UndiihXmERlNeFIGmozd_e6KPTCE8EEaUuDT8hFRhxf6eGX7byfnn-lO2_it5Hl-k4a28JesPwehaHO4mOtOyrALlUBbHAcR1ngwm1Xq_BRF0oy60f9T32NXCiCj1QSWxDQ-RHr2gUFzXjKazDjL8IYgqtTuQdRQO91tyQXB2IPh4BaulHQqrjCUff6shCSpnCuyK4qiOPjqUdPFbeti8Ii2eimklrVa0hc-oVP8i5iQ5ou8">
-          <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-label-sm font-bold text-royal-blue">Учеба</div>
-        </div>
-        <div class="p-5 md:p-6">
-          <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-full bg-royal-blue/10 flex items-center justify-center"><span class="material-symbols-outlined text-royal-blue">school</span></div><div><p class="font-bold text-on-surface">Марина Иванова</p><p class="text-xs text-on-surface-variant">3 часа назад</p></div></div>
-          <h3 class="font-headline-md text-headline-md text-on-surface mb-2">На один диплом больше!</h3>
-          <p class="font-body-md text-on-surface-variant line-clamp-3">Сегодня официально завершила обучение в магистратуре РГСУ. Эти 6 лет были невероятными. Спасибо команде за поддержку во время сессий!</p>
-          <div class="flex items-center gap-4 mt-4 pt-4 border-t border-outline-variant/30">
-            <div class="flex items-center gap-1 text-error"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">favorite</span><span class="text-label-sm">124</span></div>
-            <div class="flex items-center gap-1 text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">chat_bubble</span><span class="text-label-sm">12</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow group cursor-pointer" data-category="events">
-        <div class="relative aspect-[4/3] sm:aspect-square overflow-hidden">
-          <img alt="Тимбилдинг" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhFTpvF5M1VLulQkta2kMngi2kWm1Ve9GDqsEO_WxxkxiYAugw2iO7Plq4JduQxI2nRTI21JPl6XdzFf-XAmCoTh61bJxhamxBD9P1ngX6uErQhQCoJDHdP5-fQimDCgeNOKnkze5psTIcxTfC6_GdBSPI68-ECDcxLxVxspquIF3i0xaKHenerwlx6JiuV5JwItl6czh0iZ-nzCyFwVOl6qfdNAeqhBxUuK_gEzF24yQg6VxbcIWi9e4rv90vlfFfFwBZgIyT338">
-          <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-label-sm font-bold text-royal-blue">Мероприятия</div>
-        </div>
-        <div class="p-5 md:p-6">
-          <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-full bg-royal-blue/10 flex items-center justify-center"><span class="material-symbols-outlined text-royal-blue">groups</span></div><div><p class="font-bold text-on-surface">Командный дух</p><p class="text-xs text-on-surface-variant">Вчера</p></div></div>
-          <h3 class="font-headline-md text-headline-md text-on-surface mb-2">Субботний завтрак всей командой</h3>
-          <p class="font-body-md text-on-surface-variant line-clamp-3">Традиционный утренний сбор. Обсуждаем не только тактику, но и планы на лето. Вместе мы — сила не только на площадке!</p>
-          <div class="flex items-center gap-4 mt-4 pt-4 border-t border-outline-variant/30">
-            <div class="flex items-center gap-1 text-error"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">favorite</span><span class="text-label-sm">256</span></div>
-            <div class="flex items-center gap-1 text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">chat_bubble</span><span class="text-label-sm">18</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow group cursor-pointer" data-category="personal">
-        <div class="relative aspect-[4/3] sm:aspect-square overflow-hidden">
-          <img alt="Новая машина" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwK0D0hVeNCkFG0NL_gOdn_9agMIiEv4N6s8l4M0yqOmSz0IRz6l1g91eADM6P_BlXKCvoqKJtGHhfayMpteHTc4h8l8FAOxVURHJwISSoeQ6bCxBMp53Z_Bg6Iw6FymSdY0lzmsDKKeQmceluQbekl1pUpzwAllCvOu3lcf89oif5I-zJZVsM8ZtDV4O_xureXqQA4NV3T7QJ8_rDz1IlCQ4t5-W5S65rVtPBb96O8z3xhYwOXneiJ4i6spcxom7lEK-r8OCY4g0">
-          <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-label-sm font-bold text-royal-blue">Личное</div>
-        </div>
-        <div class="p-5 md:p-6">
-          <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-full bg-royal-blue/10 flex items-center justify-center"><span class="material-symbols-outlined text-royal-blue">directions_car</span></div><div><p class="font-bold text-on-surface">Сергей Волков</p><p class="text-xs text-on-surface-variant">2 дня назад</p></div></div>
-          <h3 class="font-headline-md text-headline-md text-on-surface mb-2">Мечта сбылась!</h3>
-          <p class="font-body-md text-on-surface-variant line-clamp-3">Долго копил, много тренировался и вот — моя первая ласточка. Теперь на тренировки буду добираться еще быстрее (но без нарушений!).</p>
-          <div class="flex items-center gap-4 mt-4 pt-4 border-t border-outline-variant/30">
-            <div class="flex items-center gap-1 text-error"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">favorite</span><span class="text-label-sm">89</span></div>
-            <div class="flex items-center gap-1 text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">chat_bubble</span><span class="text-label-sm">5</span></div>
-          </div>
-        </div>
-      </div>
     </section>
 
     <!-- CTA -->
@@ -145,6 +100,70 @@
       </div>
     </section>
   </section>
+
+  <!-- Post Detail Modal -->
+  <div class="modal-overlay fixed inset-0 z-[70]" id="post-detail-modal">
+    <div class="absolute inset-0 bg-royal-blue/20 backdrop-blur-sm" onclick="closePostDetail()"></div>
+    <div class="modal-content absolute right-0 top-0 h-full w-full max-w-2xl bg-white shadow-2xl flex flex-col">
+      <div class="border-b border-outline-variant flex justify-between items-center bg-white py-4 px-6">
+        <h2 id="detail-title" class="text-xl font-bold text-royal-blue"></h2>
+        <button class="p-2 hover:bg-surface-container rounded-full" onclick="closePostDetail()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto">
+        <div class="aspect-[16/9] w-full overflow-hidden bg-surface-variant">
+          <img id="detail-image" class="w-full h-full object-cover" src="" alt="">
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full bg-royal-blue/10 flex items-center justify-center">
+              <span id="detail-icon" class="material-symbols-outlined text-royal-blue">article</span>
+            </div>
+            <div>
+              <p id="detail-author" class="font-bold text-on-surface"></p>
+              <p id="detail-date" class="text-xs text-on-surface-variant"></p>
+            </div>
+          </div>
+          <p id="detail-content" class="font-body-md text-on-surface-variant leading-relaxed"></p>
+          <div class="flex items-center gap-6 mt-6 pt-6 border-t border-outline-variant/30">
+            <button id="detail-like-btn" class="flex items-center gap-2 text-on-surface-variant hover:text-error transition-colors font-bold">
+              <span class="material-symbols-outlined">favorite</span>
+              <span id="detail-likes-count" class="text-label-sm">0</span>
+            </button>
+            <div class="flex items-center gap-2 text-on-surface-variant">
+              <span class="material-symbols-outlined">chat_bubble</span>
+              <span id="detail-comments-count" class="text-label-sm">0</span>
+            </div>
+          </div>
+        </div>
+        <!-- Comments Section -->
+        <div class="px-6 pb-6 border-t border-outline-variant/30 pt-6">
+          <h4 class="text-sm font-bold text-on-surface uppercase tracking-wider mb-4">Комментарии</h4>
+          <div id="detail-comments-list" class="space-y-3 mb-6"></div>
+          <!-- Comment form (shown only when logged in) -->
+          <div id="comment-form" style="display:none;">
+            <div class="flex items-center gap-3 mb-3">
+              <img id="comment-user-photo" class="w-8 h-8 rounded-full" src="" alt="">
+              <span id="comment-user-name" class="text-sm font-bold"></span>
+            </div>
+            <textarea id="comment-input" class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4 resize-none text-sm" placeholder="Напишите комментарий..." rows="3"></textarea>
+            <button class="mt-3 bg-royal-blue text-white px-6 py-2 rounded-full font-bold hover:bg-primary-container transition-colors active:scale-[0.98]" onclick="submitComment()">Отправить</button>
+            <p id="comment-pending-msg" class="text-xs text-outline mt-2" style="display:none;">Комментарий отправлен и появится после проверки модератором.</p>
+          </div>
+          <div id="comment-login-prompt" class="bg-surface-container-low rounded-xl p-4 text-center">
+            <p class="text-sm text-on-surface-variant mb-3">Войдите через VK ID, чтобы оставить комментарий</p>
+            <button class="bg-[#0077FF] text-white px-6 py-2 rounded-full font-bold hover:bg-[#0066DD] transition-colors active:scale-[0.98]" onclick="vkLogin()">
+              <span class="flex items-center gap-2 justify-center">
+                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M21.579 6.855c.544-.004.862-.403.981-.678.103-.331-.006-.728-.376-.985-.399-.278-.832-.302-1.291-.213h-.007c-2.646.874-5.063 2.87-6.681 5.115-.98-1.008-1.89-2.088-2.723-3.227-.285-.385-.693-.668-1.15-.663-.439-.008-.89.167-1.169.477-.355.387-.376.991-.046 1.442.932 1.29 1.936 2.52 3.007 3.69-1.371 2.264-3.208 4.041-5.637 5.147-.436.198-.695.676-.538 1.152.121.362.448.6.819.6.162.001.322-.047.467-.141 1.039-.618 1.925-1.355 2.742-2.184l.011-.011c1.157 1.446 2.613 2.62 4.283 3.444.329.162.722.09.966-.178.204-.224.262-.543.147-.817-.275-.658-.715-1.416-1.082-2.066 1.444-1.66 2.603-3.568 3.42-5.655.538-1.352 1.486-2.366 2.682-2.908.426-.192.896-.239 1.351-.135z"/></svg>
+                Войти через VK
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Mobile Bottom Nav -->
   <nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-2 bg-white/95 dark:bg-inverse-surface/95 backdrop-blur-md shadow-[0_-4px_10px_rgba(0,0,0,0.05)] rounded-t-xl">
@@ -195,9 +214,12 @@
   </div>
 </footer>
 
+<script src="https://vk.com/js/api/openapi.js?169"></script>
 <script>
 (function() {
   'use strict';
+
+  // ===== MOBILE MENU =====
   var btn = document.getElementById('mobile-menu-btn');
   var menu = document.getElementById('mobile-menu');
   if (btn && menu) {
@@ -214,21 +236,379 @@
     if (window.scrollY > 10) h.classList.add('shadow-md'); else h.classList.remove('shadow-md');
   });
 
-  // Category filter
-  var filter = document.getElementById('category-filter');
-  if (filter) {
-    var buttons = filter.querySelectorAll('button');
-    buttons.forEach(function(btn) {
+  // ===== STATE =====
+  var allPosts = [];
+  var currentCategory = 'all';
+  var vkUser = null;
+  var currentPostId = null;
+  var VK_APP_ID = '';
+  var categories = { personal: 'Личное', study: 'Учеба', travel: 'Путешествия', events: 'Мероприятия' };
+  var catIcons = { personal: 'person', study: 'school', travel: 'flight', events: 'groups' };
+
+  // ===== VK AUTH =====
+  function initVk() {
+    fetch('/api/data')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        VK_APP_ID = (data.settings && data.settings.vk_app_id) || '';
+        if (VK_APP_ID) {
+          try { VK.init({ apiId: parseInt(VK_APP_ID) }); } catch(e) {}
+        }
+        restoreVkUser();
+      })
+      .catch(function() {});
+  }
+
+  function restoreVkUser() {
+    var saved = localStorage.getItem('vk_user');
+    if (saved) {
+      try {
+        vkUser = JSON.parse(saved);
+        updateVkUI();
+      } catch(e) { vkUser = null; }
+    }
+  }
+
+  function vkLogin() {
+    if (!VK_APP_ID) {
+      alert('VK ID не настроен. Администратор должен указать VK App ID в настройках.');
+      return;
+    }
+    try {
+      VK.Auth.login(function(response) {
+        if (response.session && response.session.user) {
+          var user = response.session.user;
+          vkUser = {
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            photo: user.photo || '',
+            photo_rec: user.photo_rec || ''
+          };
+          localStorage.setItem('vk_user', JSON.stringify(vkUser));
+          updateVkUI();
+        }
+      });
+    } catch(e) {
+      // Fallback: redirect to VK OAuth
+      window.open('https://oauth.vk.com/authorize?client_id=' + VK_APP_ID + '&redirect_uri=' + encodeURIComponent(window.location.origin + '/auth-callback.html') + '&response_type=token&v=5.131&display=popup', 'vk-auth', 'width=700,height=500');
+    }
+  }
+
+  function vkLogout() {
+    vkUser = null;
+    localStorage.removeItem('vk_user');
+    updateVkUI();
+    updateCommentForm();
+  }
+
+  function updateVkUI() {
+    var info = document.getElementById('vk-user-info');
+    var loginBtn = document.getElementById('vk-login-btn');
+    var logoutBtn = document.getElementById('vk-logout-btn');
+    if (vkUser) {
+      var photo = document.getElementById('vk-user-photo');
+      var name = document.getElementById('vk-user-name');
+      if (photo) photo.src = vkUser.photo_rec || '';
+      if (name) name.textContent = vkUser.first_name + ' ' + vkUser.last_name;
+      if (info) info.style.display = '';
+      if (loginBtn) loginBtn.style.display = 'none';
+      if (logoutBtn) logoutBtn.style.display = '';
+    } else {
+      if (info) info.style.display = 'none';
+      if (loginBtn) loginBtn.style.display = '';
+      if (logoutBtn) logoutBtn.style.display = 'none';
+    }
+  }
+
+  // Listen for VK auth callback from popup
+  window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'vk-auth-success') {
+      vkUser = event.data.user;
+      localStorage.setItem('vk_user', JSON.stringify(vkUser));
+      updateVkUI();
+      updateCommentForm();
+    }
+  });
+
+  // Init VK on SDK load
+  if (typeof VK !== 'undefined') {
+    initVk();
+  } else {
+    window.vkAsyncInit = initVk;
+  }
+
+  // ===== DATA LOADING =====
+  function loadPosts() {
+    fetch('/api/data')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        allPosts = data.posts || [];
+        renderHero();
+        renderFeed();
+      })
+      .catch(function() {});
+  }
+
+  // ===== HERO =====
+  function renderHero() {
+    var published = allPosts.filter(function(p) { return p.published; });
+    if (published.length === 0) {
+      document.getElementById('hero-section').style.display = 'none';
+      return;
+    }
+    document.getElementById('hero-section').style.display = '';
+    var hero = published.find(function(p) { return p.pinned; }) || published[0];
+    if (!hero) return;
+
+    document.getElementById('hero-image').src = hero.image || '';
+    document.getElementById('hero-image').alt = hero.title || '';
+    document.getElementById('hero-badge').textContent = categories[hero.category] || 'Событие';
+    document.getElementById('hero-title').textContent = hero.title || '';
+    document.getElementById('hero-subtitle').textContent = hero.content || '';
+    document.getElementById('hero-like-btn').onclick = function() { handleLike(hero.id); };
+  }
+
+  // ===== FEED =====
+  function renderFeed() {
+    var feed = document.getElementById('social-feed');
+    var posts = allPosts.filter(function(p) {
+      return p.published && (currentCategory === 'all' || p.category === currentCategory);
+    });
+
+    if (posts.length === 0) {
+      feed.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-lg text-outline">Нет публикаций</p></div>';
+      return;
+    }
+
+    feed.innerHTML = posts.map(function(p) {
+      var liked = isLiked(p.id);
+      var likeIcon = liked ? 'favorite' : 'favorite';
+      var likeFill = liked ? "style=\"font-variation-settings: 'FILL' 1;\"" : '';
+      var likeClass = liked ? 'text-error' : 'text-on-surface-variant';
+      var catIcon = catIcons[p.category] || 'article';
+      var html = '<div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow group cursor-pointer" onclick="openPostDetail(' + p.id + ')">';
+      // Image
+      if (p.image) {
+        html += '<div class="relative aspect-[4/3] sm:aspect-square overflow-hidden">';
+        html += '<img alt="' + (p.title || '') + '" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="' + p.image + '">';
+        html += '<div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-label-sm font-bold text-royal-blue">' + (categories[p.category] || '') + '</div>';
+        html += '</div>';
+      }
+      // Content
+      html += '<div class="p-5 md:p-6">';
+      html += '<div class="flex items-center gap-3 mb-4">';
+      html += '<div class="w-10 h-10 rounded-full bg-royal-blue/10 flex items-center justify-center">';
+      html += '<span class="material-symbols-outlined text-royal-blue">' + catIcon + '</span></div>';
+      html += '<div><p class="font-bold text-on-surface">' + (p.author || 'РГСУ Волейбол') + '</p>';
+      html += '<p class="text-xs text-on-surface-variant">' + timeAgo(p.date) + '</p></div></div>';
+      html += '<h3 class="font-headline-md text-headline-md text-on-surface mb-2">' + (p.title || '') + '</h3>';
+      html += '<p class="font-body-md text-on-surface-variant line-clamp-3">' + (p.content || '') + '</p>';
+      // Stats
+      html += '<div class="flex items-center gap-4 mt-4 pt-4 border-t border-outline-variant/30">';
+      html += '<div class="flex items-center gap-1 ' + likeClass + '" onclick="event.stopPropagation();handleLike(' + p.id + ')">';
+      html += '<span class="material-symbols-outlined text-[20px]" ' + likeFill + '>' + likeIcon + '</span>';
+      html += '<span class="text-label-sm">' + (p.likes || 0) + '</span></div>';
+      html += '<div class="flex items-center gap-1 text-on-surface-variant">';
+      html += '<span class="material-symbols-outlined text-[20px]">chat_bubble</span>';
+      var approvedComments = (p.comments || []).filter(function(c) { return c.approved; });
+      html += '<span class="text-label-sm">' + approvedComments.length + '</span></div>';
+      html += '</div></div></div>';
+      return html;
+    }).join('');
+  }
+
+  // ===== CATEGORY FILTER =====
+  var filterContainer = document.getElementById('category-filter');
+  if (filterContainer) {
+    filterContainer.querySelectorAll('button').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        buttons.forEach(function(b) {
+        currentCategory = this.dataset.category;
+        filterContainer.querySelectorAll('button').forEach(function(b) {
           b.classList.remove('bg-royal-blue', 'text-white', 'shadow-md', 'shadow-royal-blue/20');
           b.classList.add('bg-ice-blue', 'text-royal-blue', 'border', 'border-royal-blue/10');
         });
-        btn.classList.add('bg-royal-blue', 'text-white', 'shadow-md', 'shadow-royal-blue/20');
-        btn.classList.remove('bg-ice-blue', 'text-royal-blue', 'border', 'border-royal-blue/10');
+        this.classList.add('bg-royal-blue', 'text-white', 'shadow-md', 'shadow-royal-blue/20');
+        this.classList.remove('bg-ice-blue', 'text-royal-blue', 'border', 'border-royal-blue/10');
+        renderFeed();
       });
     });
   }
+
+  // ===== LIKES =====
+  function getLikedIds() {
+    var match = document.cookie.match(/(?:^|;\s*)liked_posts=([^;]*)/);
+    if (!match) return [];
+    return match[1].split(',').filter(Boolean).map(Number);
+  }
+
+  function setLikedIds(ids) {
+    document.cookie = 'liked_posts=' + ids.join(',') + '; path=/; max-age=' + (365*24*60*60) + '; SameSite=Lax';
+  }
+
+  function isLiked(postId) {
+    return getLikedIds().indexOf(postId) !== -1;
+  }
+
+  function handleLike(postId) {
+    if (isLiked(postId)) return;
+    fetch('/api/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'like', postId: postId })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      if (res.success) {
+        var ids = getLikedIds();
+        ids.push(postId);
+        setLikedIds(ids);
+        // Update local state
+        var post = allPosts.find(function(p) { return p.id === postId; });
+        if (post) { post.likes = res.likes; }
+        renderFeed();
+        if (currentPostId === postId) updateDetailLikes(res.likes);
+      }
+    })
+    .catch(function() {});
+  }
+
+  // ===== POST DETAIL MODAL =====
+  function openPostDetail(postId) {
+    currentPostId = postId;
+    var post = allPosts.find(function(p) { return p.id === postId; });
+    if (!post) return;
+
+    document.getElementById('detail-title').textContent = post.title || '';
+    document.getElementById('detail-image').src = post.image || '';
+    document.getElementById('detail-icon').textContent = catIcons[post.category] || 'article';
+    document.getElementById('detail-author').textContent = post.author || 'РГСУ Волейбол';
+    document.getElementById('detail-date').textContent = timeAgo(post.date);
+    document.getElementById('detail-content').textContent = post.content || '';
+    document.getElementById('detail-likes-count').textContent = post.likes || 0;
+    document.getElementById('detail-comments-count').textContent = (post.comments || []).filter(function(c) { return c.approved; }).length;
+
+    var liked = isLiked(postId);
+    var likeBtn = document.getElementById('detail-like-btn');
+    likeBtn.className = liked
+      ? 'flex items-center gap-2 text-error transition-colors font-bold'
+      : 'flex items-center gap-2 text-on-surface-variant hover:text-error transition-colors font-bold';
+    likeBtn.onclick = function() { handleLike(postId); };
+
+    renderDetailComments(post);
+    updateCommentForm();
+    document.getElementById('post-detail-modal').classList.add('active');
+  }
+
+  function closePostDetail() {
+    document.getElementById('post-detail-modal').classList.remove('active');
+    currentPostId = null;
+  }
+
+  function updateDetailLikes(count) {
+    document.getElementById('detail-likes-count').textContent = count;
+  }
+
+  function renderDetailComments(post) {
+    var list = document.getElementById('detail-comments-list');
+    var approved = (post.comments || []).filter(function(c) { return c.approved; });
+    if (approved.length === 0) {
+      list.innerHTML = '<p class="text-sm text-outline">Пока нет комментариев. Будьте первым!</p>';
+      return;
+    }
+    list.innerHTML = approved.map(function(c) {
+      var photoHtml = c.vkPhoto
+        ? '<img class="w-8 h-8 rounded-full" src="' + c.vkPhoto + '" alt="">'
+        : '<div class="w-8 h-8 rounded-full bg-royal-blue/10 flex items-center justify-center"><span class="material-symbols-outlined text-royal-blue text-sm">person</span></div>';
+      return '<div class="bg-surface-container-low rounded-xl p-3">'
+        + '<div class="flex items-center gap-2 mb-1">' + photoHtml + '<span class="text-sm font-bold">' + (c.author || 'Аноним') + '</span>'
+        + '<span class="text-xs text-outline ml-auto">' + (c.date || '') + '</span></div>'
+        + '<p class="text-sm text-on-surface-variant">' + (c.text || '') + '</p></div>';
+    }).join('');
+  }
+
+  function updateCommentForm() {
+    var form = document.getElementById('comment-form');
+    var prompt = document.getElementById('comment-login-prompt');
+    if (vkUser) {
+      form.style.display = '';
+      prompt.style.display = 'none';
+      document.getElementById('comment-user-photo').src = vkUser.photo_rec || '';
+      document.getElementById('comment-user-name').textContent = vkUser.first_name + ' ' + vkUser.last_name;
+    } else {
+      form.style.display = 'none';
+      prompt.style.display = '';
+    }
+  }
+
+  function submitComment() {
+    if (!vkUser) { alert('Войдите через VK ID'); return; }
+    if (!currentPostId) return;
+    var text = document.getElementById('comment-input').value.trim();
+    if (!text) return;
+
+    fetch('/api/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'comment',
+        postId: currentPostId,
+        text: text,
+        vkUser: vkUser
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      if (res.success) {
+        document.getElementById('comment-input').value = '';
+        document.getElementById('comment-pending-msg').style.display = '';
+        // Add to local state
+        var post = allPosts.find(function(p) { return p.id === currentPostId; });
+        if (post) {
+          if (!post.comments) post.comments = [];
+          post.comments.push(res.comment);
+          renderDetailComments(post);
+        }
+      }
+    })
+    .catch(function() { alert('Ошибка при отправке комментария'); });
+  }
+
+  // ===== UTILS =====
+  function timeAgo(dateStr) {
+    if (!dateStr) return '';
+    var now = new Date();
+    var date = new Date(dateStr);
+    var diffMs = now - date;
+    var diffSec = Math.floor(diffMs / 1000);
+    var diffMin = Math.floor(diffSec / 60);
+    var diffHour = Math.floor(diffMin / 60);
+    var diffDay = Math.floor(diffHour / 24);
+
+    if (diffSec < 60) return 'только что';
+    if (diffMin < 60) return diffMin + ' мин. назад';
+    if (diffHour < 24) return diffHour + ' ч. назад';
+    if (diffDay === 1) return 'вчера';
+    if (diffDay < 7) return diffDay + ' дн. назад';
+    var months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+    return date.getDate() + ' ' + months[date.getMonth()] + ', ' + date.getFullYear();
+  }
+
+  // Escape key closes detail modal
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closePostDetail();
+  });
+
+  // Expose to global scope
+  window.vkLogin = vkLogin;
+  window.vkLogout = vkLogout;
+  window.openPostDetail = openPostDetail;
+  window.closePostDetail = closePostDetail;
+  window.submitComment = submitComment;
+  window.handleLike = handleLike;
+
+  // ===== INIT =====
+  loadPosts();
 })();
 </script>
 </body></html>

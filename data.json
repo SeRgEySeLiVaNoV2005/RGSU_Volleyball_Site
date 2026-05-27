@@ -10,8 +10,17 @@
       "author": "admin",
       "published": true,
       "comments": [
-        { "id": 1, "author": "Команда РГСУ", "text": "Поздравляем! 🎉", "date": "2025-01-15", "replies": [] }
-      ]
+        {
+          "id": 1,
+          "author": "Команда РГСУ",
+          "text": "Поздравляем! 🎉",
+          "date": "2025-01-15",
+          "replies": [],
+          "approved": true
+        }
+      ],
+      "likes": 0,
+      "pinned": false
     },
     {
       "id": 2,
@@ -22,7 +31,9 @@
       "date": "2025-01-12",
       "author": "admin",
       "published": true,
-      "comments": []
+      "comments": [],
+      "likes": 0,
+      "pinned": false
     },
     {
       "id": 3,
@@ -33,7 +44,9 @@
       "date": "2025-01-10",
       "author": "admin",
       "published": true,
-      "comments": []
+      "comments": [],
+      "likes": 0,
+      "pinned": false
     },
     {
       "id": 4,
@@ -44,11 +57,14 @@
       "date": "2025-01-08",
       "author": "admin",
       "published": true,
-      "comments": []
+      "comments": [],
+      "likes": 0,
+      "pinned": false
     }
   ],
   "settings": {
-    "site_title": "РГСУ ВОЛЕЙБОЛ"
+    "site_title": "РГСУ ВОЛЕЙБОЛ",
+    "vk_app_id": ""
   },
   "players": [
     {

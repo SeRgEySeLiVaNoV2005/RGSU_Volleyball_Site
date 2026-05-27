@@ -17,7 +17,7 @@ function readData() {
   } catch {
     return {
       posts: [],
-      settings: { site_title: 'РГСУ ВОЛЕЙБОЛ' },
+      settings: { site_title: 'РГСУ ВОЛЕЙБОЛ', vk_app_id: '' },
       players: [],
       tournaments: [],
       homepage: {
@@ -70,18 +70,69 @@ export default function handler(req, res) {
     return;
   }
 
-  if (!verifyToken(req.headers.authorization)) {
-    res.status(401).json({ error: 'Неавторизован' });
-    return;
-  }
-
   if (req.method === 'POST') {
-    const newData = req.body;
-    if (!newData) {
+    const body = req.body;
+
+    // Public actions (no auth required)
+    if (body && body.action) {
+      const data = readData();
+
+      if (body.action === 'like') {
+        const post = (data.posts || []).find(function(p) { return p.id === body.postId; });
+        if (!post) {
+          res.status(404).json({ error: 'Пост не найден' });
+          return;
+        }
+        post.likes = (post.likes || 0) + 1;
+        writeData(data);
+        res.status(200).json({ success: true, likes: post.likes });
+        return;
+      }
+
+      if (body.action === 'comment') {
+        if (!body.text || !body.vkUser || !body.vkUser.id) {
+          res.status(400).json({ error: 'Требуется текст комментария и VK авторизация' });
+          return;
+        }
+        const post = (data.posts || []).find(function(p) { return p.id === body.postId; });
+        if (!post) {
+          res.status(404).json({ error: 'Пост не найден' });
+          return;
+        }
+        if (!post.comments) post.comments = [];
+        var newComment = {
+          id: post.comments.length > 0
+            ? Math.max.apply(null, post.comments.map(function(c) { return c.id; })) + 1
+            : 1,
+          author: body.vkUser.first_name + ' ' + body.vkUser.last_name,
+          text: body.text,
+          date: new Date().toISOString().split('T')[0],
+          approved: false,
+          vkUserId: body.vkUser.id,
+          vkPhoto: body.vkUser.photo_rec || '',
+          replies: []
+        };
+        post.comments.push(newComment);
+        writeData(data);
+        res.status(200).json({ success: true, comment: newComment });
+        return;
+      }
+
+      res.status(400).json({ error: 'Неизвестное действие' });
+      return;
+    }
+
+    // Admin actions (auth required)
+    if (!verifyToken(req.headers.authorization)) {
+      res.status(401).json({ error: 'Неавторизован' });
+      return;
+    }
+
+    if (!body) {
       res.status(400).json({ error: 'Нет данных' });
       return;
     }
-    writeData(newData);
+    writeData(body);
     res.status(200).json({ success: true, data: readData() });
   } else {
     res.status(405).json({ error: 'Method not allowed' });

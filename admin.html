@@ -517,23 +517,23 @@
           <div class="col-span-12 lg:col-span-4 bg-royal-blue text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between overflow-hidden relative group">
             <div class="relative z-10">
               <span class="text-xs uppercase tracking-widest opacity-80 font-bold">ОБЩАЯ АКТИВНОСТЬ</span>
-              <h3 class="text-4xl font-extrabold mt-2">1,284</h3>
-              <p class="text-sm mt-1 opacity-90">Взаимодействие читателей в этом месяце</p>
+              <h3 id="offfield-stats-likes" class="text-4xl font-extrabold mt-2">0</h3>
+              <p class="text-sm mt-1 opacity-90">Всего лайков под публикациями</p>
             </div>
             <div class="mt-8 flex gap-2 relative z-10">
               <div class="flex-1 bg-white/10 p-3 rounded-xl backdrop-blur-md">
-                <span class="block text-xl font-bold">42</span>
-                <span class="text-xs opacity-70">Статьи</span>
+                <span id="offfield-stats-published" class="block text-xl font-bold">0</span>
+                <span class="text-xs opacity-70">Опубликовано</span>
               </div>
               <div class="flex-1 bg-white/10 p-3 rounded-xl backdrop-blur-md">
-                <span class="block text-xl font-bold">12</span>
+                <span id="offfield-stats-drafts" class="block text-xl font-bold">0</span>
                 <span class="text-xs opacity-70">Черновики</span>
               </div>
             </div>
             <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/5 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700"></div>
           </div>
           <!-- Create Post Trigger -->
-          <div class="col-span-12 lg:col-span-8 flex flex-col justify-center bg-white border-2 border-dashed border-outline-variant rounded-2xl p-6 shadow-sm hover:border-royal-blue transition-colors cursor-pointer" onclick="openOffFieldEditor()">
+          <div class="col-span-12 lg:col-span-8 flex flex-col justify-center bg-white border-2 border-dashed border-outline-variant rounded-2xl p-6 shadow-sm hover:border-royal-blue transition-colors cursor-pointer" onclick="openPostEditor()">
             <div class="flex flex-col items-center gap-3">
               <div class="w-14 h-14 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
                 <span class="material-symbols-outlined text-3xl">add</span>
@@ -546,12 +546,28 @@
           </div>
           <!-- News Table -->
           <div class="col-span-12 bg-white border border-outline-variant rounded-2xl shadow-sm overflow-hidden">
-            <div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center">
-              <h3 class="text-xl font-bold text-on-surface">Недавние публикации</h3>
-              <div class="flex gap-2">
-                <button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors"><span class="material-symbols-outlined">filter_list</span></button>
-                <button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors"><span class="material-symbols-outlined">download</span></button>
+            <div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <h3 class="text-xl font-bold text-on-surface">Публикации</h3>
+                <button id="offfield-tab-all" class="px-3 py-1 bg-royal-blue text-white text-xs font-bold rounded-full" onclick="setOffFieldTab('all')">Все</button>
+                <button id="offfield-tab-published" class="px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors" onclick="setOffFieldTab('published')">Опубликованные</button>
+                <button id="offfield-tab-drafts" class="px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors" onclick="setOffFieldTab('drafts')">Черновики</button>
               </div>
+              <div class="flex gap-2">
+                <button id="offfield-filter-toggle" class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors" onclick="toggleOffFieldFilters()" title="Фильтры"><span class="material-symbols-outlined">filter_list</span></button>
+              </div>
+            </div>
+            <!-- Filter Bar -->
+            <div id="offfield-filter-bar" class="px-6 py-4 border-b border-outline-variant bg-surface-container-low flex flex-wrap gap-3" style="display:none;">
+              <input id="offfield-filter-name" class="flex-1 min-w-[200px] rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-2 px-4 text-sm" placeholder="Поиск по названию..." type="text" oninput="filterOffFieldPosts()">
+              <select id="offfield-filter-category" class="rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-2 px-4 text-sm" onchange="filterOffFieldPosts()">
+                <option value="">Все категории</option>
+                <option value="personal">Личное</option>
+                <option value="study">Учеба</option>
+                <option value="travel">Путешествия</option>
+                <option value="events">Мероприятия</option>
+              </select>
+              <button class="px-4 py-2 text-sm font-bold text-on-surface-variant hover:text-on-surface transition-colors" onclick="clearOffFieldFilters()">Сбросить</button>
             </div>
             <div class="overflow-x-auto">
               <table class="w-full text-left border-collapse">
@@ -564,111 +580,58 @@
                     <th class="px-6 py-4 uppercase tracking-wider">ДЕЙСТВИЯ</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-outline-variant">
-                  <tr class="hover:bg-surface-container-lowest transition-colors group">
-                    <td class="px-6 py-4">
-                      <div class="w-16 h-10 rounded-md overflow-hidden bg-surface-variant">
-                        <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJHCy6Bz7dBrPt4KZkqm80xcEG7tpssHYL_x04kXoAnhWvnkB28wQARE62Yz3JG0wpDxy55MHLBrVRE_4IVKTatdkcx61o5PXWDHKsn1jYLg-zEhXiALT-U1QplSw6RY8E5Vy9xWGrFWhiahb3WOxCgGQYpCyljqmbaMfcWxJCAhbNrvOYfyZsS_Y8j5FKcvQz3kxDHfcEp_7YFwh_g9_5w0gimmlcb2aJ9gJV-8299Zr4cd7U828_7vcp_AkwqJiuGkCIlgfh3RY">
-                      </div>
-                    </td>
-                    <td class="px-6 py-4">
-                      <div class="text-base font-bold text-royal-blue group-hover:text-primary-container transition-colors">Поездка команды: Пункт назначения Италия</div>
-                      <div class="text-sm text-outline">Опубликовано 24 окт. 2023</div>
-                    </td>
-                    <td class="px-6 py-4"><span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed-variant rounded-full text-xs font-bold">Путешествия</span></td>
-                    <td class="px-6 py-4"><div class="flex items-center gap-1.5 text-green-600 text-xs font-bold"><span class="w-2 h-2 rounded-full bg-green-500"></span>Опубликовано</div></td>
-                    <td class="px-6 py-4">
-                      <div class="flex gap-2">
-                        <button class="p-1.5 text-outline hover:text-royal-blue transition-colors"><span class="material-symbols-outlined">edit</span></button>
-                        <button class="p-1.5 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined">delete</span></button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="bg-surface-container-low/30 hover:bg-surface-container-lowest transition-colors group">
-                    <td class="px-6 py-4">
-                      <div class="w-16 h-10 rounded-md overflow-hidden bg-surface-variant">
-                        <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDS70FYyDB3hzyhONnF751gAp-GwGcU1xP2ntmzHxR6qhLKltwvlavZffP30hAZ3bdmrMDurU9nBiHeKKziyB3hTAgt5od0Gs9QTrl5nrf7qxOBu2Tb407rm_Qi9j1VFEinlClU641GJM5LqAQCXWlmNed5kyTP4mOtH-oHXE8QNqMZ6AEHF3_z6xhXQBDhBbsEYerQQlfCu_ceapesHOqbCUpDem6ka33tToTR0wgcp9ixBYlKaI1X4Wqc5p9ESzhRnD7QKpYrgzc">
-                      </div>
-                    </td>
-                    <td class="px-6 py-4">
-                      <div class="text-base font-bold text-royal-blue group-hover:text-primary-container transition-colors">Сессия: Баланс между учебой и тренировками</div>
-                      <div class="text-sm text-outline">Опубликовано 18 окт. 2023</div>
-                    </td>
-                    <td class="px-6 py-4"><span class="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed-variant rounded-full text-xs font-bold">Учеба</span></td>
-                    <td class="px-6 py-4"><div class="flex items-center gap-1.5 text-green-600 text-xs font-bold"><span class="w-2 h-2 rounded-full bg-green-500"></span>Опубликовано</div></td>
-                    <td class="px-6 py-4">
-                      <div class="flex gap-2">
-                        <button class="p-1.5 text-outline hover:text-royal-blue transition-colors"><span class="material-symbols-outlined">edit</span></button>
-                        <button class="p-1.5 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined">delete</span></button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="hover:bg-surface-container-lowest transition-colors group">
-                    <td class="px-6 py-4">
-                      <div class="w-16 h-10 rounded-md overflow-hidden bg-surface-variant">
-                        <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjYx6phuHV3oWwZBO9Z8D6uqDL9PgXdPx7eiKzCoiNwC4Soc2LRwEh_41s9Qnuqi9v9MgmXe_Xv094srsvmnS58XfMJJpsrofLdmEpjKMuFliqR-uWlWwulsjRl5ywSRJYQvyjYgo0a3igSUHsT7LdwKqmhScoIr2zfk7h0VVR0JbQtWA16P3GmajI5ULGm869DWZ1jQVY4_znOg7gT8ufQOJq5GBSbK6EVaKvhGz0eg3kwD0p4oc7I5YgVIrduYSK4Lm9PRVbRtU">
-                      </div>
-                    </td>
-                    <td class="px-6 py-4">
-                      <div class="text-base font-bold text-royal-blue group-hover:text-primary-container transition-colors">Ежегодный гала-вечер 2023: Фотоотчет</div>
-                      <div class="text-sm text-outline">Опубликовано 12 окт. 2023</div>
-                    </td>
-                    <td class="px-6 py-4"><span class="px-3 py-1 bg-primary-fixed text-on-primary-fixed-variant rounded-full text-xs font-bold">Мероприятие</span></td>
-                    <td class="px-6 py-4"><div class="flex items-center gap-1.5 text-outline text-xs font-bold"><span class="w-2 h-2 rounded-full bg-outline-variant"></span>Черновик</div></td>
-                    <td class="px-6 py-4">
-                      <div class="flex gap-2">
-                        <button class="p-1.5 text-outline hover:text-royal-blue transition-colors"><span class="material-symbols-outlined">edit</span></button>
-                        <button class="p-1.5 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined">delete</span></button>
-                      </div>
-                    </td>
-                  </tr>
+                <tbody id="offfield-table-body" class="divide-y divide-outline-variant">
                 </tbody>
               </table>
+            </div>
+            <div class="px-6 py-3 border-t border-outline-variant bg-surface-container-low">
+              <p id="offfield-pagination-info" class="text-xs font-bold text-outline">Показано 0 из 0 публикаций</p>
             </div>
           </div>
         </div>
         <!-- Off-Field Editor Modal -->
         <div class="modal-overlay fixed inset-0 z-[70]" id="offfield-editor">
-          <div class="absolute inset-0 bg-royal-blue/20 backdrop-blur-sm" onclick="closeOffFieldEditor()"></div>
+          <div class="absolute inset-0 bg-royal-blue/20 backdrop-blur-sm" onclick="closePostEditor()"></div>
           <div class="modal-content absolute right-0 top-0 h-full w-full max-w-2xl bg-white shadow-2xl flex flex-col">
             <div class="border-b border-outline-variant flex justify-between items-center bg-white py-4 px-6">
               <div>
-                <h2 class="text-xl font-bold text-royal-blue">Создать пост «Мы вне поля»</h2>
+                <h2 id="offfield-editor-title" class="text-xl font-bold text-royal-blue">Создать пост «Мы вне поля»</h2>
               </div>
-              <button class="p-2 hover:bg-surface-container rounded-full" onclick="closeOffFieldEditor()">
+              <button class="p-2 hover:bg-surface-container rounded-full" onclick="closePostEditor()">
                 <span class="material-symbols-outlined">close</span>
               </button>
             </div>
             <div class="flex-1 overflow-y-auto p-6 space-y-6">
+              <input id="post-id" type="hidden">
               <div class="space-y-3">
-                <label class="text-xs font-bold text-on-surface uppercase tracking-wider">Обложка публикации</label>
-                <div class="border-2 border-dashed border-outline-variant rounded-2xl h-48 flex flex-col items-center justify-center gap-2 hover:border-royal-blue transition-colors cursor-pointer group bg-surface-container-low">
-                  <span class="material-symbols-outlined text-4xl text-outline group-hover:text-royal-blue">cloud_upload</span>
-                  <p class="text-sm text-outline">Нажмите или перетащите изображение для загрузки (макс. 5МБ)</p>
+                <label class="text-xs font-bold text-on-surface uppercase tracking-wider">Обложка публикации (URL)</label>
+                <input id="post-image" class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4" placeholder="Вставьте URL изображения..." type="text">
+                <div id="post-image-preview" class="rounded-xl overflow-hidden bg-surface-variant" style="display:none;">
+                  <img id="post-image-preview-img" class="w-full h-48 object-cover" src="" alt="">
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-4">
                 <div class="col-span-2 space-y-2">
                   <label class="text-xs font-bold text-on-surface uppercase tracking-wider">Заголовок</label>
-                  <input class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4" placeholder="Введите заголовок..." type="text">
+                  <input id="post-title" class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4" placeholder="Введите заголовок..." type="text">
                 </div>
                 <div class="space-y-2">
                   <label class="text-xs font-bold text-on-surface uppercase tracking-wider">Категория</label>
-                  <select class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4">
-                    <option>Жизнь</option><option>Учеба</option><option>Путешествия</option><option>Мероприятия</option>
+                  <select id="post-category" class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4">
+                    <option value="personal">Личное</option><option value="study">Учеба</option><option value="travel">Путешествия</option><option value="events">Мероприятия</option>
                   </select>
                 </div>
                 <div class="space-y-2">
                   <label class="text-xs font-bold text-on-surface uppercase tracking-wider">Дата публикации</label>
-                  <input class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4" type="date">
+                  <input id="post-date" class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4" type="date">
                 </div>
                 <div class="col-span-2 space-y-2">
                   <label class="text-xs font-bold text-on-surface uppercase tracking-wider">Основное содержание</label>
-                  <textarea class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4 resize-none" placeholder="Напишите историю здесь..." rows="6"></textarea>
+                  <textarea id="post-content" class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4 resize-none" placeholder="Напишите историю здесь..." rows="6"></textarea>
                 </div>
                 <div class="col-span-2 flex items-center gap-3 p-1">
-                  <input type="checkbox" id="important-post" class="w-5 h-5 rounded border-outline-variant text-royal-blue focus:ring-royal-blue/20 transition-all cursor-pointer">
-                  <label for="important-post" class="text-xs font-bold text-on-surface cursor-pointer">Важный пост</label>
+                  <input type="checkbox" id="post-pinned" class="w-5 h-5 rounded border-outline-variant text-royal-blue focus:ring-royal-blue/20 transition-all cursor-pointer">
+                  <label for="post-pinned" class="text-xs font-bold text-on-surface cursor-pointer">Важный пост (закрепить в hero)</label>
                 </div>
                 <div class="col-span-2 flex items-center justify-between p-4 bg-surface-container-low rounded-xl">
                   <div class="flex flex-col">
@@ -676,15 +639,22 @@
                     <span class="text-xs text-outline">Сделать этот пост доступным сразу после сохранения</span>
                   </div>
                   <label class="relative inline-flex items-center cursor-pointer">
-                    <input checked class="sr-only peer" type="checkbox">
+                    <input id="post-published" checked class="sr-only peer" type="checkbox">
                     <div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-royal-blue"></div>
                   </label>
                 </div>
               </div>
+              <!-- Comments moderation section (shown when editing) -->
+              <div id="post-comments-section" style="display:none;">
+                <div class="border-t border-outline-variant pt-6">
+                  <h4 class="text-sm font-bold text-on-surface uppercase tracking-wider mb-4">Комментарии (модерация)</h4>
+                  <div id="post-comments-list" class="space-y-3"></div>
+                </div>
+              </div>
             </div>
             <div class="p-6 border-t border-outline-variant bg-white flex gap-3">
-              <button class="flex-1 py-3 px-4 rounded-xl border border-outline-variant text-sm font-bold text-on-surface hover:bg-surface-container transition-all" onclick="closeOffFieldEditor()">Сохранить черновик</button>
-              <button class="flex-[2] py-3 px-4 rounded-xl bg-royal-blue text-white text-sm font-bold hover:bg-primary-container shadow-lg shadow-royal-blue/20 transition-all active:scale-[0.98]">Опубликовать</button>
+              <button class="flex-1 py-3 px-4 rounded-xl border border-outline-variant text-sm font-bold text-on-surface hover:bg-surface-container transition-all" onclick="savePost(false)">Сохранить черновик</button>
+              <button class="flex-[2] py-3 px-4 rounded-xl bg-royal-blue text-white text-sm font-bold hover:bg-primary-container shadow-lg shadow-royal-blue/20 transition-all active:scale-[0.98]" onclick="savePost(true)">Опубликовать</button>
             </div>
           </div>
         </div>
@@ -873,6 +843,7 @@
     loadHomepageData();
     loadPlayersData();
     loadTournamentsData();
+    loadOffFieldData();
   }
 
   if (token) { showAdmin(); } else { showLogin(); }
@@ -940,7 +911,8 @@
           posts: currentData.posts || [],
           settings: currentData.settings || { site_title: 'РГСУ ВОЛЕЙБОЛ' },
           homepage: hp,
-          players: currentData.players || []
+          players: currentData.players || [],
+          tournaments: currentData.tournaments || []
         };
         return fetch('/api/data', {
           method: 'POST',
@@ -1155,7 +1127,8 @@
           posts: currentData.posts || [],
           settings: currentData.settings || { site_title: 'РГСУ ВОЛЕЙБОЛ' },
           homepage: currentData.homepage || {},
-          players: updatedPlayers
+          players: updatedPlayers,
+          tournaments: currentData.tournaments || []
         };
         return fetch('/api/data', {
           method: 'POST',
@@ -1206,7 +1179,8 @@
           posts: currentData.posts || [],
           settings: currentData.settings || { site_title: 'РГСУ ВОЛЕЙБОЛ' },
           homepage: currentData.homepage || {},
-          players: updatedPlayers
+          players: updatedPlayers,
+          tournaments: currentData.tournaments || []
         };
         return fetch('/api/data', {
           method: 'POST',
@@ -1319,9 +1293,331 @@
     URL.revokeObjectURL(url);
   }
 
-  // ===== OFF-FIELD EDITOR =====
-  function openOffFieldEditor() { document.getElementById('offfield-editor').classList.add('active'); }
-  function closeOffFieldEditor() { document.getElementById('offfield-editor').classList.remove('active'); }
+  // ===== OFF-FIELD CRUD =====
+  var postsData = [];
+  var postTab = 'all';
+
+  function loadOffFieldData() {
+    fetch('/api/data')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        postsData = data.posts || [];
+        renderOffFieldTable();
+        updateOffFieldStats();
+      })
+      .catch(function() {});
+  }
+
+  function getFilteredOffFieldPosts() {
+    var nameFilter = (document.getElementById('offfield-filter-name').value || '').toLowerCase();
+    var categoryFilter = document.getElementById('offfield-filter-category').value;
+
+    return postsData.filter(function(p) {
+      if (postTab === 'published' && !p.published) return false;
+      if (postTab === 'drafts' && p.published) return false;
+      if (nameFilter && (p.title || '').toLowerCase().indexOf(nameFilter) === -1) return false;
+      if (categoryFilter && p.category !== categoryFilter) return false;
+      return true;
+    });
+  }
+
+  function setOffFieldTab(tab) {
+    postTab = tab;
+    document.getElementById('offfield-tab-all').className = tab === 'all'
+      ? 'px-3 py-1 bg-royal-blue text-white text-xs font-bold rounded-full'
+      : 'px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors';
+    document.getElementById('offfield-tab-published').className = tab === 'published'
+      ? 'px-3 py-1 bg-royal-blue text-white text-xs font-bold rounded-full'
+      : 'px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors';
+    document.getElementById('offfield-tab-drafts').className = tab === 'drafts'
+      ? 'px-3 py-1 bg-royal-blue text-white text-xs font-bold rounded-full'
+      : 'px-3 py-1 hover:bg-surface-container text-xs font-bold rounded-full transition-colors';
+    renderOffFieldTable();
+  }
+
+  function toggleOffFieldFilters() {
+    var bar = document.getElementById('offfield-filter-bar');
+    var btn = document.getElementById('offfield-filter-toggle');
+    if (bar.style.display === 'none') {
+      bar.style.display = '';
+      btn.classList.add('bg-royal-blue', 'text-white');
+      btn.classList.remove('border-outline-variant');
+      btn.classList.add('border-royal-blue');
+    } else {
+      bar.style.display = 'none';
+      btn.classList.remove('bg-royal-blue', 'text-white', 'border-royal-blue');
+      btn.classList.add('border-outline-variant');
+    }
+  }
+
+  function filterOffFieldPosts() {
+    renderOffFieldTable();
+  }
+
+  function clearOffFieldFilters() {
+    document.getElementById('offfield-filter-name').value = '';
+    document.getElementById('offfield-filter-category').value = '';
+    renderOffFieldTable();
+  }
+
+  function formatPostDate(dateStr) {
+    var months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+    var d = new Date(dateStr);
+    return d.getDate() + ' ' + months[d.getMonth()] + ', ' + d.getFullYear();
+  }
+
+  function renderOffFieldTable() {
+    var filtered = getFilteredOffFieldPosts();
+    var tbody = document.getElementById('offfield-table-body');
+    var info = document.getElementById('offfield-pagination-info');
+    var categories = { personal: 'Личное', study: 'Учеба', travel: 'Путешествия', events: 'Мероприятия' };
+    var catColors = { personal: 'bg-tertiary-fixed text-on-tertiary-fixed-variant', study: 'bg-secondary-fixed text-on-secondary-fixed-variant', travel: 'bg-primary-fixed text-on-primary-fixed-variant', events: 'bg-victory-gold/70 text-primary' };
+
+    info.textContent = 'Показано ' + filtered.length + ' из ' + postsData.length + ' публикаций';
+
+    if (filtered.length === 0) {
+      var hasFilters = (document.getElementById('offfield-filter-name').value || document.getElementById('offfield-filter-category').value);
+      var msg;
+      if (hasFilters) {
+        msg = 'Нет публикаций, соответствующих фильтрам.';
+      } else if (postTab === 'published') {
+        msg = 'Нет опубликованных публикаций.';
+      } else if (postTab === 'drafts') {
+        msg = 'Нет черновиков.';
+      } else {
+        msg = 'Нет публикаций. Нажмите «Создать новый пост», чтобы начать.';
+      }
+      tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-outline text-sm">' + msg + '</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(function(p) {
+      var imgCol = p.image
+        ? '<div class="w-16 h-10 rounded-md overflow-hidden bg-surface-variant"><img class="w-full h-full object-cover" src="' + p.image + '" alt=""></div>'
+        : '<div class="w-16 h-10 rounded-md overflow-hidden bg-surface-variant flex items-center justify-center"><span class="material-symbols-outlined text-outline text-lg">image</span></div>';
+      var catName = categories[p.category] || p.category || 'Без категории';
+      var catClass = catColors[p.category] || 'bg-surface-variant text-outline';
+      var statusHtml = p.published
+        ? '<div class="flex items-center gap-1.5 text-green-600 text-xs font-bold"><span class="w-2 h-2 rounded-full bg-green-500"></span>Опубликовано</div>'
+        : '<div class="flex items-center gap-1.5 text-outline text-xs font-bold"><span class="w-2 h-2 rounded-full bg-outline-variant"></span>Черновик</div>';
+      return '<tr class="hover:bg-surface-container-lowest transition-colors group">'
+        + '<td class="px-6 py-4">' + imgCol + '</td>'
+        + '<td class="px-6 py-4"><div class="text-base font-bold text-royal-blue group-hover:text-primary-container transition-colors">' + (p.title || 'Без названия') + '</div><div class="text-sm text-outline">' + formatPostDate(p.date) + '</div></td>'
+        + '<td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-bold ' + catClass + '">' + catName + '</span></td>'
+        + '<td class="px-6 py-4">' + statusHtml + '</td>'
+        + '<td class="px-6 py-4"><div class="flex gap-2">'
+        + '<button class="p-1.5 text-outline hover:text-royal-blue transition-colors" onclick="editPost(' + p.id + ')"><span class="material-symbols-outlined">edit</span></button>'
+        + '<button class="p-1.5 text-outline hover:text-error transition-colors" onclick="deletePost(' + p.id + ')"><span class="material-symbols-outlined">delete</span></button>'
+        + '</div></td></tr>';
+    }).join('');
+  }
+
+  function updateOffFieldStats() {
+    var published = postsData.filter(function(p) { return p.published; }).length;
+    var drafts = postsData.filter(function(p) { return !p.published; }).length;
+    var totalLikes = postsData.reduce(function(sum, p) { return sum + (p.likes || 0); }, 0);
+    document.getElementById('offfield-stats-published').textContent = published;
+    document.getElementById('offfield-stats-drafts').textContent = drafts;
+    document.getElementById('offfield-stats-likes').textContent = totalLikes;
+  }
+
+  function openPostEditor(post) {
+    document.getElementById('post-id').value = '';
+    document.getElementById('offfield-editor-title').textContent = 'Создать пост «Мы вне поля»';
+    document.getElementById('post-title').value = '';
+    document.getElementById('post-content').value = '';
+    document.getElementById('post-image').value = '';
+    document.getElementById('post-category').value = 'personal';
+    document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('post-pinned').checked = false;
+    document.getElementById('post-published').checked = true;
+    document.getElementById('post-image-preview').style.display = 'none';
+    document.getElementById('post-comments-section').style.display = 'none';
+    document.getElementById('post-comments-list').innerHTML = '';
+
+    if (post) {
+      document.getElementById('post-id').value = post.id;
+      document.getElementById('offfield-editor-title').textContent = 'Редактировать пост';
+      document.getElementById('post-title').value = post.title || '';
+      document.getElementById('post-content').value = post.content || '';
+      document.getElementById('post-image').value = post.image || '';
+      document.getElementById('post-category').value = post.category || 'personal';
+      document.getElementById('post-date').value = post.date || '';
+      document.getElementById('post-pinned').checked = post.pinned || false;
+      document.getElementById('post-published').checked = post.published !== false;
+      if (post.image) {
+        document.getElementById('post-image-preview-img').src = post.image;
+        document.getElementById('post-image-preview').style.display = '';
+      }
+      // Show comments for moderation
+      if (post.comments && post.comments.length > 0) {
+        document.getElementById('post-comments-section').style.display = '';
+        renderPostComments(post.comments, post.id);
+      }
+    }
+
+    document.getElementById('offfield-editor').classList.add('active');
+  }
+
+  function closePostEditor() {
+    document.getElementById('offfield-editor').classList.remove('active');
+  }
+
+  function renderPostComments(comments, postId) {
+    var list = document.getElementById('post-comments-list');
+    if (!comments || comments.length === 0) {
+      list.innerHTML = '<p class="text-sm text-outline">Нет комментариев</p>';
+      return;
+    }
+    list.innerHTML = comments.map(function(c) {
+      var statusBadge = c.approved
+        ? '<span class="text-xs text-green-600 font-bold">Одобрен</span>'
+        : '<span class="text-xs text-amber-600 font-bold">На модерации</span>';
+      var approveBtn = c.approved
+        ? ''
+        : '<button class="text-xs text-green-600 hover:text-green-800 font-bold" onclick="approveComment(' + postId + ', ' + c.id + ')">Одобрить</button>';
+      var deleteCommentBtn = '<button class="text-xs text-error hover:text-red-800 font-bold ml-2" onclick="deleteComment(' + postId + ', ' + c.id + ')">Удалить</button>';
+      return '<div class="bg-surface-container-low rounded-xl p-3">'
+        + '<div class="flex items-center justify-between mb-1">'
+        + '<span class="text-sm font-bold">' + (c.author || 'Аноним') + '</span>'
+        + '<div class="flex items-center gap-2">' + statusBadge + approveBtn + deleteCommentBtn + '</div>'
+        + '</div>'
+        + '<p class="text-sm text-on-surface-variant">' + (c.text || '') + '</p>'
+        + '<p class="text-xs text-outline mt-1">' + (c.date || '') + '</p>'
+        + '</div>';
+    }).join('');
+  }
+
+  function approveComment(postId, commentId) {
+    var post = postsData.find(function(p) { return p.id === postId; });
+    if (!post) return;
+    var comment = post.comments.find(function(c) { return c.id === commentId; });
+    if (!comment) return;
+    comment.approved = true;
+    savePosts(function() {
+      renderPostComments(post.comments, postId);
+    });
+  }
+
+  function deleteComment(postId, commentId) {
+    if (!confirm('Удалить этот комментарий?')) return;
+    var post = postsData.find(function(p) { return p.id === postId; });
+    if (!post) return;
+    post.comments = post.comments.filter(function(c) { return c.id !== commentId; });
+    savePosts(function() {
+      renderPostComments(post.comments, postId);
+    });
+  }
+
+  function savePosts(callback) {
+    fetch('/api/data')
+      .then(function(r) { return r.json(); })
+      .then(function(currentData) {
+        var merged = {
+          posts: postsData,
+          settings: currentData.settings || { site_title: 'РГСУ ВОЛЕЙБОЛ' },
+          homepage: currentData.homepage || {},
+          players: currentData.players || [],
+          tournaments: currentData.tournaments || []
+        };
+        return fetch('/api/data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify(merged)
+        });
+      })
+      .then(function(r) {
+        if (!r.ok) throw new Error('Save failed');
+        if (callback) callback();
+      })
+      .catch(function() { alert('Ошибка при сохранении'); });
+  }
+
+  function savePost(published) {
+    var id = document.getElementById('post-id').value;
+    var post = {
+      id: id ? parseInt(id) : (postsData.length > 0 ? Math.max.apply(null, postsData.map(function(p) { return p.id; })) + 1 : 1),
+      title: document.getElementById('post-title').value.trim(),
+      content: document.getElementById('post-content').value.trim(),
+      image: document.getElementById('post-image').value.trim(),
+      category: document.getElementById('post-category').value,
+      date: document.getElementById('post-date').value || new Date().toISOString().split('T')[0],
+      author: 'admin',
+      published: published !== undefined ? published : document.getElementById('post-published').checked,
+      pinned: document.getElementById('post-pinned').checked,
+      likes: 0,
+      comments: []
+    };
+
+    if (!post.title) { alert('Введите заголовок'); return; }
+    if (!post.content) { alert('Введите содержание'); return; }
+
+    fetch('/api/data')
+      .then(function(r) { return r.json(); })
+      .then(function(currentData) {
+        var updatedPosts;
+        if (id) {
+          var existing = postsData.find(function(p) { return p.id === parseInt(id); });
+          post.likes = existing ? (existing.likes || 0) : 0;
+          post.comments = existing ? (existing.comments || []) : [];
+          updatedPosts = postsData.map(function(p) { return p.id === post.id ? post : p; });
+        } else {
+          updatedPosts = postsData.concat([post]);
+        }
+
+        var merged = {
+          posts: updatedPosts,
+          settings: currentData.settings || { site_title: 'РГСУ ВОЛЕЙБОЛ' },
+          homepage: currentData.homepage || {},
+          players: currentData.players || [],
+          tournaments: currentData.tournaments || []
+        };
+
+        return fetch('/api/data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify(merged)
+        });
+      })
+      .then(function(r) {
+        if (!r.ok) throw new Error('Save failed');
+        closePostEditor();
+        loadOffFieldData();
+      })
+      .catch(function() { alert('Ошибка при сохранении'); });
+  }
+
+  function editPost(id) {
+    var post = postsData.find(function(p) { return p.id === id; });
+    if (!post) return;
+    openPostEditor(post);
+  }
+
+  function deletePost(id) {
+    if (!confirm('Вы уверены, что хотите удалить этот пост?')) return;
+    fetch('/api/data')
+      .then(function(r) { return r.json(); })
+      .then(function(currentData) {
+        var updatedPosts = postsData.filter(function(p) { return p.id !== id; });
+        var merged = {
+          posts: updatedPosts,
+          settings: currentData.settings || {},
+          homepage: currentData.homepage || {},
+          players: currentData.players || [],
+          tournaments: currentData.tournaments || []
+        };
+        return fetch('/api/data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify(merged)
+        });
+      })
+      .then(function(r) {
+        if (!r.ok) throw new Error('Delete failed');
+        loadOffFieldData();
+      })
+      .catch(function() { alert('Ошибка при удалении'); });
+  }
 
   // ===== TOURNAMENTS CRUD =====
   var tournamentsData = [];
@@ -1581,7 +1877,7 @@
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
       closePlayerModal();
-      closeOffFieldEditor();
+      closePostEditor();
       closeTournamentModal();
     }
   });
@@ -1598,8 +1894,18 @@
   window.filterPlayers = filterPlayers;
   window.clearPlayerFilters = clearPlayerFilters;
   window.exportPlayersExcel = exportPlayersExcel;
-  window.openOffFieldEditor = openOffFieldEditor;
-  window.closeOffFieldEditor = closeOffFieldEditor;
+  window.loadOffFieldData = loadOffFieldData;
+  window.openPostEditor = openPostEditor;
+  window.closePostEditor = closePostEditor;
+  window.savePost = savePost;
+  window.editPost = editPost;
+  window.deletePost = deletePost;
+  window.setOffFieldTab = setOffFieldTab;
+  window.toggleOffFieldFilters = toggleOffFieldFilters;
+  window.filterOffFieldPosts = filterOffFieldPosts;
+  window.clearOffFieldFilters = clearOffFieldFilters;
+  window.approveComment = approveComment;
+  window.deleteComment = deleteComment;
   window.openTournamentModal = openTournamentModal;
   window.closeTournamentModal = closeTournamentModal;
   window.saveTournament = saveTournament;

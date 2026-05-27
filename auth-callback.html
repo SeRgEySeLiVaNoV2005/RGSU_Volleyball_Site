@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Авторизация VK ID</title>
+<script src="https://vk.com/js/api/openapi.js?169"></script>
+</head>
+<body>
+<script>
+(function() {
+  'use strict';
+
+  // VK SDK callback — fires after VK.Auth.login completes in this popup window
+  function onVkReady() {
+    try {
+      VK.init({});
+
+      VK.Auth.getLoginStatus(function(response) {
+        if (response.status === 'connected' && response.session && response.session.user) {
+          var user = response.session.user;
+          var userData = {
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            photo: user.photo || '',
+            photo_rec: user.photo_rec || ''
+          };
+
+          // Pass user data to parent window
+          if (window.opener && !window.opener.closed) {
+            window.opener.postMessage({
+              type: 'vk-auth-success',
+              user: userData
+            }, '*');
+          } else if (window.parent && window.parent !== window) {
+            window.parent.postMessage({
+              type: 'vk-auth-success',
+              user: userData
+            }, '*');
+          }
+
+          // Also save to localStorage for same-origin persistence
+          try {
+            localStorage.setItem('vk_user', JSON.stringify(userData));
+          } catch(e) {}
+
+          // Close popup
+          window.close();
+        }
+      });
+    } catch(e) {
+      window.close();
+    }
+  }
+
+  // VK SDK fires vkAsyncInit when ready, or we call directly
+  if (typeof VK !== 'undefined') {
+    onVkReady();
+  } else {
+    window.vkAsyncInit = onVkReady;
+  }
+})();
+</script>
+</body>
+</html>
