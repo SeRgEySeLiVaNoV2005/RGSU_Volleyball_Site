@@ -107,11 +107,11 @@
     <div class="relative order-2 lg:order-1">
       <div class="absolute -top-10 -left-10 w-64 h-64 bg-royal-blue/5 rounded-full blur-3xl"></div>
       <div class="relative z-10 glass-panel rounded-xl p-1 shadow-2xl">
-        <img class="rounded-lg w-full aspect-[4/5] object-cover" data-alt="Portrait of Alex Petrov" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjxtISPilbeSo55frZPY_zKjj88mu09Ryr8CeltN-sjeeuOBKTyDkjtfwy8t3jYEEVZeVpXHKbN55yc6hlZi39aARi4eoDjCBHfgtY4fVYTRqZMofqlKOSH4Z-_DARu2M3Xj01RPctjkJO9S1UNSDKFmT4urq5sHXVIGZpgB5FNnkADg-KIzCnZ3DUQLf1MHK6fMdCEFP1FRo7yTK-P4V1HYrStzcFprX1zwt9IPlXQby8G4baA8J2lFE44iDNC6MJlwCIV2eFZh8">
+        <img id="roster-player-img" class="rounded-lg w-full aspect-[4/5] object-cover" src="" alt="">
         <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 right-4 md:right-6 p-4 md:p-6 bg-white/90 backdrop-blur-md rounded-xl border border-white/50">
           <div class="flex justify-between items-center">
-            <div><h3 class="font-bold text-royal-blue text-body-lg md:text-headline-md">Алекс Петров</h3><span class="bg-sky-blue/20 text-royal-blue px-2 md:px-3 py-1 rounded-full text-xs md:text-label-sm inline-block mt-1">Сеттер • Капитан</span></div>
-            <div class="bg-royal-blue text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-bold text-sm md:text-base shrink-0 ml-2">23</div>
+            <div><h3 id="roster-player-name" class="font-bold text-royal-blue text-body-lg md:text-headline-md"></h3><span id="roster-player-position" class="bg-sky-blue/20 text-royal-blue px-2 md:px-3 py-1 rounded-full text-xs md:text-label-sm inline-block mt-1"></span></div>
+            <div id="roster-player-number" class="bg-royal-blue text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-bold text-sm md:text-base shrink-0 ml-2"></div>
           </div>
         </div>
       </div>
@@ -207,6 +207,19 @@
   });
   })();
   // ===== HOMEPAGE DATA LOADER =====
+  function showRosterPlayer(index) {
+    var p = window._rosterPlayers && window._rosterPlayers[index];
+    if (!p) return;
+    var el;
+    el = document.getElementById('roster-player-img');
+    if (el && p.image) el.src = p.image;
+    el = document.getElementById('roster-player-name');
+    if (el && p.name) el.textContent = p.name;
+    el = document.getElementById('roster-player-position');
+    if (el && p.position) el.textContent = p.position;
+    el = document.getElementById('roster-player-number');
+    if (el && p.number) el.textContent = p.number;
+  }
   function getAgeWord(age) {
     var n = age % 100;
     if (n >= 11 && n <= 19) return 'лет';
@@ -262,11 +275,12 @@
         if (players && players.length > 0) {
           var shuffled = players.slice().sort(function() { return Math.random() - 0.5; });
           var picked = shuffled.slice(0, 3);
+          window._rosterPlayers = picked;
           var rosterList = document.getElementById('roster-list');
           if (rosterList) {
-            rosterList.innerHTML = picked.map(function(p) {
+            rosterList.innerHTML = picked.map(function(p, i) {
               var initials = (p.name || '?').charAt(0).toUpperCase();
-              return '<div class="group flex items-center justify-between p-3 md:p-4 bg-white rounded-xl shadow-sm hover:bg-ice-blue transition-all cursor-pointer">' +
+              return '<div class="group flex items-center justify-between p-3 md:p-4 bg-white rounded-xl shadow-sm hover:bg-ice-blue transition-all cursor-pointer" onclick="showRosterPlayer(' + i + ')">' +
                 '<div class="flex items-center gap-3 md:gap-4">' +
                   '<div class="w-10 h-10 md:w-12 md:h-12 bg-surface-variant rounded-full flex items-center justify-center text-royal-blue font-bold text-sm md:text-base">' + (p.number || initials) + '</div>' +
                   '<span class="font-bold text-royal-blue text-sm md:text-base">' + p.name + '</span>' +
@@ -274,6 +288,7 @@
                 '<span class="text-secondary text-xs md:text-label-lg">' + (p.age ? p.age + ' ' + getAgeWord(p.age) : '') + '</span>' +
               '</div>';
             }).join('');
+            showRosterPlayer(0);
           }
         }
       } catch(e) {}
