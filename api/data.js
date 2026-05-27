@@ -89,6 +89,18 @@ export default function handler(req, res) {
         return;
       }
 
+      if (body.action === 'unlike') {
+        const post = (data.posts || []).find(function(p) { return p.id === body.postId; });
+        if (!post) {
+          res.status(404).json({ error: 'Пост не найден' });
+          return;
+        }
+        post.likes = Math.max(0, (post.likes || 0) - 1);
+        writeData(data);
+        res.status(200).json({ success: true, likes: post.likes });
+        return;
+      }
+
       if (body.action === 'comment') {
         if (!body.text || !body.yandexUser || !body.yandexUser.id) {
           res.status(400).json({ error: 'Требуется текст комментария и Яндекс авторизация' });
@@ -107,7 +119,7 @@ export default function handler(req, res) {
           author: body.yandexUser.first_name + ' ' + body.yandexUser.last_name,
           text: body.text,
           date: new Date().toISOString().split('T')[0],
-          approved: false,
+          approved: true,
           yandexUserId: body.yandexUser.id,
           yandexPhoto: body.yandexUser.photo || '',
           replies: []

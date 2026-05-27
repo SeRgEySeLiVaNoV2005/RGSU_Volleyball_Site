@@ -438,19 +438,23 @@
   }
 
   function handleLike(postId) {
-    if (isLiked(postId)) return;
-    fetch('/api/data', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'like', postId: postId })
+    var liked = isLiked(postId);
+    var action = liked ? "unlike" : "like";
+    fetch("/api/data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: action, postId: postId })
     })
     .then(function(r) { return r.json(); })
     .then(function(res) {
       if (res.success) {
         var ids = getLikedIds();
-        ids.push(postId);
+        if (liked) {
+          ids = ids.filter(function(id) { return id !== postId; });
+        } else {
+          ids.push(postId);
+        }
         setLikedIds(ids);
-        // Update local state
         var post = allPosts.find(function(p) { return p.id === postId; });
         if (post) { post.likes = res.likes; }
         renderFeed();
