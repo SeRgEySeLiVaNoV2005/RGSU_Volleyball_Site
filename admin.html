@@ -28,11 +28,12 @@
   ::-webkit-scrollbar-thumb:hover { background: #747684; }
   /* Mobile sidebar */
   @media (max-width: 1023px) {
-    .admin-sidebar { transform: translateX(-100%); transition: transform 0.3s ease, visibility 0s 0.3s; visibility: hidden; }
-    .admin-sidebar.open { transform: translateX(0); visibility: visible; transition: transform 0.3s ease, visibility 0s 0s; }
+    .admin-sidebar { transform: translateX(-100%); transition: transform 0.3s ease; pointer-events: none; }
+    .admin-sidebar.open { transform: translateX(0); pointer-events: auto; }
     .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 45; }
     .sidebar-overlay.open { display: block; }
-    .admin-main { margin-left: 0 !important; }
+    .admin-main { margin-left: 0 !important; max-width: 100vw; }
+    #page-admin { overflow: hidden; }
   }
   @media (min-width: 1024px) {
     .sidebar-overlay { display: none !important; }
@@ -146,7 +147,7 @@
 <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
 <!-- Main Area -->
-<div id="admin-main" class="admin-main ml-[260px] flex flex-col min-h-screen">
+<div id="admin-main" class="admin-main ml-[260px] flex flex-col min-h-screen overflow-x-hidden max-w-full">
   <!-- Top Bar -->
   <header class="sticky top-0 z-40 h-16 bg-white/80 backdrop-blur-xl border-b border-ice-blue flex justify-between items-center px-4 md:px-6">
     <div class="flex items-center gap-3 flex-1">
@@ -173,7 +174,7 @@
     </div>
   </header>
 
-  <main class="flex-1 p-4 md:p-8 bg-white md:bg-transparent rounded-t-2xl md:rounded-none -mt-2 md:mt-0 relative z-10">
+  <main class="flex-1 p-4 md:p-8 bg-white md:bg-transparent rounded-t-2xl md:rounded-none relative z-10 border-t border-outline-variant md:border-transparent shadow-[0_-8px_30px_rgba(0,0,0,0.08)] md:shadow-none">
 
     <!-- ===== DASHBOARD (from Stitch: Дашборд_Админ) ===== -->
     <div id="sub-dashboard" class="subpage active">
