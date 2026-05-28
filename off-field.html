@@ -573,13 +573,21 @@
           // Update like count
           localPost.likes = freshPost.likes;
           updateDetailLikes(freshPost.likes);
-          // Check for new comments
-          var oldApproved = (localPost.comments || []).filter(function(c) { return c.approved; });
-          var newApproved = (freshPost.comments || []).filter(function(c) { return c.approved; });
-          if (newApproved.length !== oldApproved.length) {
-            localPost.comments = freshPost.comments;
+          // Merge new comments from server (don't remove local ones not yet saved)
+          var localComments = localPost.comments || [];
+          var serverComments = freshPost.comments || [];
+          var localIds = localComments.map(function(c) { return c.id; });
+          var hasNew = false;
+          for (var i = 0; i < serverComments.length; i++) {
+            if (localIds.indexOf(serverComments[i].id) === -1) {
+              localComments.push(serverComments[i]);
+              hasNew = true;
+            }
+          }
+          if (hasNew) {
             renderDetailComments(localPost);
-            document.getElementById('detail-comments-count').textContent = newApproved.length;
+            var approvedCount = localComments.filter(function(c) { return c.approved; }).length;
+            document.getElementById('detail-comments-count').textContent = approvedCount;
           }
         })
         .catch(function() {});
