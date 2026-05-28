@@ -70,6 +70,37 @@ async function writeData(data) {
   try { fs.writeFileSync(REPO_DATA, json, 'utf-8'); } catch {}
 }
 
+function validateData(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    return 'Данные должны быть объектом';
+  }
+
+  var arrays = ['posts', 'players', 'tournaments'];
+  for (var i = 0; i < arrays.length; i++) {
+    var key = arrays[i];
+    if (data[key] !== undefined && !Array.isArray(data[key])) {
+      return 'Поле "' + key + '" должно быть массивом';
+    }
+    if (Array.isArray(data[key])) {
+      for (var j = 0; j < data[key].length; j++) {
+        if (!data[key][j] || typeof data[key][j].id === 'undefined') {
+          return 'Каждый элемент в "' + key + '" должен иметь поле id';
+        }
+      }
+    }
+  }
+
+  var objects = ['settings', 'homepage'];
+  for (var i = 0; i < objects.length; i++) {
+    var key = objects[i];
+    if (data[key] !== undefined && (typeof data[key] !== 'object' || Array.isArray(data[key]) || data[key] === null)) {
+      return 'Поле "' + key + '" должно быть объектом';
+    }
+  }
+
+  return null;
+}
+
 function verifyToken(authHeader) {
   if (!authHeader) return false;
   try {
@@ -169,6 +200,11 @@ export default async function handler(req, res) {
 
     if (!body) {
       res.status(400).json({ error: 'Нет данных' });
+      return;
+    }
+    var validationError = validateData(body);
+    if (validationError) {
+      res.status(400).json({ error: validationError });
       return;
     }
     await writeData(body);
