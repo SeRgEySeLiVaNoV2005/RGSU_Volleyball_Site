@@ -220,8 +220,12 @@ export default async function handler(req, res) {
     }
 
     // Admin actions (auth required)
+    if (!req.headers.authorization) {
+      res.status(401).json({ error: 'Неавторизован: нет заголовка Authorization. Перезайдите в админку.' });
+      return;
+    }
     if (!verifyToken(req.headers.authorization)) {
-      res.status(401).json({ error: 'Неавторизован' });
+      res.status(401).json({ error: 'Неавторизован: токен истек или неверен. Выйдите и зайдите заново.' });
       return;
     }
 
