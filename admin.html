@@ -176,7 +176,8 @@
       </button>
       <div class="relative w-full max-w-md">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
-        <input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-sm focus:ring-2 focus:ring-royal-blue/20 outline-none" placeholder="Поиск..." type="text">
+        <input id="admin-search-input" class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-sm focus:ring-2 focus:ring-royal-blue/20 outline-none" placeholder="Поиск..." type="text" autocomplete="off">
+        <div id="search-results" class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-outline-variant overflow-hidden max-h-80 overflow-y-auto z-50" style="display:none;"></div>
       </div>
     </div>
     <div class="flex items-center gap-4">
@@ -1174,7 +1175,7 @@
                           p.status === 'Травмирован' ? 'bg-amber-100 text-amber-800' :
                           p.status === 'Запасной' ? 'bg-blue-100 text-blue-800' :
                           'bg-gray-100 text-gray-800';
-        return '<tr class="hover:bg-surface-container/30 transition-colors group">' +
+        return '<tr class="hover:bg-surface-container/30 transition-colors group" data-search-id="player-' + p.id + '">' +
           '<td class="px-6 py-4"><img class="w-10 h-10 rounded-full border border-outline-variant object-cover" src="' + (p.image || '') + '" alt="' + p.name + '" onerror="this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%2224 24 48 48%22%3E%3Ccircle cx=%2248%22 cy=%2248%22 r=%2224%22 fill=%22%23e2e1eb%22/%3E%3Ctext x=%2248%22 y=%2254%22 text-anchor=%22middle%22 fill=%22%23747684%22 font-size=%2220%22 font-family=%22sans-serif%22%3E' + (p.name ? p.name.charAt(0).toUpperCase() : '?') + '%3C/text%3E%3C/svg%3E\'"></td>' +
           '<td class="px-6 py-4 font-bold text-royal-blue">#' + p.number + '</td>' +
           '<td class="px-6 py-4 font-bold text-on-surface">' + p.name + '</td>' +
@@ -1510,7 +1511,7 @@
       var statusHtml = p.published
         ? '<div class="flex items-center gap-1.5 text-green-600 text-xs font-bold"><span class="w-2 h-2 rounded-full bg-green-500"></span>Опубликовано</div>'
         : '<div class="flex items-center gap-1.5 text-outline text-xs font-bold"><span class="w-2 h-2 rounded-full bg-outline-variant"></span>Черновик</div>';
-      return '<tr class="hover:bg-surface-container-lowest transition-colors group">'
+      return '<tr class="hover:bg-surface-container-lowest transition-colors group" data-search-id="post-' + p.id + '">'
         + '<td class="px-6 py-4">' + imgCol + '</td>'
         + '<td class="px-6 py-4"><div class="text-base font-bold text-royal-blue group-hover:text-primary-container transition-colors">' + (p.title || 'Без названия') + '</div><div class="text-sm text-outline">' + formatPostDate(p.date) + '</div></td>'
         + '<td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-bold ' + catClass + '">' + catName + '</span></td>'
@@ -1845,7 +1846,7 @@
           : (t.status === 'upcoming'
             ? '<span class="px-3 py-1 bg-blue-100 text-blue-800 text-[11px] font-bold rounded-full uppercase tracking-tight">ОЖИДАЕТСЯ</span>'
             : '<span class="px-3 py-1 bg-surface-variant text-on-surface-variant text-[11px] font-bold rounded-full uppercase tracking-tight">ЗАВЕРШЕН</span>');
-        return '<tr class="hover:bg-royal-blue/5 transition-colors">' +
+        return '<tr class="hover:bg-royal-blue/5 transition-colors" data-search-id="tournament-' + t.id + '">' +
           '<td class="px-6 py-4">' +
             '<div class="flex items-center gap-3">' +
               '<div class="w-10 h-10 rounded-lg flex items-center justify-center ' + iconBg + '"><span class="material-symbols-outlined">' + icon + '</span></div>' +
@@ -1990,6 +1991,121 @@
       closePlayerModal();
       closePostEditor();
       closeTournamentModal();
+    }
+  });
+
+  // ===== SEARCH =====
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  }
+
+  var searchInput = document.getElementById('admin-search-input');
+  var searchResults = document.getElementById('search-results');
+
+  function navigateToSection(section) {
+    document.querySelectorAll('.sidebar-link').forEach(function(b) { b.classList.remove('active'); });
+    var targetBtn = document.querySelector('.sidebar-link[data-page="' + section + '"]');
+    if (targetBtn) targetBtn.classList.add('active');
+    document.querySelectorAll('.subpage').forEach(function(p) { p.classList.remove('active'); });
+    document.getElementById('sub-' + section).classList.add('active');
+  }
+
+  function doSearch(query) {
+    query = query.trim().toLowerCase();
+    if (query.length < 2) {
+      searchResults.style.display = 'none';
+      return;
+    }
+
+    var results = [];
+    var sectionIcons = { players: 'groups', tournaments: 'emoji_events', offfield: 'newspaper' };
+    var sectionLabels = { players: 'Игроки', tournaments: 'Турниры', offfield: 'Мы вне поля' };
+    var sectionPages = { players: 'players', tournaments: 'tournaments', offfield: 'offfield' };
+
+    (playersData || []).forEach(function(p) {
+      if (p.name.toLowerCase().indexOf(query) !== -1) {
+        results.push({ section: 'players', label: sectionLabels.players, icon: sectionIcons.players, name: p.name + ' (#' + p.number + ')', id: p.id });
+      }
+    });
+
+    (tournamentsData || []).forEach(function(t) {
+      if (t.title.toLowerCase().indexOf(query) !== -1) {
+        results.push({ section: 'tournaments', label: sectionLabels.tournaments, icon: sectionIcons.tournaments, name: t.title, id: t.id });
+      }
+    });
+
+    (postsData || []).forEach(function(p) {
+      var title = p.title || '';
+      if (title.toLowerCase().indexOf(query) !== -1) {
+        results.push({ section: 'offfield', label: sectionLabels.offfield, icon: sectionIcons.offfield, name: title, id: p.id });
+      }
+    });
+
+    if (results.length === 0) {
+      searchResults.innerHTML = '<div class="p-4 text-sm text-outline text-center">Ничего не найдено</div>';
+    } else {
+      searchResults.innerHTML = results.map(function(r) {
+        return '<div class="search-result-item flex items-center gap-3 px-4 py-3 hover:bg-surface-container-low cursor-pointer border-b border-outline-variant/30 last:border-0 transition-colors" data-section="' + sectionPages[r.section] + '" data-id="' + r.id + '" data-search-type="' + r.section + '">'
+          + '<span class="material-symbols-outlined text-royal-blue flex-shrink-0">' + r.icon + '</span>'
+          + '<div class="flex-1 min-w-0">'
+          + '<p class="text-sm font-bold text-on-surface truncate">' + escapeHtml(r.name) + '</p>'
+          + '<p class="text-xs text-outline">' + r.label + '</p>'
+          + '</div>'
+          + '<span class="material-symbols-outlined text-outline text-sm flex-shrink-0">arrow_forward</span>'
+          + '</div>';
+      }).join('');
+    }
+    searchResults.style.display = 'block';
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      doSearch(this.value);
+    });
+
+    searchInput.addEventListener('focus', function() {
+      if (this.value.trim().length >= 2) {
+        doSearch(this.value);
+      }
+    });
+
+    searchInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        searchResults.style.display = 'none';
+        this.blur();
+      }
+    });
+  }
+
+  if (searchResults) {
+    searchResults.addEventListener('click', function(e) {
+      var item = e.target.closest('.search-result-item');
+      if (!item) return;
+      var section = item.dataset.section;
+      var id = parseInt(item.dataset.id);
+      var type = item.dataset.searchType;
+
+      navigateToSection(section);
+      searchInput.value = '';
+      searchResults.style.display = 'none';
+
+      setTimeout(function() {
+        var row = document.querySelector('[data-search-id="' + type + '-' + id + '"]');
+        if (row) {
+          row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          row.style.transition = 'background-color 0.3s ease';
+          row.style.backgroundColor = 'rgba(255, 215, 0, 0.25)';
+          setTimeout(function() { row.style.backgroundColor = ''; }, 2500);
+        }
+      }, 250);
+    });
+  }
+
+  document.addEventListener('click', function(e) {
+    if (searchInput && searchResults && !searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+      searchResults.style.display = 'none';
     }
   });
 
