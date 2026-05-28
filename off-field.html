@@ -310,7 +310,6 @@
     if (saved) {
       try {
         yandexUser = JSON.parse(saved);
-        updateYandexUI();
       } catch(e) { yandexUser = null; }
     }
   }
@@ -334,27 +333,7 @@
   function yandexLogout() {
     yandexUser = null;
     localStorage.removeItem('yandex_user');
-    updateYandexUI();
     hideCommentInput();
-  }
-
-  function updateYandexUI() {
-    var info = document.getElementById('yandex-user-info');
-    var loginBtn = document.getElementById('yandex-login-btn');
-    var logoutBtn = document.getElementById('yandex-logout-btn');
-    if (yandexUser) {
-      var photo = document.getElementById('yandex-user-photo');
-      var name = document.getElementById('yandex-user-name');
-      if (photo) photo.src = yandexUser.photo || '';
-      if (name) name.textContent = yandexUser.first_name + ' ' + yandexUser.last_name;
-      if (info) info.style.display = '';
-      if (loginBtn) loginBtn.style.display = 'none';
-      if (logoutBtn) logoutBtn.style.display = '';
-    } else {
-      if (info) info.style.display = 'none';
-      if (loginBtn) loginBtn.style.display = '';
-      if (logoutBtn) logoutBtn.style.display = 'none';
-    }
   }
 
   // Listen for Yandex auth callback from popup
@@ -362,7 +341,6 @@
     if (event.data && event.data.type === 'yandex-auth-success') {
       yandexUser = event.data.user;
       localStorage.setItem('yandex_user', JSON.stringify(yandexUser));
-      updateYandexUI();
       showCommentInput();
     }
   });
