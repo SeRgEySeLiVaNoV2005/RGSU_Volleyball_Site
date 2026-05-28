@@ -524,10 +524,6 @@
                 <input id="player-height" class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="195" type="text">
               </div>
               <div>
-                <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Вес (кг)</label>
-                <input id="player-weight" class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="85" type="text">
-              </div>
-              <div>
                 <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Статус</label>
                 <select id="player-status" class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all">
                   <option>Активен</option><option>Неактивен</option><option>Запасной</option><option>Травмирован</option>
@@ -1127,7 +1123,6 @@
     document.getElementById('player-position').value = 'Связующий';
     document.getElementById('player-age').value = '';
     document.getElementById('player-height').value = '';
-    document.getElementById('player-weight').value = '';
     document.getElementById('player-status').value = 'Активен';
     document.getElementById('player-desc').value = '';
     document.getElementById('player-image').value = '';
@@ -1214,7 +1209,6 @@
       position: document.getElementById('player-position').value,
       age: parseInt(document.getElementById('player-age').value) || 0,
       height: document.getElementById('player-height').value.trim(),
-      weight: document.getElementById('player-weight').value.trim(),
       status: document.getElementById('player-status').value,
       desc: document.getElementById('player-desc').value.trim(),
       image: document.getElementById('player-image').value.trim()
@@ -1265,7 +1259,6 @@
     document.getElementById('player-position').value = player.position || 'Связующий';
     document.getElementById('player-age').value = player.age || '';
     document.getElementById('player-height').value = player.height || '';
-    document.getElementById('player-weight').value = player.weight || '';
     document.getElementById('player-status').value = player.status || 'Активен';
     document.getElementById('player-desc').value = player.desc || '';
     document.getElementById('player-image').value = player.image || '';
@@ -1369,7 +1362,6 @@
       '    <Cell><Data ss:Type="String">Номер</Data></Cell>\n' +
       '    <Cell><Data ss:Type="String">Позиция</Data></Cell>\n' +
       '    <Cell><Data ss:Type="String">Рост</Data></Cell>\n' +
-      '    <Cell><Data ss:Type="String">Вес</Data></Cell>\n' +
       '    <Cell><Data ss:Type="String">Возраст</Data></Cell>\n' +
       '    <Cell><Data ss:Type="String">Статус</Data></Cell>\n' +
       '    <Cell><Data ss:Type="String">Описание</Data></Cell>\n' +
@@ -1383,7 +1375,6 @@
         '    <Cell><Data ss:Type="String">' + esc(p.number) + '</Data></Cell>\n' +
         '    <Cell><Data ss:Type="String">' + esc(p.position) + '</Data></Cell>\n' +
         '    <Cell><Data ss:Type="String">' + esc(p.height) + '</Data></Cell>\n' +
-        '    <Cell><Data ss:Type="String">' + esc(p.weight) + '</Data></Cell>\n' +
         '    <Cell><Data ss:Type="Number">' + (p.age || 0) + '</Data></Cell>\n' +
         '    <Cell><Data ss:Type="String">' + esc(p.status) + '</Data></Cell>\n' +
         '    <Cell><Data ss:Type="String">' + esc(p.desc) + '</Data></Cell>\n' +
