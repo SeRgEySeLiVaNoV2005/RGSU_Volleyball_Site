@@ -300,6 +300,7 @@
   // ===== STATE =====
   var allPosts = [];
   var currentCategory = 'all';
+  var pendingLikes = {};
   var yandexUser = null;
   var currentPostId = null;
   
@@ -494,8 +495,6 @@
     })
     .catch(function() { pendingLikes[postId] = false; });
   }
-
-    var pendingLikes = {};
 
 // ===== POST DETAIL MODAL =====
   function openPostDetail(postId) {
