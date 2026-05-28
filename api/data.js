@@ -4,31 +4,34 @@ import { put, list } from '@vercel/blob';
 
 const REPO_DATA = path.join(process.cwd(), 'data.json');
 const TMP_DATA = '/tmp/data.json';
-const BLOB_NAME = 'site-data.json';
 
-let cachedBlobUrl = null;
+function getBlobName(team) {
+  return team === 'women' ? 'site-data-women.json' : 'site-data.json';
+}
 
-async function getBlobUrl() {
-  if (cachedBlobUrl) return cachedBlobUrl;
+var cachedBlobUrl = {};
+
+async function getBlobUrl(blobName) {
+  if (cachedBlobUrl[blobName]) return cachedBlobUrl[blobName];
   try {
-    const { blobs } = await list({ prefix: BLOB_NAME, limit: 1 });
+    const { blobs } = await list({ prefix: blobName, limit: 1 });
     if (blobs.length > 0) {
-      cachedBlobUrl = blobs[0].url;
-      return cachedBlobUrl;
+      cachedBlobUrl[blobName] = blobs[0].url;
+      return cachedBlobUrl[blobName];
     }
   } catch {}
   return null;
 }
 
-async function readDataFromBlob() {
-  var url = await getBlobUrl();
+async function readDataFromBlob(blobName) {
+  var url = await getBlobUrl(blobName);
   if (!url) return null;
   try {
     const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) { cachedBlobUrl = null; return null; }
+    if (!res.ok) { cachedBlobUrl[blobName] = null; return null; }
     return await res.json();
   } catch {
-    cachedBlobUrl = null;
+    cachedBlobUrl[blobName] = null;
     return null;
   }
 }
@@ -63,31 +66,56 @@ function readDataFromFs() {
   }
 }
 
-async function readData() {
+async function readData(team) {
+  var blobName = getBlobName(team);
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     try {
-      var data = await readDataFromBlob();
+      var data = await readDataFromBlob(blobName);
       if (data) return data;
     } catch {}
+  }
+  // For women's team without Blob, return fresh defaults (don't fall back to men's FS data)
+  if (team === 'women') {
+    return {
+      posts: [],
+      settings: { site_title: 'РГСУ ВОЛЕЙБОЛ', yandex_app_id: '' },
+      players: [],
+      tournaments: [],
+      homepage: {
+        hero_title: 'Добро пожаловать, будущие чемпионы',
+        hero_subtitle: 'Присоединяйтесь к волейбольной семье РГСУ и достигайте новых высот вместе с нами.',
+        button_text: 'Подать заявку',
+        button_link: '/about',
+        hero_image: '',
+        footer_address: 'Москва, ул. Вильгельма Пика, д. 4, стр. 1',
+        footer_email: 'volleyball@rgsu.net',
+        footer_phone: '+7 (495) 123-45-67',
+        vk_link: 'https://vk.com/rgsu_volleyball',
+        tg_link: 'https://t.me/rgsu_sport'
+      }
+    };
   }
   return readDataFromFs();
 }
 
-async function writeData(data) {
+async function writeData(data, team) {
   var json = JSON.stringify(data, null, 2);
+  var blobName = getBlobName(team);
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     try {
-      var result = await put(BLOB_NAME, json, {
+      var result = await put(blobName, json, {
         access: 'public',
         addRandomSuffix: false,
         allowOverwrite: true
       });
-      cachedBlobUrl = result.url;
+      cachedBlobUrl[blobName] = result.url;
     } catch (e) { console.error('Blob write failed:', e.message); }
   }
-  // Keep filesystem writes for local development
-  try { fs.writeFileSync(TMP_DATA, json, 'utf-8'); } catch {}
-  try { fs.writeFileSync(REPO_DATA, json, 'utf-8'); } catch {}
+  // Keep filesystem writes for local development (men's team only)
+  if (team !== 'women') {
+    try { fs.writeFileSync(TMP_DATA, json, 'utf-8'); } catch {}
+    try { fs.writeFileSync(REPO_DATA, json, 'utf-8'); } catch {}
+  }
 }
 
 function validateData(data) {
@@ -163,13 +191,16 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
+  // Extract and validate team parameter
+  var team = (req.query && (req.query.team === 'women' || req.query.team === 'men')) ? req.query.team : 'men';
+
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
   }
 
   if (req.method === 'GET') {
-    var data = await readData();
+    var data = await readData(team);
     res.status(200).json(data);
     return;
   }
@@ -179,7 +210,7 @@ export default async function handler(req, res) {
 
     // Public actions (no auth required)
     if (body && body.action) {
-      var data = await readData();
+      var data = await readData(team);
 
       if (body.action === 'like') {
         var post = (data.posts || []).find(function(p) { return p.id === body.postId; });
@@ -188,7 +219,7 @@ export default async function handler(req, res) {
           return;
         }
         post.likes = (post.likes || 0) + 1;
-        await writeData(data);
+        await writeData(data, team);
         res.status(200).json({ success: true, likes: post.likes });
         return;
       }
@@ -200,7 +231,7 @@ export default async function handler(req, res) {
           return;
         }
         post.likes = Math.max(0, (post.likes || 0) - 1);
-        await writeData(data);
+        await writeData(data, team);
         res.status(200).json({ success: true, likes: post.likes });
         return;
       }
@@ -229,7 +260,7 @@ export default async function handler(req, res) {
           replies: []
         };
         post.comments.push(newComment);
-        await writeData(data);
+        await writeData(data, team);
         res.status(200).json({ success: true, comment: newComment });
         return;
       }
@@ -257,8 +288,8 @@ export default async function handler(req, res) {
       res.status(400).json({ error: validationError });
       return;
     }
-    await writeData(body);
-    var result = await readData();
+    await writeData(body, team);
+    var result = await readData(team);
     res.status(200).json({ success: true, data: result });
   } else {
     res.status(405).json({ error: 'Method not allowed' });

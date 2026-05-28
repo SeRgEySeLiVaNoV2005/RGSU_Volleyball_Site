@@ -66,7 +66,15 @@
     <a class="nav-link text-label-lg font-label-lg text-secondary dark:text-secondary-fixed-dim hover:text-royal-blue dark:hover:text-white transition-colors duration-200 hover:scale-105" href="/off-field.html">Мы вне поля</a>
   </nav>
   <div class="hidden md:flex items-center gap-4">
-    <button class="bg-royal-blue text-white font-bold rounded-full px-6 py-2 text-label-lg hover:scale-105 active:scale-95 transition-all shadow-md shadow-royal-blue/20">Связаться с менеджером</button>
+    <label class="relative inline-flex items-center cursor-pointer" id="team-toggle" title="Мужская / Женская сборная">
+      <input type="checkbox" class="sr-only peer" onchange="switchTeam(this.checked)">
+      <div class="w-14 h-8 bg-royal-blue rounded-full peer-checked:bg-pink-500 transition-colors duration-300 flex items-center justify-between px-1.5 relative">
+        <span class="text-white text-xs font-extrabold z-10 select-none">М</span>
+        <span class="text-white text-xs font-extrabold z-10 select-none">Ж</span>
+        <div class="absolute w-6 h-6 bg-white rounded-full transition-transform duration-300 left-0.5 peer-checked:translate-x-6 shadow-md"></div>
+      </div>
+    </label>
+    <button class="bg-royal-blue text-white font-bold rounded-full px-6 py-2 text-label-lg hover:scale-105 active:scale-95 transition-all shadow-md shadow-royal-blue/20 mr-1">Связаться с менеджером</button>
   </div>
   <button class="md:hidden text-royal-blue z-20 focus:outline-none" id="mobile-menu-btn">
     <span class="material-symbols-outlined text-3xl">menu</span>
@@ -341,7 +349,17 @@
   });
 
   // Load players from API then init carousel
-  fetch('/api/data')
+  function getTeam() { return localStorage.getItem('selected_team') || 'men'; }
+  function switchTeam(isWomen) {
+    localStorage.setItem('selected_team', isWomen ? 'women' : 'men');
+    location.reload();
+  }
+  (function() {
+    var t = document.querySelector('#team-toggle input');
+    if (t) t.checked = getTeam() === 'women';
+  })();
+
+  fetch('/api/data?team=' + getTeam())
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.players && data.players.length > 0) {
@@ -355,7 +373,7 @@
 
   // Load footer data from API
   (function loadFooter() {
-    fetch('/api/data')
+    fetch('/api/data?team=' + getTeam())
       .then(function(r) { return r.json(); })
       .then(function(data) {
         var hp = data.homepage;

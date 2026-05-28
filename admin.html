@@ -181,6 +181,14 @@
       </div>
     </div>
     <div class="flex items-center gap-4">
+      <label class="relative inline-flex items-center cursor-pointer" id="team-toggle" title="Мужская / Женская сборная">
+        <input type="checkbox" class="sr-only peer" onchange="switchTeam(this.checked)">
+        <div class="w-14 h-8 bg-royal-blue rounded-full peer-checked:bg-pink-500 transition-colors duration-300 flex items-center justify-between px-1.5 relative">
+          <span class="text-white text-xs font-extrabold z-10 select-none">М</span>
+          <span class="text-white text-xs font-extrabold z-10 select-none">Ж</span>
+          <div class="absolute w-6 h-6 bg-white rounded-full transition-transform duration-300 left-0.5 peer-checked:translate-x-6 shadow-md"></div>
+        </div>
+      </label>
       <button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors relative">
         <span class="material-symbols-outlined">notifications</span>
         <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
@@ -887,6 +895,24 @@
 
   // ===== STATE =====
   var token = localStorage.getItem('admin_token');
+  function getTeam() { return localStorage.getItem('selected_team') || 'men'; }
+  function switchTeam(isWomen) {
+    localStorage.setItem('selected_team', isWomen ? 'women' : 'men');
+    showToast('Сборная переключена. Данные обновлены.', 'info');
+    // Reload current section data
+    var sub = document.querySelector('.subpage.active');
+    if (sub) {
+      if (sub.id === 'sub-dashboard') { /* no reload needed */ }
+      else if (sub.id === 'sub-homepage') loadHomepageData();
+      else if (sub.id === 'sub-players') loadPlayersData();
+      else if (sub.id === 'sub-tournaments') loadTournamentsData();
+      else if (sub.id === 'sub-off-field') loadOffFieldData();
+    }
+  }
+  (function() {
+    var t = document.querySelector('#team-toggle input');
+    if (t) t.checked = getTeam() === 'women';
+  })();
 
   // ===== AUTH =====
   function showLogin() {
@@ -924,7 +950,7 @@
 
   // ===== HOMEPAGE LOAD =====
   function loadHomepageData() {
-    fetch('/api/data')
+    fetch('/api/data?team=' + getTeam())
       .then(function(r) {
         if (!r.ok) throw new Error('Failed');
         return r.json();
@@ -952,7 +978,7 @@
     saveBtn.disabled = true;
     saveBtn.innerHTML = '<span class="material-symbols-outlined text-lg">sync</span> Сохранение...';
 
-    fetch('/api/data')
+    fetch('/api/data?team=' + getTeam())
       .then(function(r) { return r.json(); })
       .then(function(currentData) {
         var hp = {
@@ -974,7 +1000,7 @@
           players: currentData.players || [],
           tournaments: currentData.tournaments || []
         };
-        return fetch('/api/data', {
+        return fetch('/api/data?team=' + getTeam(), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1136,7 +1162,7 @@
   var playersData = [];
 
   function loadPlayersData() {
-    fetch('/api/data')
+    fetch('/api/data?team=' + getTeam())
       .then(function(r) { return r.json(); })
       .then(function(data) {
         playersData = data.players || [];
@@ -1217,7 +1243,7 @@
     if (!player.name) { alert('Введите имя игрока'); return; }
 
     // First get current data to preserve other sections
-    fetch('/api/data')
+    fetch('/api/data?team=' + getTeam())
       .then(function(r) { return r.json(); })
       .then(function(currentData) {
         var updatedPlayers;
@@ -1235,7 +1261,7 @@
           players: updatedPlayers,
           tournaments: currentData.tournaments || []
         };
-        return fetch('/api/data', {
+        return fetch('/api/data?team=' + getTeam(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
           body: JSON.stringify(merged)
@@ -1275,7 +1301,7 @@
 
   function deletePlayer(id) {
     if (!confirm('Вы уверены, что хотите удалить этого игрока?')) return;
-    fetch('/api/data')
+    fetch('/api/data?team=' + getTeam())
       .then(function(r) { return r.json(); })
       .then(function(currentData) {
         var updatedPlayers = playersData.filter(function(p) { return p.id !== id; });
@@ -1286,7 +1312,7 @@
           players: updatedPlayers,
           tournaments: currentData.tournaments || []
         };
-        return fetch('/api/data', {
+        return fetch('/api/data?team=' + getTeam(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
           body: JSON.stringify(merged)
@@ -1400,7 +1426,7 @@
   var postTab = 'all';
 
   function loadOffFieldData() {
-    fetch('/api/data')
+    fetch('/api/data?team=' + getTeam())
       .then(function(r) { return r.json(); })
       .then(function(data) {
         postsData = data.posts || [];
@@ -1612,7 +1638,7 @@
   }
 
   function savePosts(callback) {
-    fetch('/api/data')
+    fetch('/api/data?team=' + getTeam())
       .then(function(r) { return r.json(); })
       .then(function(currentData) {
         var merged = {
@@ -1622,7 +1648,7 @@
           players: currentData.players || [],
           tournaments: currentData.tournaments || []
         };
-        return fetch('/api/data', {
+        return fetch('/api/data?team=' + getTeam(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
           body: JSON.stringify(merged)
@@ -1654,7 +1680,7 @@
     if (!post.title) { alert('Введите заголовок'); return; }
     if (!post.content) { alert('Введите содержание'); return; }
 
-    fetch('/api/data')
+    fetch('/api/data?team=' + getTeam())
       .then(function(r) { return r.json(); })
       .then(function(currentData) {
         var updatedPosts;
@@ -1675,7 +1701,7 @@
           tournaments: currentData.tournaments || []
         };
 
-        return fetch('/api/data', {
+        return fetch('/api/data?team=' + getTeam(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
           body: JSON.stringify(merged)
@@ -1697,7 +1723,7 @@
 
   function deletePost(id) {
     if (!confirm('Вы уверены, что хотите удалить этот пост?')) return;
-    fetch('/api/data')
+    fetch('/api/data?team=' + getTeam())
       .then(function(r) { return r.json(); })
       .then(function(currentData) {
         var updatedPosts = postsData.filter(function(p) { return p.id !== id; });
@@ -1708,7 +1734,7 @@
           players: currentData.players || [],
           tournaments: currentData.tournaments || []
         };
-        return fetch('/api/data', {
+        return fetch('/api/data?team=' + getTeam(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
           body: JSON.stringify(merged)
@@ -1726,7 +1752,7 @@
   var tournamentTab = 'all';
 
   function loadTournamentsData() {
-    fetch('/api/data')
+    fetch('/api/data?team=' + getTeam())
       .then(function(r) { return r.json(); })
       .then(function(data) {
         tournamentsData = data.tournaments || [];
@@ -1902,7 +1928,7 @@
     if (!tournament.title) { alert('Введите название турнира'); return; }
     if (!tournament.date) { alert('Выберите дату начала'); return; }
 
-    fetch('/api/data')
+    fetch('/api/data?team=' + getTeam())
       .then(function(r) { return r.json(); })
       .then(function(currentData) {
         var updatedTournaments;
@@ -1918,7 +1944,7 @@
           players: currentData.players || [],
           tournaments: updatedTournaments
         };
-        return fetch('/api/data', {
+        return fetch('/api/data?team=' + getTeam(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
           body: JSON.stringify(merged)
@@ -1951,7 +1977,7 @@
 
   function deleteTournament(id) {
     if (!confirm('Вы уверены, что хотите удалить этот турнир?')) return;
-    fetch('/api/data')
+    fetch('/api/data?team=' + getTeam())
       .then(function(r) { return r.json(); })
       .then(function(currentData) {
         var updatedTournaments = tournamentsData.filter(function(t) { return t.id !== id; });
@@ -1962,7 +1988,7 @@
           players: currentData.players || [],
           tournaments: updatedTournaments
         };
-        return fetch('/api/data', {
+        return fetch('/api/data?team=' + getTeam(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
           body: JSON.stringify(merged)
