@@ -227,9 +227,14 @@
       <div class="flex flex-col gap-4 w-full lg:max-w-sm">
         <div class="text-headline-md font-bold text-white tracking-tighter text-center md:text-left">РГСУ ВОЛЕЙБОЛ</div>
         <p class="text-ice-blue/70 text-body-md leading-relaxed text-center md:text-left">Воспитываем чемпионов на площадке и за её пределами через дисциплину, единство и непоколебимый командный дух. Присоединяйтесь к нашей истории побед.</p>
+        <div id="footer-contact" class="mt-4 space-y-2 text-ice-blue/70 text-sm text-center md:text-left">
+          <p id="footer-address"><span class="material-symbols-outlined text-base align-text-bottom">location_on</span> Москва, ул. Вильгельма Пика, д. 4, стр. 1</p>
+          <p id="footer-email"><span class="material-symbols-outlined text-base align-text-bottom">mail</span> volleyball@rgsu.net</p>
+          <p id="footer-phone"><span class="material-symbols-outlined text-base align-text-bottom">call</span> +7 (495) 123-45-67</p>
+        </div>
         <div class="flex gap-4 mt-2 justify-center md:justify-start">
-          <a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#"><span class="material-symbols-outlined">public</span></a>
-          <a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#"><span class="material-symbols-outlined">alternate_email</span></a>
+          <a id="footer-vk-link" class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="https://vk.com/rgsu_volleyball"><span class="material-symbols-outlined">public</span></a>
+          <a id="footer-tg-link" class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="https://t.me/rgsu_sport"><span class="material-symbols-outlined">alternate_email</span></a>
           <a class="text-white bg-white/10 p-3 rounded-full hover:bg-white/20 hover:scale-110 transition-all" href="#"><svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"></path></svg></a>
         </div>
       </div>
@@ -643,6 +648,28 @@
 
   // ===== INIT =====
   loadPosts();
+
+  // Load footer data from API
+  (function loadFooter() {
+    fetch('/api/data')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var hp = data.homepage;
+        if (!hp) return;
+        var el;
+        el = document.getElementById('footer-address');
+        if (el && hp.footer_address) el.innerHTML = '<span class="material-symbols-outlined text-base align-text-bottom">location_on</span> ' + hp.footer_address;
+        el = document.getElementById('footer-email');
+        if (el && hp.footer_email) el.innerHTML = '<span class="material-symbols-outlined text-base align-text-bottom">mail</span> ' + hp.footer_email;
+        el = document.getElementById('footer-phone');
+        if (el && hp.footer_phone) el.innerHTML = '<span class="material-symbols-outlined text-base align-text-bottom">call</span> ' + hp.footer_phone;
+        el = document.getElementById('footer-vk-link');
+        if (el && hp.vk_link) el.href = hp.vk_link;
+        el = document.getElementById('footer-tg-link');
+        if (el && hp.tg_link) el.href = hp.tg_link;
+      })
+      .catch(function() {});
+  })();
 })();
 </script>
 </body></html>
