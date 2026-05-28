@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="light" lang="ru"><head>
+﻿<!DOCTYPE html><html class="light" lang="ru"><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>Турниры | РГСУ ВОЛЕЙБОЛ</title>
@@ -288,16 +288,13 @@
     list.innerHTML = '<h2 class="font-headline-lg text-2xl md:text-headline-lg text-primary mb-6">Расписание турниров</h2>' +
       '<div class="space-y-4">' +
       active.map(function(t) {
-        var statusBadge = t.status === 'ongoing'
-          ? '<span class="inline-block px-3 py-1 bg-green-100 text-green-800 text-[11px] font-bold rounded-full uppercase tracking-tight">Идёт сейчас</span>'
-          : '<span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-[11px] font-bold rounded-full uppercase tracking-tight">Предстоящий</span>';
         var dateText = formatDateRange(t.date, t.endDate);
         return '<div class="bg-ice-blue/50 rounded-xl p-5 border border-ice-blue hover:border-royal-blue/20 hover:shadow-md transition-all">' +
           '<div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">' +
             '<div class="flex-1">' +
-              '<div class="flex items-center gap-2 mb-1">' +
-                '<h3 class="font-bold text-royal-blue text-body-lg">' + t.title + '</h3>' +
-                statusBadge +
+              '<div class="flex flex-wrap items-center gap-2 mb-1">' +
+                '<h3 class="font-bold text-royal-blue text-body-lg break-words">' + t.title + '</h3>' +
+                '<span class="inline-block px-3 py-1 bg-' + (t.status === 'ongoing' ? 'green' : 'blue') + '-100 text-' + (t.status === 'ongoing' ? 'green' : 'blue') + '-800 text-[11px] font-bold rounded-full uppercase tracking-tight whitespace-nowrap shrink-0">' + (t.status === 'ongoing' ? 'Идёт сейчас' : 'Предстоящий') + '</span>' +
               '</div>' +
               (t.subtitle ? '<p class="text-xs text-outline mb-2">' + t.subtitle + '</p>' : '') +
               '<div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-on-surface-variant mt-2">' +
