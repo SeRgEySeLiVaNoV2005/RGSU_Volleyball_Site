@@ -61,9 +61,10 @@ async function writeData(data) {
     try {
       await put(BLOB_NAME, json, {
         access: 'public',
-        addRandomSuffix: false
+        addRandomSuffix: false,
+        allowOverwrite: true
       });
-    } catch {}
+    } catch (e) { console.error('Blob write failed:', e.message); }
   }
   // Keep filesystem writes for local development
   try { fs.writeFileSync(TMP_DATA, json, 'utf-8'); } catch {}
@@ -83,7 +84,7 @@ function validateData(data) {
     }
     if (Array.isArray(data[key])) {
       for (var j = 0; j < data[key].length; j++) {
-        if (!data[key][j] || typeof data[key][j].id === 'undefined') {
+        if (data[key][j] === null || typeof data[key][j] !== 'object' || typeof data[key][j].id === 'undefined') {
           return 'Каждый элемент в "' + key + '" должен иметь поле id';
         }
       }
