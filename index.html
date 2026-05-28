@@ -11,9 +11,9 @@
   .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
   .wave-transition { clip-path: polygon(0 15%, 100% 0, 100% 85%, 0 100%); }
   .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); }
-  #mobile-menu { position: fixed; top: 0; bottom: 0; width: 100%; right: 100%; left: auto; transition: right 0.3s ease-in-out, visibility 0s 0.3s; visibility: hidden; z-index: 20; }
+  #mobile-menu { position: fixed; top: 0; bottom: 0; width: 100%; right: 100%; left: auto; transition: right 0.3s ease-in-out, visibility 0s 0.3s; visibility: hidden; z-index: 60; }
   #mobile-menu.open { right: 0; left: 0; visibility: visible; transition: right 0.3s ease-in-out, visibility 0s 0s; }
-  #mobile-menu-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 15; transition: opacity 0.3s ease; opacity: 0; pointer-events: none; }
+  #mobile-menu-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 55; transition: opacity 0.3s ease; opacity: 0; pointer-events: none; }
   #mobile-menu-backdrop.open { opacity: 1; pointer-events: auto; }
   #mobile-menu { background: linear-gradient(180deg, #0033A0 0%, #001a50 100%); }
   #mobile-menu, #mobile-menu a, #mobile-menu span, #mobile-menu button, #mobile-menu p { color: #fff; }
