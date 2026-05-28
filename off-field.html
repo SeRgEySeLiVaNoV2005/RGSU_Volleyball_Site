@@ -105,7 +105,7 @@
             <h1 id="hero-title" class="font-display-lg text-headline-lg-mobile md:text-display-lg text-white mb-4"></h1>
             <p id="hero-subtitle" class="font-body-lg text-white/80 max-w-xl hidden sm:block"></p>
           </div>
-          <button id="hero-like-btn" class="flex w-full md:w-auto justify-center items-center gap-3 bg-white text-royal-blue px-8 py-4 rounded-full font-black hover:scale-110 transition-transform active:scale-95"><span class="material-symbols-outlined">favorite</span><span id="hero-like-text">Мне нравится</span></button>
+          <button id="hero-like-btn" class="flex w-full md:w-auto justify-center items-center gap-3 bg-white text-royal-blue px-8 py-4 rounded-full font-black hover:scale-110 transition-transform active:scale-95"><span id="hero-heart-icon" class="material-symbols-outlined">favorite</span><span id="hero-like-text">Мне нравится</span></button>
         </div>
       </div>
     </section>
@@ -305,7 +305,9 @@
   var pendingLikes = {};
   var yandexUser = null;
   var currentPostId = null;
-  
+  var heroPostId = null;
+  var commentPollInterval = null;
+
   var categories = { personal: 'Личное', study: 'Учеба', travel: 'Путешествия', events: 'Мероприятия' };
   var catIcons = { personal: 'person', study: 'school', travel: 'flight', events: 'groups' };
 
@@ -384,7 +386,9 @@
     document.getElementById('hero-badge').textContent = categories[hero.category] || 'Событие';
     document.getElementById('hero-title').textContent = hero.title || '';
     document.getElementById('hero-subtitle').textContent = hero.content || '';
+    heroPostId = hero.id;
     document.getElementById('hero-like-btn').onclick = function() { handleLike(hero.id); };
+    updateHeroLike();
   }
 
   // ===== FEED =====
@@ -468,6 +472,35 @@
     return getLikedIds().indexOf(postId) !== -1;
   }
 
+  function updateHeroLike() {
+    if (!heroPostId) return;
+    var icon = document.getElementById('hero-heart-icon');
+    var text = document.getElementById('hero-like-text');
+    if (!icon || !text) return;
+    if (isLiked(heroPostId)) {
+      icon.style.cssText = "font-variation-settings: 'FILL' 1; color: #ba1a1a;";
+      text.textContent = 'Не нравится';
+    } else {
+      icon.style.cssText = "font-variation-settings: 'FILL' 0; color: currentColor;";
+      text.textContent = 'Мне нравится';
+    }
+  }
+
+  function updateDetailLikeBtn(postId) {
+    var likeBtn = document.getElementById('detail-like-btn');
+    if (!likeBtn) return;
+    var liked = isLiked(postId);
+    likeBtn.className = liked
+      ? 'flex items-center gap-2 text-error transition-colors font-bold'
+      : 'flex items-center gap-2 text-on-surface-variant hover:text-error transition-colors font-bold';
+    var icon = likeBtn.querySelector('.material-symbols-outlined');
+    if (icon) {
+      icon.style.cssText = liked
+        ? "font-variation-settings: 'FILL' 1; color: #ba1a1a;"
+        : "font-variation-settings: 'FILL' 0; color: currentColor;";
+    }
+  }
+
   function handleLike(postId) {
     if (pendingLikes[postId]) return;
     var liked = isLiked(postId);
@@ -491,7 +524,11 @@
         var post = allPosts.find(function(p) { return p.id === postId; });
         if (post) { post.likes = res.likes; }
         renderFeed();
-        if (currentPostId === postId) updateDetailLikes(res.likes);
+        updateHeroLike();
+        if (currentPostId === postId) {
+          updateDetailLikes(res.likes);
+          updateDetailLikeBtn(postId);
+        }
       }
       pendingLikes[postId] = false;
     })
@@ -513,21 +550,49 @@
     document.getElementById('detail-likes-count').textContent = post.likes || 0;
     document.getElementById('detail-comments-count').textContent = (post.comments || []).filter(function(c) { return c.approved; }).length;
 
-    var liked = isLiked(postId);
     var likeBtn = document.getElementById('detail-like-btn');
-    likeBtn.className = liked
-      ? 'flex items-center gap-2 text-error transition-colors font-bold'
-      : 'flex items-center gap-2 text-on-surface-variant hover:text-error transition-colors font-bold';
     likeBtn.onclick = function() { handleLike(postId); };
+    updateDetailLikeBtn(postId);
 
     renderDetailComments(post);
     hideCommentInput();
     document.getElementById('post-detail-modal').classList.add('active');
+
+    // Start polling for new comments
+    if (commentPollInterval) clearInterval(commentPollInterval);
+    commentPollInterval = setInterval(function() {
+      if (!currentPostId) { clearInterval(commentPollInterval); commentPollInterval = null; return; }
+      fetch('/api/data')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (!currentPostId) return;
+          var freshPost = (data.posts || []).find(function(p) { return p.id === currentPostId; });
+          if (!freshPost) return;
+          var localPost = allPosts.find(function(p) { return p.id === currentPostId; });
+          if (!localPost) return;
+          // Update like count
+          localPost.likes = freshPost.likes;
+          updateDetailLikes(freshPost.likes);
+          // Check for new comments
+          var oldApproved = (localPost.comments || []).filter(function(c) { return c.approved; });
+          var newApproved = (freshPost.comments || []).filter(function(c) { return c.approved; });
+          if (newApproved.length !== oldApproved.length) {
+            localPost.comments = freshPost.comments;
+            renderDetailComments(localPost);
+            document.getElementById('detail-comments-count').textContent = newApproved.length;
+          }
+        })
+        .catch(function() {});
+    }, 15000);
   }
 
   function closePostDetail() {
     document.getElementById('post-detail-modal').classList.remove('active');
     currentPostId = null;
+    if (commentPollInterval) {
+      clearInterval(commentPollInterval);
+      commentPollInterval = null;
+    }
   }
 
   function updateDetailLikes(count) {
