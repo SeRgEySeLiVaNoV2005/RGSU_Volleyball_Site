@@ -6,13 +6,31 @@ const REPO_DATA = path.join(process.cwd(), 'data.json');
 const TMP_DATA = '/tmp/data.json';
 const BLOB_NAME = 'site-data.json';
 
+let cachedBlobUrl = null;
+
+async function getBlobUrl() {
+  if (cachedBlobUrl) return cachedBlobUrl;
+  try {
+    const { blobs } = await list({ prefix: BLOB_NAME, limit: 1 });
+    if (blobs.length > 0) {
+      cachedBlobUrl = blobs[0].url;
+      return cachedBlobUrl;
+    }
+  } catch {}
+  return null;
+}
+
 async function readDataFromBlob() {
-  const { blobs } = await list();
-  const dataBlob = blobs.find(function(b) { return b.pathname === BLOB_NAME; });
-  if (!dataBlob) return null;
-  const res = await fetch(dataBlob.url, { cache: 'no-store' });
-  if (!res.ok) return null;
-  return await res.json();
+  var url = await getBlobUrl();
+  if (!url) return null;
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) { cachedBlobUrl = null; return null; }
+    return await res.json();
+  } catch {
+    cachedBlobUrl = null;
+    return null;
+  }
 }
 
 function readDataFromFs() {
@@ -59,11 +77,12 @@ async function writeData(data) {
   var json = JSON.stringify(data, null, 2);
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     try {
-      await put(BLOB_NAME, json, {
+      var result = await put(BLOB_NAME, json, {
         access: 'public',
         addRandomSuffix: false,
         allowOverwrite: true
       });
+      cachedBlobUrl = result.url;
     } catch (e) { console.error('Blob write failed:', e.message); }
   }
   // Keep filesystem writes for local development
