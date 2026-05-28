@@ -29,7 +29,7 @@
   /* Mobile sidebar */
   /* Mobile sidebar */
   @media (max-width: 1023px) {
-    #page-admin { background-color: #e2e1eb; overflow: hidden; max-width: 100vw; position: relative; }
+    #page-admin { background-color: #e2e1eb; overflow-x: hidden; overflow-y: auto; max-width: 100vw; position: relative; }
     #admin-sidebar { width: 0 !important; transform: translateX(-100%); transition: transform 0.3s ease, width 0s 0.3s; pointer-events: none; overflow-y: auto; contain: layout paint; will-change: transform; left: 0; }
     #admin-sidebar.open { width: 280px !important; transform: translateX(0); pointer-events: auto; transition: transform 0.3s ease, width 0s 0s; }
     @media (min-width: 640px) { #admin-sidebar.open { width: 300px !important; } }
@@ -164,7 +164,7 @@
 <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
 <!-- Main Area -->
-<div id="admin-main" class="admin-main ml-[260px] flex flex-col min-h-screen overflow-x-hidden max-w-full">
+<div id="admin-main" class="admin-main ml-[280px] sm:ml-[300px] flex flex-col min-h-screen overflow-x-hidden max-w-full">
   <!-- Top Bar -->
   <header class="sticky top-0 z-40 h-16 bg-white/80 backdrop-blur-xl border-b border-ice-blue flex justify-between items-center px-4 md:px-6">
     <div class="flex items-center gap-3 flex-1">
