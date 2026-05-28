@@ -1,12 +1,21 @@
 import fs from 'fs';
 import path from 'path';
+import { put, list } from '@vercel/blob';
 
 const REPO_DATA = path.join(process.cwd(), 'data.json');
 const TMP_DATA = '/tmp/data.json';
+const BLOB_NAME = 'site-data.json';
 
-function readData() {
-  // In Vercel prod, mutations go to /tmp/data.json
-  // The repo data.json serves as initial seed
+async function readDataFromBlob() {
+  const { blobs } = await list();
+  const dataBlob = blobs.find(function(b) { return b.pathname === BLOB_NAME; });
+  if (!dataBlob) return null;
+  const res = await fetch(dataBlob.url, { cache: 'no-store' });
+  if (!res.ok) return null;
+  return await res.json();
+}
+
+function readDataFromFs() {
   if (fs.existsSync(TMP_DATA)) {
     try {
       return JSON.parse(fs.readFileSync(TMP_DATA, 'utf-8'));
@@ -25,7 +34,7 @@ function readData() {
         hero_subtitle: 'Присоединяйтесь к волейбольной семье РГСУ и достигайте новых высот вместе с нами.',
         button_text: 'Подать заявку',
         button_link: '/about',
-        hero_image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCCd00tUo0QcB3oXHn02WSNsadAAiNZv6JZA2SdcuhQ3mHk18E9LwbSEdGO5e2Mw6VfoZrA-r-Rpr-XoFPmX2r4Uzh74SpP18EuWMLPUET-qoJ50DK31jO6dWnKyn7IUZkoYdRNq6C9SBajTJHmEfDkVHb9YEbJqqi-WSvXNyAf1OigoLBaHnMDrmR32P84wuL7caFpzkxe63wehs73PXHCN5uYaRpsKTfWS5YMrCwxCeZ-ocn7cHVFc_b4UaxduzIxy0eOWxG6molYxQ',
+        hero_image: '',
         footer_address: 'Москва, ул. Вильгельма Пика, д. 4, стр. 1',
         footer_email: 'volleyball@rgsu.net',
         footer_phone: '+7 (495) 123-45-67',
@@ -36,25 +45,43 @@ function readData() {
   }
 }
 
-function writeData(data) {
-  // Write to /tmp/data.json for Vercel (survives redeploys within same instance)
-  // Also update repo file for local dev
-  try { fs.writeFileSync(TMP_DATA, JSON.stringify(data, null, 2), 'utf-8'); } catch {}
-  try { fs.writeFileSync(REPO_DATA, JSON.stringify(data, null, 2), 'utf-8'); } catch {}
+async function readData() {
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      var data = await readDataFromBlob();
+      if (data) return data;
+    } catch {}
+  }
+  return readDataFromFs();
+}
+
+async function writeData(data) {
+  var json = JSON.stringify(data, null, 2);
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      await put(BLOB_NAME, json, {
+        access: 'public',
+        addRandomSuffix: false
+      });
+    } catch {}
+  }
+  // Keep filesystem writes for local development
+  try { fs.writeFileSync(TMP_DATA, json, 'utf-8'); } catch {}
+  try { fs.writeFileSync(REPO_DATA, json, 'utf-8'); } catch {}
 }
 
 function verifyToken(authHeader) {
   if (!authHeader) return false;
   try {
-    const token = authHeader.replace('Bearer ', '');
-    const decoded = JSON.parse(Buffer.from(token, 'base64').toString('utf-8'));
+    var token = authHeader.replace('Bearer ', '');
+    var decoded = JSON.parse(Buffer.from(token, 'base64').toString('utf-8'));
     return decoded.user === 'admin' && decoded.exp > Date.now();
   } catch {
     return false;
   }
 }
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -65,38 +92,38 @@ export default function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    const data = readData();
+    var data = await readData();
     res.status(200).json(data);
     return;
   }
 
   if (req.method === 'POST') {
-    const body = req.body;
+    var body = req.body;
 
     // Public actions (no auth required)
     if (body && body.action) {
-      const data = readData();
+      var data = await readData();
 
       if (body.action === 'like') {
-        const post = (data.posts || []).find(function(p) { return p.id === body.postId; });
+        var post = (data.posts || []).find(function(p) { return p.id === body.postId; });
         if (!post) {
           res.status(404).json({ error: 'Пост не найден' });
           return;
         }
         post.likes = (post.likes || 0) + 1;
-        writeData(data);
+        await writeData(data);
         res.status(200).json({ success: true, likes: post.likes });
         return;
       }
 
       if (body.action === 'unlike') {
-        const post = (data.posts || []).find(function(p) { return p.id === body.postId; });
+        var post = (data.posts || []).find(function(p) { return p.id === body.postId; });
         if (!post) {
           res.status(404).json({ error: 'Пост не найден' });
           return;
         }
         post.likes = Math.max(0, (post.likes || 0) - 1);
-        writeData(data);
+        await writeData(data);
         res.status(200).json({ success: true, likes: post.likes });
         return;
       }
@@ -106,7 +133,7 @@ export default function handler(req, res) {
           res.status(400).json({ error: 'Требуется текст комментария и Яндекс авторизация' });
           return;
         }
-        const post = (data.posts || []).find(function(p) { return p.id === body.postId; });
+        var post = (data.posts || []).find(function(p) { return p.id === body.postId; });
         if (!post) {
           res.status(404).json({ error: 'Пост не найден' });
           return;
@@ -125,7 +152,7 @@ export default function handler(req, res) {
           replies: []
         };
         post.comments.push(newComment);
-        writeData(data);
+        await writeData(data);
         res.status(200).json({ success: true, comment: newComment });
         return;
       }
@@ -144,8 +171,9 @@ export default function handler(req, res) {
       res.status(400).json({ error: 'Нет данных' });
       return;
     }
-    writeData(body);
-    res.status(200).json({ success: true, data: readData() });
+    await writeData(body);
+    var result = await readData();
+    res.status(200).json({ success: true, data: result });
   } else {
     res.status(405).json({ error: 'Method not allowed' });
   }
