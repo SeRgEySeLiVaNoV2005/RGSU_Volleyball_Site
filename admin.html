@@ -889,9 +889,12 @@
     }
   }, { passive: false });
 
+})();
 </script>
 <script src="js/toggle.js"></script>
 <script>
+(function() {
+  'use strict';
   // ===== STATE =====
   var token = localStorage.getItem('admin_token');
   // Admin-specific switchTeam override (no page reload)
