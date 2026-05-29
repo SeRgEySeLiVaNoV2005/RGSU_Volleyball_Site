@@ -200,7 +200,12 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    var data = await readData(team);
+    var data;
+    if (req.query.force_fs === 'true') {
+      data = readDataFromFs();
+    } else {
+      data = await readData(team);
+    }
     res.status(200).json(data);
     return;
   }
