@@ -1,0 +1,192 @@
+// Embedded default data for auto-restore (synced from data.json)
+// This is the canonical men's team data — used when Blob is empty or corrupted
+const defaultData = {
+  posts: [
+    {
+      id: 1,
+      title: "Поздравляем капитана с прибавлением в семье!",
+      content: "Наш капитан Андрей стал папой! Вся команда желает малышу крепкого здоровья, а родителям — терпения и как можно больше спокойных ночей.",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB3RAA1yYJi8tq8vpf7AjFsSMXY0kV0va7bIopvjfe8JMCSbAoeLMQwI5JT25LtL_TtNiPbmtfg1__4-u9ifYU87VngGgMVa7-tHIFEpbpk-sEYywJn_NqI1FrkA_NEA31yfMpjLGQQqfTf0uUr-E8dmeCZeo4H8Q8-U9UvAHAjZAM0-p00vKbZdh9ItUXpLqaOwrQqj2_xU0SMXWju7PFPYkPaEccAnFNFDwCdUPglowR7C8fO2e7HxOdLlBFksHJUDJ24wZbgrzQ",
+      category: "personal",
+      date: "2025-01-15",
+      author: "admin",
+      published: true,
+      comments: [
+        {
+          id: 1,
+          author: "Команда РГСУ",
+          text: "Поздравляем! 🎉",
+          date: "2025-01-15",
+          replies: [],
+          approved: true
+        }
+      ],
+      likes: 0,
+      pinned: false
+    },
+    {
+      id: 2,
+      title: "На один диплом больше!",
+      content: "Сегодня официально завершила обучение в магистратуре РГСУ. Эти 6 лет были невероятными. Спасибо команде за поддержку во время сессий!",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDoq3ducr9e8OcmRhpQqpQ8GLKBqT6UndiihXmERlNeFIGmozd_e6KPTCE8EEaUuDT8hFRhxf6eGX7byfnn-lO2_it5Hl-k4a28JesPwehaHO4mOtOyrALlUBbHAcR1ngwm1Xq_BRF0oy60f9T32NXCiCj1QSWxDQ-RHr2gUFzXjKazDjL8IYgqtTuQdRQO91tyQXB2IPh4BaulHQqrjCUff6shCSpnCuyK4qiOPjqUdPFbeti8Ii2eimklrVa0hc-oVP8i5iQ5ou8",
+      category: "study",
+      date: "2025-01-12",
+      author: "admin",
+      published: true,
+      comments: [],
+      likes: 0,
+      pinned: false
+    },
+    {
+      id: 3,
+      title: "Субботний завтрак всей командой",
+      content: "Традиционный утренний сбор. Обсуждаем не только тактику, но и планы на лето. Вместе мы — сила не только на площадке!",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAhFTpvF5M1VLulQkta2kMngi2kWm1Ve9GDqsEO_WxxkxiYAugw2iO7Plq4JduQxI2nRTI21JPl6XdzFf-XAmCoTh61bJxhamxBD9P1ngX6uErQhQCoJDHdP5-fQimDCgeNOKnkze5psTIcxTfC6_GdBSPI68-ECDcxLxVxspquIF3i0xaKHenerwlx6JiuV5JwItl6czh0iZ-nzCyFwVOl6qfdNAeqhBxUuK_gEzF24yQg6VxbcIWi9e4rv90vlfFfFwBZgIyT338",
+      category: "events",
+      date: "2025-01-10",
+      author: "admin",
+      published: true,
+      comments: [],
+      likes: 0,
+      pinned: false
+    },
+    {
+      id: 4,
+      title: "Мечта сбылась!",
+      content: "Долго копил, много тренировался и вот — моя первая ласточка. Теперь на тренировки буду добираться еще быстрее (но без нарушений!).",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBwK0D0hVeNCkFG0NL_gOdn_9agMIiEv4N6s8l4M0yqOmSz0IRz6l1g91eADM6P_BlXKCvoqKJtGHhfayMpteHTc4h8l8FAOxVURHJwISSoeQ6bCxBMp53Z_Bg6Iw6FymSdY0lzmsDKKeQmceluQbekl1pUpzwAllCvOu3lcf89oif5I-zJZVsM8ZtDV4O_xureXqQA4NV3T7QJ8_rDz1IlCQ4t5-W5S65rVtPBb96O8z3xhYwOXneiJ4i6spcxom7lEK-r8OCY4g0",
+      category: "personal",
+      date: "2025-01-08",
+      author: "admin",
+      published: true,
+      comments: [],
+      likes: 0,
+      pinned: false
+    }
+  ],
+  settings: {
+    site_title: "РГСУ ВОЛЕЙБОЛ",
+    yandex_app_id: "27e68fb7f21146f5b0a616cb57e382e8"
+  },
+  players: [
+    {
+      id: 1,
+      name: "Селиванов Сергей",
+      number: "4",
+      position: "Центральный блокирующий",
+      height: "188 см",
+      age: 21,
+      status: "Активен",
+      desc: "Капитан команды и лидер на площадке. Обладает исключительным игровым чутьем.",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBasmchgp266aEGSRcstu0cY0wQts7YhqoBqbC4FaPjxvaCKjIXP0PhQRwZDfqYnNsQEo--NNzIgiAPws8q1LAFI8GIFUf1G3KuL9_CSH7YqQnmz-sf8O_5hFaie5QyWXQVP2Q3hRhQ9IOIQRaGoBvK03RgWX5goLBGoHX-vDj9U04AakrDBRih6XZ0W6Jl9uNTw34QVhVVtgwP-h0frfRiZc-RbyY40YMJr70375ve2b0KbHc63E_2KwkcN9CX0xUhH9-eZdvfoqdTYA"
+    },
+    {
+      id: 2,
+      name: "Дмитрий Иванов",
+      number: "5",
+      position: "Либеро",
+      height: "185 см",
+      age: 20,
+      status: "Активен",
+      desc: "Мастер приема и защиты. Молниеносная реакция и невероятное чтение игры.",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAJpYZdI8ZYBFvsrHOkvkpYchomeFzPUdjpVGkRCc-yJyjL1xYvmO4GM2qxsbrgUE1fdCN41P0O8YcIReivvuwKyZNJbm60CYaJEPGuXX-R0l1aqbdJgBwCxc3TBdPUg3SIspiuP1quNst4Q0-kqjZnqaU2moVeKrtI2aRO26E4arzNO6sZzDNxMCVPXwJoxMTtUNyLfQfXGH75K1wQ69KS6Hbw74MxWj8pRtiCaH4xHNZCho2G5jnYeyWPAOy75_KjAFCy1st-h24"
+    },
+    {
+      id: 3,
+      name: "Игорь Соколов",
+      number: "8",
+      position: "Диагональный",
+      height: "204 см",
+      age: 23,
+      status: "Активен",
+      desc: "Основная атакующая сила команды. Способен пробить любой блок соперника.",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF2yOGnmJOq65NPrUFgC2Lizgugj7HyFzA2QeJd6wvU30AMxN7_cWdphnvuXiauT7EICi8R9CL4f4hJBx2oEY2igXqiGbmgByE1SQ2zvvgg2_wuL6GSK0iPyrZGWBRj5vWkolSGzbgC6OEVjd2Ta-fLXjYSuVJ-qGdGPNRApn-lftLzzAymzrESMSn1wBQPpL_NFEuWI6-06x1KcnK-OuWNkcxzw0UwOKLw-amuTJqUiiz6EVe0w0ujdhvi_wVuyWLOYI9RDHAtns"
+    },
+    {
+      id: 4,
+      name: "Сергей Волков",
+      number: "7",
+      position: "Доигровщик",
+      height: "195 см",
+      age: 22,
+      status: "Активен",
+      desc: "Универсальный игрок с отличным балансом между атакой и защитными действиями.",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAJpYZdI8ZYBFvsrHOkvkpYchomeFzPUdjpVGkRCc-yJyjL1xYvmO4GM2qxsbrgUE1fdCN41P0O8YcIReivvuwKyZNJbm60CYaJEPGuXX-R0l1aqbdJgBwCxc3TBdPUg3SIspiuP1quNst4Q0-kqjZnqaU2moVeKrtI2aRO26E4arzNO6sZzDNxMCVPXwJoxMTtUNyLfQfXGH75K1wQ69KS6Hbw74MxWj8pRtiCaH4xHNZCho2G5jnYeyWPAOy75_KjAFCy1st-h24"
+    },
+    {
+      id: 5,
+      name: "Алексей Морозов",
+      number: "15",
+      position: "Блокирующий",
+      height: "210 см",
+      age: 24,
+      status: "Активен",
+      desc: "Стена нашей команды. Лучший по количеству результативных блоков в сезоне.",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF2yOGnmJOq65NPrUFgC2Lizgugj7HyFzA2QeJd6wvU30AMxN7_cWdphnvuXiauT7EICi8R9CL4f4hJBx2oEY2igXqiGbmgByE1SQ2zvvgg2_wuL6GSK0iPyrZGWBRj5vWkolSGzbgC6OEVjd2Ta-fLXjYSuVJ-qGdGPNRApn-lftLzzAymzrESMSn1wBQPpL_NFEuWI6-06x1KcnK-OuWNkcxzw0UwOKLw-amuTJqUiiz6EVe0w0ujdhvi_wVuyWLOYI9RDHAtns"
+    },
+    {
+      id: 6,
+      name: "Максим Петров",
+      number: "3",
+      position: "Связующий",
+      height: "192 см",
+      age: 21,
+      status: "Активен",
+      desc: "Мозг команды. Его передачи всегда точны и непредсказуемы для соперника.",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCPmCnVrkOeKYJ9kW2mzUGaSnGlzu2P6vunb0EdjqNR6ol75AaljxTCUMT3Bak6MX4XfC4ugt99Ld0NPdwwM1gORd2ct3R2m1MQo3NSNEPXwEcO0SJmcC5caKdtQuxx2ppaqHKlQG9a-dEXHpn-AyRmexqLmJTOxI8Hiq9rH1olFFg1SwVWyBDt1ODbvhdPkYPi3ikBoH9Cs-3ccscuFGq2dmDsw2wfOmTCuSNX_SYLQEm-jdCOdC9lXpIsiYxRksVRQPtCEt2pY8M"
+    }
+  ],
+  tournaments: [
+    {
+      id: 1,
+      title: "Открытый кубок мастеров",
+      subtitle: "Региональный квалификатор",
+      date: "2024-10-12",
+      endDate: "2024-10-20",
+      status: "ongoing",
+      participants: "16 команд",
+      description: "Ежегодный региональный квалификационный турнир среди студенческих команд.",
+      location: "Москва, СК «Олимпийский»",
+      image: ""
+    },
+    {
+      id: 2,
+      title: "Осенний пригласительный турнир",
+      subtitle: "Только по приглашению",
+      date: "2024-11-05",
+      endDate: "2024-11-05",
+      status: "upcoming",
+      participants: "8 команд",
+      description: "Закрытый турнир для приглашённых команд. Участвуют сильнейшие сборные вузов.",
+      location: "Москва, РГСУ",
+      image: ""
+    },
+    {
+      id: 3,
+      title: "Летняя битва",
+      subtitle: "Архивное событие",
+      date: "2024-08-15",
+      endDate: "2024-08-20",
+      status: "completed",
+      participants: "24 команды",
+      description: "Масштабный летний турнир с участием команд со всей страны.",
+      location: "Москва, СК «Динамо»",
+      image: ""
+    }
+  ],
+  homepage: {
+    hero_title: "Добро пожаловать, будущие чемпионы",
+    hero_subtitle: "Присоединяйтесь к волейбольной семье РГСУ и достигайте новых высот вместе с нами.",
+    button_text: "Подать заявку",
+    button_link: "/about",
+    hero_image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCCd00tUo0QcB3oXHn02WSNsadAAiNZv6JZA2SdcuhQ3mHk18E9LwbSEdGO5e2Mw6VfoZrA-r-Rpr-XoFPmX2r4Uzh74SpP18EuWMLPUET-qoJ50DK31jO6dWnKyn7IUZkoYdRNq6C9SBajTJHmEfDkVHb9YEbJqqi-WSvXNyAf1OigoLBaHnMDrmR32P84wuL7caFpzkxe63wehs73PXHCN5uYaRpsKTfWS5YMrCwxCeZ-ocn7cHVFc_b4UaxduzIxy0eOWxG6molYxQ",
+    footer_address: "Москва, ул. Вильгельма Пика, д. 4, стр. 1",
+    footer_email: "volleyball@rgsu.net",
+    footer_phone: "+7 (495) 123-45-67",
+    vk_link: "https://vk.com/rgsu_volleyball",
+    tg_link: "https://t.me/rgsu_sport"
+  },
+  _data_version: 2
+};
+
+export default defaultData;

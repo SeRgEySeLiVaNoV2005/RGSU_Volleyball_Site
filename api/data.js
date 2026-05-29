@@ -1,9 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import { put, list } from '@vercel/blob';
+import defaultData from './default-data.js';
 
 const REPO_DATA = path.join(process.cwd(), 'data.json');
 const TMP_DATA = '/tmp/data.json';
+const DATA_VERSION = 2; // bump when default data changes — triggers auto-restore
 
 function getBlobName(team) {
   return team === 'women' ? 'site-data-women.json' : 'site-data.json';
@@ -36,6 +38,11 @@ async function readDataFromBlob(blobName) {
   }
 }
 
+// Deep-clone the embedded default (so callers can mutate freely)
+function getDefaultData() {
+  return JSON.parse(JSON.stringify(defaultData));
+}
+
 function readDataFromFs() {
   if (fs.existsSync(TMP_DATA)) {
     try {
@@ -45,24 +52,7 @@ function readDataFromFs() {
   try {
     return JSON.parse(fs.readFileSync(REPO_DATA, 'utf-8'));
   } catch {
-    return {
-      posts: [],
-      settings: { site_title: 'РГСУ ВОЛЕЙБОЛ', yandex_app_id: '' },
-      players: [],
-      tournaments: [],
-      homepage: {
-        hero_title: 'Добро пожаловать, будущие чемпионы',
-        hero_subtitle: 'Присоединяйтесь к волейбольной семье РГСУ и достигайте новых высот вместе с нами.',
-        button_text: 'Подать заявку',
-        button_link: '/about',
-        hero_image: '',
-        footer_address: 'Москва, ул. Вильгельма Пика, д. 4, стр. 1',
-        footer_email: 'volleyball@rgsu.net',
-        footer_phone: '+7 (495) 123-45-67',
-        vk_link: 'https://vk.com/rgsu_volleyball',
-        tg_link: 'https://t.me/rgsu_sport'
-      }
-    };
+    return getDefaultData();
   }
 }
 
@@ -71,34 +61,37 @@ async function readData(team) {
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     try {
       var data = await readDataFromBlob(blobName);
-      if (data) return data;
+      if (data) {
+        // Auto-restore men's data when version is outdated (e.g. corrupted Blob)
+        if (team === 'men' && data._data_version !== DATA_VERSION) {
+          console.log('[auto-restore] Men\'s Blob version mismatch (' + data._data_version + ' → ' + DATA_VERSION + '), restoring from embedded default');
+          var restored = getDefaultData();
+          await writeData(restored, team);
+          return restored;
+        }
+        return data;
+      }
     } catch {}
   }
-  // For women's team without Blob, return fresh defaults (don't fall back to men's FS data)
+  // No Blob available — return appropriate defaults
   if (team === 'women') {
     return {
       posts: [],
       settings: { site_title: 'РГСУ ВОЛЕЙБОЛ', yandex_app_id: '' },
       players: [],
       tournaments: [],
-      homepage: {
-        hero_title: 'Добро пожаловать, будущие чемпионы',
-        hero_subtitle: 'Присоединяйтесь к волейбольной семье РГСУ и достигайте новых высот вместе с нами.',
-        button_text: 'Подать заявку',
-        button_link: '/about',
-        hero_image: '',
-        footer_address: 'Москва, ул. Вильгельма Пика, д. 4, стр. 1',
-        footer_email: 'volleyball@rgsu.net',
-        footer_phone: '+7 (495) 123-45-67',
-        vk_link: 'https://vk.com/rgsu_volleyball',
-        tg_link: 'https://t.me/rgsu_sport'
-      }
+      homepage: getDefaultData().homepage
     };
   }
+  // Men's team without Blob: try filesystem, fall back to embedded default
   return readDataFromFs();
 }
 
 async function writeData(data, team) {
+  // Ensure version marker is present on men's data
+  if (team === 'men' && data._data_version !== DATA_VERSION) {
+    data._data_version = DATA_VERSION;
+  }
   var json = JSON.stringify(data, null, 2);
   var blobName = getBlobName(team);
   if (process.env.BLOB_READ_WRITE_TOKEN) {
@@ -202,6 +195,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     var data;
     if (req.query.force_fs === 'true') {
+      // Force read from filesystem / embedded default (bypasses Blob + auto-restore)
       data = readDataFromFs();
     } else {
       data = await readData(team);
