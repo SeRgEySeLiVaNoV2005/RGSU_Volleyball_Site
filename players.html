@@ -68,10 +68,8 @@
   <div class="hidden md:flex items-center gap-4">
     <button class="bg-royal-blue text-white font-bold rounded-full px-6 py-2 text-label-lg hover:scale-105 active:scale-95 transition-all shadow-md shadow-royal-blue/20">Связаться с менеджером</button>
     <div class="flex items-center gap-1.5" id="team-switcher">
-      <button onclick="switchTeam(false)" id="btn-men" class="team-btn transition-all duration-300 active:scale-90 select-none font-extrabold leading-none"
-              style="font-size:15px;color:#94a3b8">М</button>
-      <button onclick="switchTeam(true)" id="btn-women" class="team-btn transition-all duration-300 active:scale-90 select-none font-extrabold leading-none"
-              style="font-size:15px;color:#94a3b8">Ж</button>
+      <button onclick="switchTeam(false)" class="toggle-men team-btn transition-all duration-300 active:scale-90 select-none font-extrabold leading-none" data-size-active="26px" data-size-inactive="15px">М</button>
+      <button onclick="switchTeam(true)" class="toggle-women team-btn transition-all duration-300 active:scale-90 select-none font-extrabold leading-none" data-size-active="26px" data-size-inactive="15px">Ж</button>
     </div>
   </div>
   <button class="md:hidden text-royal-blue z-20 focus:outline-none" id="mobile-menu-btn">
@@ -88,6 +86,7 @@
     </button>
   </div>
   <div class="w-12 h-0.5 bg-victory-gold/60 ml-5 mt-2 mb-6 rounded-full"></div>
+  <div class="flex items-center gap-2 px-5 mb-5" id="team-switcher-menu"><span class="text-white/60 text-xs font-bold uppercase tracking-wider">Сборная</span><button onclick="switchTeam(false)" class="toggle-men font-extrabold leading-none transition-all duration-300 active:scale-90 select-none" data-size-active="24px" data-size-inactive="15px">М</button><button onclick="switchTeam(true)" class="toggle-women font-extrabold leading-none transition-all duration-300 active:scale-90 select-none" data-size-active="24px" data-size-inactive="15px">Ж</button></div>
   <nav class="flex flex-col px-4 gap-1">
     <a class="flex items-center gap-4 py-4 px-4 text-white font-bold text-lg rounded-xl hover:bg-white/10 hover:text-white active:bg-white/20 transition-colors" href="/">
       <span class="material-symbols-outlined text-2xl">home</span>
@@ -200,6 +199,7 @@
   <a class="flex flex-col items-center justify-center text-on-surface-variant py-2" href="/tournaments.html"><span class="material-symbols-outlined">calendar_today</span><span class="font-label-sm text-[10px]">Турниры</span></a>
   <a class="flex flex-col items-center justify-center bg-royal-blue text-white rounded-xl px-5 py-2 -mt-4 shadow-md shadow-royal-blue/30" href="/players.html"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span><span class="font-label-sm text-[10px]">Игроки</span></a>
   <a class="flex flex-col items-center justify-center text-on-surface-variant py-2" href="/off-field.html"><span class="material-symbols-outlined">newsstand</span><span class="font-label-sm text-[10px]">Мы вне поля</span></a>
+  <div class="flex items-center gap-0.5 flex-shrink-0" id="team-switcher-mobile"><button onclick="switchTeam(false)" class="toggle-men font-extrabold leading-none transition-all duration-300 active:scale-90 select-none" data-size-active="20px" data-size-inactive="13px">М</button><button onclick="switchTeam(true)" class="toggle-women font-extrabold leading-none transition-all duration-300 active:scale-90 select-none" data-size-active="20px" data-size-inactive="13px">Ж</button></div>
 </nav>
 <footer class="w-full bg-royal-blue dark:bg-tertiary pb-16 md:pb-0">
   <div class="max-w-7xl mx-auto px-4 md:px-container-margin py-12 md:py-16">
@@ -347,33 +347,9 @@
   });
 
   // Load players from API then init carousel
-  function getTeam() { return localStorage.getItem('selected_team') || 'men'; }
-  function switchTeam(isWomen) {
-    var btnM = document.getElementById('btn-men');
-    var btnW = document.getElementById('btn-women');
-    if (isWomen) {
-      if (btnM) btnM.style.cssText = 'font-size:15px;color:#94a3b8;text-shadow:none';
-      if (btnW) btnW.style.cssText = 'font-size:26px;color:#ec4899;text-shadow:0 0 14px rgba(236,72,153,0.8)';
-    } else {
-      if (btnM) btnM.style.cssText = 'font-size:26px;color:#3b82f6;text-shadow:0 0 14px rgba(59,130,246,0.8)';
-      if (btnW) btnW.style.cssText = 'font-size:15px;color:#94a3b8;text-shadow:none';
-    }
-    localStorage.setItem('selected_team', isWomen ? 'women' : 'men');
-    setTimeout(function() { location.reload(); }, 350);
-  }
-  (function() {
-    var isWomen = getTeam() === 'women';
-    var btnM = document.getElementById('btn-men');
-    var btnW = document.getElementById('btn-women');
-    if (!btnM || !btnW) return;
-    if (isWomen) {
-      btnM.style.cssText = 'font-size:15px;color:#94a3b8;text-shadow:none';
-      btnW.style.cssText = 'font-size:26px;color:#ec4899;text-shadow:0 0 14px rgba(236,72,153,0.8)';
-    } else {
-      btnM.style.cssText = 'font-size:26px;color:#3b82f6;text-shadow:0 0 14px rgba(59,130,246,0.8)';
-      btnW.style.cssText = 'font-size:15px;color:#94a3b8;text-shadow:none';
-    }
-  })();
+</script>
+<script src="js/toggle.js"></script>
+<script>
 
   fetch('/api/data?team=' + getTeam())
     .then(function(r) { return r.json(); })
