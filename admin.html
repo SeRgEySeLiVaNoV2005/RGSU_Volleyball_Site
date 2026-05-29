@@ -897,6 +897,16 @@
   'use strict';
   // ===== STATE =====
   var token = localStorage.getItem('admin_token');
+
+  function showToast(message, type) {
+    var toast = document.createElement('div');
+    toast.className = 'fixed bottom-6 right-6 z-[100] px-5 py-3 rounded-xl text-white text-sm font-bold shadow-lg transition-all duration-300 animate-[slideIn_0.3s_ease]';
+    toast.style.backgroundColor = type === 'info' ? '#0033A0' : '#ba1a1a';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300); }, 2500);
+  }
+
   // Admin-specific switchTeam override (no page reload)
   switchTeam = function(isWomen) {
     updateToggleUI(isWomen);
