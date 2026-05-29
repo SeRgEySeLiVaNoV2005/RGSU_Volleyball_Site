@@ -898,6 +898,18 @@
   // ===== STATE =====
   var token = localStorage.getItem('admin_token');
 
+  // Intercept fetch to auto-logout on 401
+  var _origFetch = window.fetch;
+  window.fetch = function(url, options) {
+    return _origFetch(url, options).then(function(r) {
+      if (r.status === 401) {
+        if (token) { showToast('Сессия истекла. Войдите заново.', 'error'); }
+        logout();
+      }
+      return r;
+    });
+  };
+
   function showToast(message, type) {
     var toast = document.createElement('div');
     toast.className = 'fixed bottom-6 right-6 z-[100] px-5 py-3 rounded-xl text-white text-sm font-bold shadow-lg transition-all duration-300 animate-[slideIn_0.3s_ease]';
@@ -1057,6 +1069,7 @@
         body: JSON.stringify({ login: login, password: password })
       }).then(function(r) {
         if (r.ok) { return r.json().then(function(res) {
+          token = res.token;
           localStorage.setItem('admin_token', res.token);
         }); }
       }).catch(function() {});
