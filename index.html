@@ -43,7 +43,7 @@
     <button class="bg-royal-blue text-white font-bold rounded-full px-6 py-2 text-label-lg hover:scale-105 active:scale-95 transition-all shadow-md shadow-royal-blue/20">Связаться с менеджером</button>
     <div class="flex items-center gap-1.5" id="team-switcher">
       <button onclick="switchTeam(false)" id="btn-men" class="team-btn transition-all duration-300 active:scale-90 select-none font-extrabold leading-none"
-              style="font-size:26px;color:#3b82f6;text-shadow:0 0 14px rgba(59,130,246,0.8)">М</button>
+              style="font-size:15px;color:#94a3b8">М</button>
       <button onclick="switchTeam(true)" id="btn-women" class="team-btn transition-all duration-300 active:scale-90 select-none font-extrabold leading-none"
               style="font-size:15px;color:#94a3b8">Ж</button>
     </div>
@@ -298,8 +298,17 @@
   }
   function getTeam() { return localStorage.getItem('selected_team') || 'men'; }
   function switchTeam(isWomen) {
+    var btnM = document.getElementById('btn-men');
+    var btnW = document.getElementById('btn-women');
+    if (isWomen) {
+      if (btnM) btnM.style.cssText = 'font-size:15px;color:#94a3b8;text-shadow:none';
+      if (btnW) btnW.style.cssText = 'font-size:26px;color:#ec4899;text-shadow:0 0 14px rgba(236,72,153,0.8)';
+    } else {
+      if (btnM) btnM.style.cssText = 'font-size:26px;color:#3b82f6;text-shadow:0 0 14px rgba(59,130,246,0.8)';
+      if (btnW) btnW.style.cssText = 'font-size:15px;color:#94a3b8;text-shadow:none';
+    }
     localStorage.setItem('selected_team', isWomen ? 'women' : 'men');
-    location.reload();
+    setTimeout(function() { location.reload(); }, 350);
   }
   // Set initial button states
   (function() {
