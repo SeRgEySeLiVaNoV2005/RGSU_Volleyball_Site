@@ -1,280 +1,246 @@
-import fs from 'fs';
-import path from 'path';
-import { put, list } from '@vercel/blob';
-import defaultData from './default-data.js';
+// Supabase-backed data endpoint — drop-in replacement for the old Blob-based API
+// Maintains backward compatibility with admin.html while storing data in PostgreSQL
 
-const REPO_DATA = path.join(process.cwd(), 'data.json');
-const TMP_DATA = '/tmp/data.json';
-const DATA_VERSION = 2; // bump when default data changes — triggers auto-restore
+import { getSupabase } from './_supabase.js';
+import { setCors, requireAuth, getTeam, ok, fail } from './_lib.js';
 
-function getBlobName(team) {
-  return team === 'women' ? 'site-data-women.json' : 'site-data.json';
-}
+// Re-export _lib helpers used by other endpoints
+export { setCors, requireAuth, getTeam, ok, fail, verifyToken } from './_lib.js';
 
-var cachedBlobUrl = {};
-
-async function getBlobUrl(blobName) {
-  if (cachedBlobUrl[blobName]) return cachedBlobUrl[blobName];
-  try {
-    const { blobs } = await list({ prefix: blobName, limit: 1 });
-    if (blobs.length > 0) {
-      cachedBlobUrl[blobName] = blobs[0].url;
-      return cachedBlobUrl[blobName];
-    }
-  } catch {}
-  return null;
-}
-
-async function readDataFromBlob(blobName) {
-  var url = await getBlobUrl(blobName);
-  if (!url) return null;
-  try {
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) { cachedBlobUrl[blobName] = null; return null; }
-    return await res.json();
-  } catch {
-    cachedBlobUrl[blobName] = null;
-    return null;
-  }
-}
-
-// Deep-clone the embedded default (so callers can mutate freely)
-function getDefaultData() {
-  return JSON.parse(JSON.stringify(defaultData));
-}
-
-function readDataFromFs() {
-  if (fs.existsSync(TMP_DATA)) {
-    try {
-      return JSON.parse(fs.readFileSync(TMP_DATA, 'utf-8'));
-    } catch {}
-  }
-  try {
-    return JSON.parse(fs.readFileSync(REPO_DATA, 'utf-8'));
-  } catch {
-    return getDefaultData();
-  }
-}
-
+// ---- READ: Build old-format JSON from Supabase tables ----
 async function readData(team) {
-  var blobName = getBlobName(team);
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    try {
-      var data = await readDataFromBlob(blobName);
-      if (data) {
-        // Auto-restore when version is outdated (e.g. corrupted Blob)
-        if (data._data_version !== DATA_VERSION) {
-          console.log('[auto-restore] ' + team + ' Blob version mismatch (' + data._data_version + ' → ' + DATA_VERSION + '), restoring from embedded default');
-          var restored = getDefaultData();
-          await writeData(restored, team);
-          return restored;
-        }
-        if (team === 'women') {
-          // Backup women's data to filesystem for disaster recovery
-          try { fs.writeFileSync('/tmp/data-women.json', JSON.stringify(data), 'utf-8'); } catch {}
-        }
-        return data;
-      }
-      // Blob token is set but blob read returned null — try filesystem backup before falling back to empty
-      console.warn('[data] Blob read returned null for ' + team + ', trying filesystem fallback');
-      if (team === 'women') {
-        try {
-          if (fs.existsSync('/tmp/data-women.json')) {
-            var backup = JSON.parse(fs.readFileSync('/tmp/data-women.json', 'utf-8'));
-            console.log('[data] Restored women\'s data from filesystem backup');
-            return backup;
-          }
-        } catch (e) { console.error('[data] Filesystem backup read failed:', e.message); }
-      }
-      var fsFallback = readDataFromFs();
-      if (fsFallback && fsFallback.players && fsFallback.players.length > 0) {
-        console.log('[data] Restored ' + team + ' data from filesystem');
-        return fsFallback;
-      }
-    } catch (e) {
-      console.error('[data] Blob read error for ' + team + ':', e.message);
-    }
-  }
-  // No Blob available — return appropriate defaults
-  if (team === 'women') {
-    // Try women-specific filesystem backup first
-    try {
-      if (fs.existsSync('/tmp/data-women.json')) {
-        var backup = JSON.parse(fs.readFileSync('/tmp/data-women.json', 'utf-8'));
-        return backup;
-      }
-    } catch {}
-    return {
-      posts: [],
-      settings: { site_title: 'РГСУ ВОЛЕЙБОЛ', yandex_app_id: '' },
-      players: [],
-      tournaments: [],
-      homepage: getDefaultData().homepage
-    };
-  }
-  // Men's team without Blob: try filesystem, fall back to embedded default
-  return readDataFromFs();
-}
+  var supabase = getSupabase();
+  var result = {
+    players: [],
+    posts: [],
+    tournaments: [],
+    homepage: {},
+    settings: { site_title: 'РГСУ ВОЛЕЙБОЛ', yandex_app_id: '' },
+    _data_version: 3
+  };
 
-async function writeData(data, team) {
-  // Ensure version marker is present
-  if (data._data_version !== DATA_VERSION) {
-    data._data_version = DATA_VERSION;
-  }
-  var json = JSON.stringify(data, null, 2);
-  var blobName = getBlobName(team);
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    try {
-      var result = await put(blobName, json, {
-        access: 'public',
-        addRandomSuffix: false,
-        allowOverwrite: true
-      });
-      cachedBlobUrl[blobName] = result.url;
-    } catch (e) { console.error('Blob write failed:', e.message); }
-  }
-  // Write to filesystem for disaster recovery (both teams)
-  try { fs.writeFileSync('/tmp/data-' + team + '.json', json, 'utf-8'); } catch {}
-  if (team !== 'women') {
-    try { fs.writeFileSync(TMP_DATA, json, 'utf-8'); } catch {}
-    try { fs.writeFileSync(REPO_DATA, json, 'utf-8'); } catch {}
-  }
-}
-
-function validateData(data) {
-  if (!data || typeof data !== 'object' || Array.isArray(data)) {
-    return 'Данные должны быть объектом';
-  }
-
-  var arrays = ['posts', 'players', 'tournaments'];
-  for (var i = 0; i < arrays.length; i++) {
-    var key = arrays[i];
-    if (data[key] !== undefined && !Array.isArray(data[key])) {
-      return 'Поле "' + key + '" должно быть массивом';
-    }
-    if (Array.isArray(data[key])) {
-      for (var j = 0; j < data[key].length; j++) {
-        if (data[key][j] === null || typeof data[key][j] !== 'object' || typeof data[key][j].id === 'undefined') {
-          return 'Каждый элемент в "' + key + '" должен иметь поле id';
-        }
-      }
-    }
-  }
-
-  var objects = ['settings', 'homepage'];
-  for (var i = 0; i < objects.length; i++) {
-    var key = objects[i];
-    if (data[key] !== undefined && (typeof data[key] !== 'object' || Array.isArray(data[key]) || data[key] === null)) {
-      return 'Поле "' + key + '" должно быть объектом';
-    }
-  }
-
-  return null;
-}
-
-function verifyToken(authHeader) {
-  if (!authHeader) return false;
   try {
-    var token = authHeader.replace('Bearer ', '');
-    var decoded = JSON.parse(Buffer.from(token, 'base64').toString('utf-8'));
-    return decoded.user === 'admin' && decoded.exp > Date.now();
-  } catch {
-    return false;
-  }
-}
+    // Players
+    var { data: players } = await supabase
+      .from('players').select('*').eq('team', team).order('id');
+    result.players = (players || []).map(function(p) {
+      p.desc = p.description; // frontend compat
+      return p;
+    });
 
-function getAllowedOrigin(requestOrigin) {
-  var env = process.env.ALLOWED_ORIGINS;
-  var allowed = env ? env.split(',').map(function(s) { return s.trim(); }) : [];
-
-  if (allowed.length === 0) {
-    if (!requestOrigin) return '';
-    if (requestOrigin.startsWith('http://localhost')) return requestOrigin;
-    if (requestOrigin.endsWith('.vercel.app')) return requestOrigin;
-    return '';
-  }
-
-  if (allowed.indexOf('*') !== -1) return '*';
-  if (allowed.indexOf(requestOrigin) !== -1) return requestOrigin;
-
-  for (var i = 0; i < allowed.length; i++) {
-    if (allowed[i].startsWith('*.') && requestOrigin && requestOrigin.endsWith(allowed[i].slice(1))) {
-      return requestOrigin;
+    // Posts with comments
+    var { data: posts } = await supabase
+      .from('posts').select('*').eq('team', team).order('pinned', { ascending: false }).order('id', { ascending: false });
+    if (posts && posts.length > 0) {
+      var postIds = posts.map(function(p) { return p.id; });
+      var { data: comments } = await supabase
+        .from('comments').select('*').eq('team', team).in('post_id', postIds).order('id');
+      posts.forEach(function(post) {
+        post.comments = (comments || []).filter(function(c) { return c.post_id === post.id; });
+      });
     }
+    result.posts = posts || [];
+
+    // Tournaments
+    var { data: tournaments } = await supabase
+      .from('tournaments').select('*').eq('team', team).order('id');
+    result.tournaments = (tournaments || []).map(function(t) {
+      t.endDate = t.end_date; // frontend compat
+      return t;
+    });
+
+    // Homepage
+    var { data: homepage } = await supabase
+      .from('homepage').select('*').eq('team', team).maybeSingle();
+    result.homepage = homepage || result.homepage;
+
+    // Settings
+    var { data: settings } = await supabase
+      .from('settings').select('*').eq('team', team).maybeSingle();
+    result.settings = settings || result.settings;
+
+  } catch (e) {
+    console.error('[data] Read error for ' + team + ':', e.message);
   }
 
-  return allowed[0];
+  return result;
 }
 
+// ---- WRITE: Persist old-format JSON to Supabase tables ----
+async function writeData(data, team) {
+  var supabase = getSupabase();
+
+  try {
+    // Players — replace all for this team
+    var players = (data.players || []).map(function(p) {
+      return {
+        id: p.id,
+        team: team,
+        name: p.name || '',
+        number: p.number || '',
+        position: p.position || '',
+        height: p.height || '',
+        age: p.age || 0,
+        status: p.status || 'Активен',
+        description: p.desc || p.description || '',
+        image: p.image || ''
+      };
+    });
+    if (players.length > 0) {
+      // Delete players not in current set (handles removals)
+      var keepIds = players.map(function(p) { return p.id; }).filter(Boolean);
+      await supabase.from('players').delete().eq('team', team).not('id', 'in', '(' + (keepIds.length ? keepIds.join(',') : '0') + ')');
+      await supabase.from('players').upsert(players, { onConflict: 'id' });
+    } else {
+      await supabase.from('players').delete().eq('team', team);
+    }
+
+    // Posts with comments
+    var posts = (data.posts || []).map(function(p) {
+      return {
+        id: p.id,
+        team: team,
+        title: p.title || '',
+        content: p.content || '',
+        image: p.image || '',
+        category: p.category || 'personal',
+        date: p.date || null,
+        author: p.author || 'admin',
+        published: p.published !== undefined ? p.published : false,
+        pinned: p.pinned || false,
+        likes: p.likes || 0
+      };
+    });
+    if (posts.length > 0) {
+      var keepPostIds = posts.map(function(p) { return p.id; }).filter(Boolean);
+      await supabase.from('comments').delete().eq('team', team).not('post_id', 'in', '(' + (keepPostIds.length ? keepPostIds.join(',') : '0') + ')');
+      await supabase.from('posts').delete().eq('team', team).not('id', 'in', '(' + (keepPostIds.length ? keepPostIds.join(',') : '0') + ')');
+      await supabase.from('posts').upsert(posts, { onConflict: 'id' });
+
+      // Handle comments from each post
+      var allComments = [];
+      (data.posts || []).forEach(function(post) {
+        (post.comments || []).forEach(function(c) {
+          allComments.push({
+            id: c.id,
+            team: team,
+            post_id: post.id,
+            author: c.author || '',
+            text: c.text || '',
+            date: c.date || null,
+            approved: c.approved !== undefined ? c.approved : true,
+            yandex_user_id: c.yandexUserId || c.yandex_user_id || '',
+            yandex_photo: c.yandexPhoto || c.yandex_photo || '',
+            parent_comment_id: null
+          });
+        });
+      });
+      if (allComments.length > 0) {
+        var keepCommentIds = allComments.map(function(c) { return c.id; }).filter(Boolean);
+        await supabase.from('comments').delete().eq('team', team).not('id', 'in', '(' + (keepCommentIds.length ? keepCommentIds.join(',') : '0') + ')');
+        await supabase.from('comments').upsert(allComments, { onConflict: 'id' });
+      }
+    } else {
+      await supabase.from('comments').delete().eq('team', team);
+      await supabase.from('posts').delete().eq('team', team);
+    }
+
+    // Tournaments
+    var tournaments = (data.tournaments || []).map(function(t) {
+      return {
+        id: t.id,
+        team: team,
+        title: t.title || '',
+        subtitle: t.subtitle || '',
+        date: t.date || null,
+        end_date: t.endDate || t.end_date || null,
+        status: t.status || 'upcoming',
+        participants: t.participants || '',
+        location: t.location || '',
+        description: t.description || '',
+        image: t.image || ''
+      };
+    });
+    if (tournaments.length > 0) {
+      var keepTournIds = tournaments.map(function(t) { return t.id; }).filter(Boolean);
+      await supabase.from('tournaments').delete().eq('team', team).not('id', 'in', '(' + (keepTournIds.length ? keepTournIds.join(',') : '0') + ')');
+      await supabase.from('tournaments').upsert(tournaments, { onConflict: 'id' });
+    } else {
+      await supabase.from('tournaments').delete().eq('team', team);
+    }
+
+    // Homepage (upsert)
+    if (data.homepage) {
+      await supabase.from('homepage').upsert({
+        team: team,
+        hero_title: data.homepage.hero_title || '',
+        hero_subtitle: data.homepage.hero_subtitle || '',
+        button_text: data.homepage.button_text || 'Подать заявку',
+        button_link: data.homepage.button_link || '/about',
+        hero_image: data.homepage.hero_image || '',
+        footer_address: data.homepage.footer_address || '',
+        footer_email: data.homepage.footer_email || '',
+        footer_phone: data.homepage.footer_phone || '',
+        vk_link: data.homepage.vk_link || '',
+        tg_link: data.homepage.tg_link || ''
+      }, { onConflict: 'team' });
+    }
+
+    // Settings (upsert)
+    if (data.settings) {
+      await supabase.from('settings').upsert({
+        team: team,
+        site_title: data.settings.site_title || 'РГСУ ВОЛЕЙБОЛ',
+        yandex_app_id: data.settings.yandex_app_id || ''
+      }, { onConflict: 'team' });
+    }
+
+  } catch (e) {
+    console.error('[data] Write error for ' + team + ':', e.message);
+    throw e;
+  }
+}
+
+// ---- MAIN HANDLER ----
 export default async function handler(req, res) {
-  var origin = getAllowedOrigin(req.headers.origin);
-  if (origin) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (setCors(req, res, 'GET, POST, OPTIONS')) return;
 
-  // Extract and validate team parameter
-  var team = (req.query && (req.query.team === 'women' || req.query.team === 'men')) ? req.query.team : 'men';
-
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
+  var team = getTeam(req);
 
   if (req.method === 'GET') {
-    var data;
-    if (req.query.force_fs === 'true') {
-      // Force read from filesystem / embedded default (bypasses Blob + auto-restore)
-      data = readDataFromFs();
-    } else {
-      data = await readData(team);
-    }
-    res.status(200).json(data);
-    return;
+    var data = await readData(team);
+    return ok(res, data);
   }
 
   if (req.method === 'POST') {
     var body = req.body;
 
-    // Public actions (no auth required)
+    // Public actions (no auth required) — like, unlike, comment
     if (body && body.action) {
       var data = await readData(team);
 
       if (body.action === 'like') {
         var post = (data.posts || []).find(function(p) { return p.id === body.postId; });
-        if (!post) {
-          res.status(404).json({ error: 'Пост не найден' });
-          return;
-        }
+        if (!post) return fail(res, 404, 'Пост не найден');
         post.likes = (post.likes || 0) + 1;
         await writeData(data, team);
-        res.status(200).json({ success: true, likes: post.likes });
-        return;
+        return ok(res, { success: true, likes: post.likes });
       }
 
       if (body.action === 'unlike') {
         var post = (data.posts || []).find(function(p) { return p.id === body.postId; });
-        if (!post) {
-          res.status(404).json({ error: 'Пост не найден' });
-          return;
-        }
+        if (!post) return fail(res, 404, 'Пост не найден');
         post.likes = Math.max(0, (post.likes || 0) - 1);
         await writeData(data, team);
-        res.status(200).json({ success: true, likes: post.likes });
-        return;
+        return ok(res, { success: true, likes: post.likes });
       }
 
       if (body.action === 'comment') {
         if (!body.text || !body.yandexUser || !body.yandexUser.id) {
-          res.status(400).json({ error: 'Требуется текст комментария и Яндекс авторизация' });
-          return;
+          return fail(res, 400, 'Требуется текст комментария и Яндекс авторизация');
         }
         var post = (data.posts || []).find(function(p) { return p.id === body.postId; });
-        if (!post) {
-          res.status(404).json({ error: 'Пост не найден' });
-          return;
-        }
+        if (!post) return fail(res, 404, 'Пост не найден');
         if (!post.comments) post.comments = [];
         var newComment = {
           id: post.comments.length > 0
@@ -290,37 +256,21 @@ export default async function handler(req, res) {
         };
         post.comments.push(newComment);
         await writeData(data, team);
-        res.status(200).json({ success: true, comment: newComment });
-        return;
+        return ok(res, { success: true, comment: newComment });
       }
 
-      res.status(400).json({ error: 'Неизвестное действие' });
-      return;
+      return fail(res, 400, 'Неизвестное действие');
     }
 
-    // Admin actions (auth required)
-    if (!req.headers.authorization) {
-      res.status(401).json({ error: 'Неавторизован: нет заголовка Authorization. Перезайдите в админку.' });
-      return;
-    }
-    if (!verifyToken(req.headers.authorization)) {
-      res.status(401).json({ error: 'Неавторизован: токен истек или неверен. Выйдите и зайдите заново.' });
-      return;
-    }
+    // Admin actions (auth required) — full data save
+    if (!requireAuth(req, res)) return;
 
-    if (!body) {
-      res.status(400).json({ error: 'Нет данных' });
-      return;
-    }
-    var validationError = validateData(body);
-    if (validationError) {
-      res.status(400).json({ error: validationError });
-      return;
-    }
+    if (!body) return fail(res, 400, 'Нет данных');
+
     await writeData(body, team);
     var result = await readData(team);
-    res.status(200).json({ success: true, data: result });
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
+    return ok(res, { success: true, data: result });
   }
+
+  return fail(res, 405, 'Method not allowed');
 }

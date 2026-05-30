@@ -1,43 +1,9 @@
-function getAllowedOrigin(requestOrigin) {
-  var env = process.env.ALLOWED_ORIGINS;
-  var allowed = env ? env.split(',').map(function(s) { return s.trim(); }) : [];
-
-  if (allowed.length === 0) {
-    if (!requestOrigin) return '';
-    if (requestOrigin.startsWith('http://localhost')) return requestOrigin;
-    if (requestOrigin.endsWith('.vercel.app')) return requestOrigin;
-    return '';
-  }
-
-  if (allowed.indexOf('*') !== -1) return '*';
-  if (allowed.indexOf(requestOrigin) !== -1) return requestOrigin;
-
-  for (var i = 0; i < allowed.length; i++) {
-    if (allowed[i].startsWith('*.') && requestOrigin && requestOrigin.endsWith(allowed[i].slice(1))) {
-      return requestOrigin;
-    }
-  }
-
-  return allowed[0];
-}
+import { setCors, fail, ok } from './_lib.js';
 
 export default function handler(req, res) {
-  var origin = getAllowedOrigin(req.headers.origin);
-  if (origin) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (setCors(req, res, 'POST, OPTIONS')) return;
 
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-
-  if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' });
-    return;
-  }
+  if (req.method !== 'POST') return fail(res, 405, 'Method not allowed');
 
   const { login, password } = req.body || {};
 

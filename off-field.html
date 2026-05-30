@@ -363,10 +363,10 @@
   // ===== DATA LOADING =====
 
   function loadPosts() {
-    fetch('/api/data?team=' + getTeam())
+    fetch('/api/posts?team=' + getTeam())
       .then(function(r) { return r.json(); })
-      .then(function(data) {
-        allPosts = data.posts || [];
+      .then(function(posts) {
+        allPosts = posts || [];
         renderHero();
         renderFeed();
       })
@@ -509,7 +509,7 @@
     var liked = isLiked(postId);
     var action = liked ? "unlike" : "like";
     pendingLikes[postId] = true;
-    fetch("/api/data?team=" + getTeam(), {
+    fetch("/api/likes?team=" + getTeam(), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: action, postId: postId })
@@ -565,11 +565,11 @@
     if (commentPollInterval) clearInterval(commentPollInterval);
     commentPollInterval = setInterval(function() {
       if (!currentPostId) { clearInterval(commentPollInterval); commentPollInterval = null; return; }
-      fetch('/api/data?team=' + getTeam())
+      fetch('/api/posts?team=' + getTeam())
         .then(function(r) { return r.json(); })
-        .then(function(data) {
+        .then(function(posts) {
           if (!currentPostId) return;
-          var freshPost = (data.posts || []).find(function(p) { return p.id === currentPostId; });
+          var freshPost = (posts || []).find(function(p) { return p.id === currentPostId; });
           if (!freshPost) return;
           var localPost = allPosts.find(function(p) { return p.id === currentPostId; });
           if (!localPost) return;
@@ -618,8 +618,8 @@
       return;
     }
     list.innerHTML = approved.map(function(c) {
-      var photoHtml = c.yandexPhoto
-        ? '<img class="w-8 h-8 rounded-full" src="' + c.yandexPhoto + '" alt="">'
+      var photoHtml = (((c.yandexPhoto || c.yandex_photo) || c.yandex_photo) || c.yandex_photo)
+        ? '<img class="w-8 h-8 rounded-full" src="' + (((c.yandexPhoto || c.yandex_photo) || c.yandex_photo) || c.yandex_photo) + '" alt="">'
         : '<div class="w-8 h-8 rounded-full bg-royal-blue/10 flex items-center justify-center"><span class="material-symbols-outlined text-royal-blue text-sm">person</span></div>';
       return '<div class="bg-surface-container-low rounded-xl p-3">'
         + '<div class="flex items-center gap-2 mb-1">' + photoHtml + '<span class="text-sm font-bold">' + (c.author || 'Аноним') + '</span>'
@@ -659,12 +659,11 @@
     var text = document.getElementById("comment-input").value.trim();
     if (!text) return;
 
-    fetch("/api/data?team=" + getTeam(), {
+    fetch("/api/comments?team=" + getTeam(), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        action: "comment",
-        postId: currentPostId,
+        post_id: currentPostId,
         text: text,
         yandexUser: yandexUser
       })
@@ -728,10 +727,9 @@
 
   // Load footer data from API
   (function loadFooter() {
-    fetch('/api/data?team=' + getTeam())
+    fetch('/api/homepage?team=' + getTeam())
       .then(function(r) { return r.json(); })
-      .then(function(data) {
-        var hp = data.homepage;
+      .then(function(hp) {
         if (!hp) return;
         var el;
         el = document.getElementById('footer-address');

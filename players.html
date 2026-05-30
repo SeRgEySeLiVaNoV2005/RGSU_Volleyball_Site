@@ -349,7 +349,7 @@
 
   // Load players from API then init carousel
 
-  fetch('/api/data?team=' + getTeam())
+  fetch('/api/players?team=' + getTeam())
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.players && data.players.length > 0) {
@@ -363,7 +363,7 @@
 
   // Load footer data from API
   (function loadFooter() {
-    fetch('/api/data?team=' + getTeam())
+    fetch('/api/players?team=' + getTeam())
       .then(function(r) { return r.json(); })
       .then(function(data) {
         var hp = data.homepage;

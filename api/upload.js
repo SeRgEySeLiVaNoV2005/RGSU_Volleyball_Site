@@ -1,66 +1,12 @@
 import { put } from '@vercel/blob';
-
-function getAllowedOrigin(requestOrigin) {
-  var env = process.env.ALLOWED_ORIGINS;
-  var allowed = env ? env.split(',').map(function(s) { return s.trim(); }) : [];
-
-  if (allowed.length === 0) {
-    if (!requestOrigin) return '';
-    if (requestOrigin.startsWith('http://localhost')) return requestOrigin;
-    if (requestOrigin.endsWith('.vercel.app')) return requestOrigin;
-    return '';
-  }
-
-  if (allowed.indexOf('*') !== -1) return '*';
-  if (allowed.indexOf(requestOrigin) !== -1) return requestOrigin;
-
-  for (var i = 0; i < allowed.length; i++) {
-    if (allowed[i].startsWith('*.') && requestOrigin && requestOrigin.endsWith(allowed[i].slice(1))) {
-      return requestOrigin;
-    }
-  }
-
-  return allowed[0];
-}
-
-function verifyToken(authHeader) {
-  if (!authHeader) return false;
-  try {
-    var token = authHeader.replace('Bearer ', '');
-    var decoded = JSON.parse(Buffer.from(token, 'base64').toString('utf-8'));
-    return decoded.user === 'admin' && decoded.exp > Date.now();
-  } catch {
-    return false;
-  }
-}
+import { setCors, requireAuth, fail, ok } from './_lib.js';
 
 export default async function handler(req, res) {
-  var origin = getAllowedOrigin(req.headers.origin);
-  if (origin) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (setCors(req, res, 'POST, OPTIONS')) return;
 
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
+  if (req.method !== 'POST') return fail(res, 405, 'Method not allowed');
 
-  if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' });
-    return;
-  }
-
-  // Auth check
-  if (!req.headers.authorization) {
-    res.status(401).json({ error: 'Неавторизован' });
-    return;
-  }
-  if (!verifyToken(req.headers.authorization)) {
-    res.status(401).json({ error: 'Токен истек или неверен' });
-    return;
-  }
+  if (!requireAuth(req, res)) return;
 
   var body = req.body;
   if (!body || !body.image || !body.filename) {
