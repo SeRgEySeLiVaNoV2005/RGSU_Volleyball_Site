@@ -9,9 +9,12 @@ export default async function handler(req, res) {
   var supabase;
 
   // 1. Check env vars (masked)
+  var key = process.env.SUPABASE_SERVICE_KEY || '';
   results.env = {
-    SUPABASE_URL: process.env.SUPABASE_URL ? process.env.SUPABASE_URL.substring(0, 10) + '...' : 'MISSING',
-    SUPABASE_SERVICE_KEY: process.env.SUPABASE_SERVICE_KEY ? 'present (length ' + process.env.SUPABASE_SERVICE_KEY.length + ')' : 'MISSING',
+    SUPABASE_URL: process.env.SUPABASE_URL || 'MISSING',
+    SUPABASE_SERVICE_KEY: key
+      ? 'len=' + key.length + ' starts=' + key.substring(0, 20) + '... ends=...' + key.slice(-10)
+      : 'MISSING',
     BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN ? 'present' : 'MISSING',
   };
 
