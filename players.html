@@ -352,8 +352,8 @@
   fetch('/api/players?team=' + getTeam())
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      if (data.players && data.players.length > 0) {
-        players = data.players;
+      if (Array.isArray(data) && data.length > 0) {
+        players = data;
       }
       initCarousel();
     })
@@ -363,10 +363,10 @@
 
   // Load footer data from API
   (function loadFooter() {
-    fetch('/api/players?team=' + getTeam())
+    fetch('/api/homepage?team=' + getTeam())
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        var hp = data.homepage;
+        var hp = data;
         if (!hp) return;
         var el;
         el = document.getElementById('footer-address');
