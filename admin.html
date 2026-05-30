@@ -938,6 +938,44 @@
   }
 
   // ===== IMAGE UPLOAD FROM GALLERY / FILE BROWSER (Mobile-friendly) =====
+  // Includes client-side compression to avoid 413 Payload Too Large on Vercel (4.5MB limit)
+  function compressImage(file, callback) {
+    var img = new Image();
+    var url = URL.createObjectURL(file);
+    img.onload = function() {
+      URL.revokeObjectURL(url);
+      var maxSize = 1200; // Max width/height in pixels
+      var width = img.width;
+      var height = img.height;
+
+      // Only resize if image is larger than maxSize
+      if (width > maxSize || height > maxSize) {
+        if (width > height) {
+          height = Math.round((height / width) * maxSize);
+          width = maxSize;
+        } else {
+          width = Math.round((width / height) * maxSize);
+          height = maxSize;
+        }
+      }
+
+      var canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // Compress to JPEG with quality 0.8 (dramatically reduces size)
+      var compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      callback(compressedDataUrl);
+    };
+    img.onerror = function() {
+      URL.revokeObjectURL(url);
+      callback(null);
+    };
+    img.src = url;
+  }
+
   window.handleImageUpload = function(fileInput, targetInputId, previewImgId, placeholderId, previewContainerId) {
     var file = fileInput.files[0];
     if (!file) return;
@@ -949,9 +987,9 @@
       return;
     }
 
-    // Validate file size (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      showToast('Изображение слишком большое (макс. 10 МБ)', 'error');
+    // Validate file size (max 20MB — will be compressed before upload)
+    if (file.size > 20 * 1024 * 1024) {
+      showToast('Изображение слишком большое (макс. 20 МБ)', 'error');
       fileInput.value = '';
       return;
     }
@@ -961,15 +999,26 @@
     var originalBtnHtml = btn ? btn.innerHTML : '';
     if (btn) {
       btn.disabled = true;
-      btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">sync</span> Загрузка...';
+      btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">sync</span> Сжатие...';
     }
 
-    // Read file as base64 data URL
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      var base64Data = e.target.result;
+    // Compress image before upload (avoids 413 Payload Too Large on Vercel)
+    compressImage(file, function(compressedDataUrl) {
+      if (!compressedDataUrl) {
+        showToast('Ошибка обработки изображения', 'error');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = originalBtnHtml;
+        }
+        fileInput.value = '';
+        return;
+      }
 
-      // Upload to server
+      if (btn) {
+        btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">sync</span> Загрузка...';
+      }
+
+      // Upload compressed image to server
       fetch('/api/upload', {
         method: 'POST',
         headers: {
@@ -977,8 +1026,8 @@
           'Authorization': 'Bearer ' + (localStorage.getItem('admin_token') || '')
         },
         body: JSON.stringify({
-          image: base64Data,
-          filename: file.name
+          image: compressedDataUrl,
+          filename: file.name.replace(/\.[^.]+$/, '.jpg')
         })
       })
       .then(function(r) {
@@ -1033,18 +1082,7 @@
         // Reset file input so the same file can be selected again
         fileInput.value = '';
       });
-    };
-
-    reader.onerror = function() {
-      showToast('Ошибка чтения файла', 'error');
-      if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = originalBtnHtml;
-      }
-      fileInput.value = '';
-    };
-
-    reader.readAsDataURL(file);
+    });
   };
 
   // Admin-specific switchTeam override (no page reload)

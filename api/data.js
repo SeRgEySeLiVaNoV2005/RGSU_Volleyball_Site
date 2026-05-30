@@ -62,19 +62,48 @@ async function readData(team) {
     try {
       var data = await readDataFromBlob(blobName);
       if (data) {
-        // Auto-restore men's data when version is outdated (e.g. corrupted Blob)
-        if (team === 'men' && data._data_version !== DATA_VERSION) {
-          console.log('[auto-restore] Men\'s Blob version mismatch (' + data._data_version + ' → ' + DATA_VERSION + '), restoring from embedded default');
+        // Auto-restore when version is outdated (e.g. corrupted Blob)
+        if (data._data_version !== DATA_VERSION) {
+          console.log('[auto-restore] ' + team + ' Blob version mismatch (' + data._data_version + ' → ' + DATA_VERSION + '), restoring from embedded default');
           var restored = getDefaultData();
           await writeData(restored, team);
           return restored;
         }
+        if (team === 'women') {
+          // Backup women's data to filesystem for disaster recovery
+          try { fs.writeFileSync('/tmp/data-women.json', JSON.stringify(data), 'utf-8'); } catch {}
+        }
         return data;
       }
-    } catch {}
+      // Blob token is set but blob read returned null — try filesystem backup before falling back to empty
+      console.warn('[data] Blob read returned null for ' + team + ', trying filesystem fallback');
+      if (team === 'women') {
+        try {
+          if (fs.existsSync('/tmp/data-women.json')) {
+            var backup = JSON.parse(fs.readFileSync('/tmp/data-women.json', 'utf-8'));
+            console.log('[data] Restored women\'s data from filesystem backup');
+            return backup;
+          }
+        } catch (e) { console.error('[data] Filesystem backup read failed:', e.message); }
+      }
+      var fsFallback = readDataFromFs();
+      if (fsFallback && fsFallback.players && fsFallback.players.length > 0) {
+        console.log('[data] Restored ' + team + ' data from filesystem');
+        return fsFallback;
+      }
+    } catch (e) {
+      console.error('[data] Blob read error for ' + team + ':', e.message);
+    }
   }
   // No Blob available — return appropriate defaults
   if (team === 'women') {
+    // Try women-specific filesystem backup first
+    try {
+      if (fs.existsSync('/tmp/data-women.json')) {
+        var backup = JSON.parse(fs.readFileSync('/tmp/data-women.json', 'utf-8'));
+        return backup;
+      }
+    } catch {}
     return {
       posts: [],
       settings: { site_title: 'РГСУ ВОЛЕЙБОЛ', yandex_app_id: '' },
@@ -88,8 +117,8 @@ async function readData(team) {
 }
 
 async function writeData(data, team) {
-  // Ensure version marker is present on men's data
-  if (team === 'men' && data._data_version !== DATA_VERSION) {
+  // Ensure version marker is present
+  if (data._data_version !== DATA_VERSION) {
     data._data_version = DATA_VERSION;
   }
   var json = JSON.stringify(data, null, 2);
@@ -104,7 +133,8 @@ async function writeData(data, team) {
       cachedBlobUrl[blobName] = result.url;
     } catch (e) { console.error('Blob write failed:', e.message); }
   }
-  // Keep filesystem writes for local development (men's team only)
+  // Write to filesystem for disaster recovery (both teams)
+  try { fs.writeFileSync('/tmp/data-' + team + '.json', json, 'utf-8'); } catch {}
   if (team !== 'women') {
     try { fs.writeFileSync(TMP_DATA, json, 'utf-8'); } catch {}
     try { fs.writeFileSync(REPO_DATA, json, 'utf-8'); } catch {}
