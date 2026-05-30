@@ -495,7 +495,7 @@
             <input type="hidden" id="player-id">
             <div class="flex flex-col items-center mb-6">
               <img class="w-24 h-24 rounded-full border-2 border-outline-variant object-cover mb-2" id="player-photo-preview" src="" alt="Фото игрока" style="display:none;">
-              <div class="w-24 h-24 rounded-full bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center text-outline" id="player-photo-placeholder">
+              <div class="w-24 h-24 rounded-full bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center text-outline cursor-pointer hover:border-royal-blue/50 hover:bg-surface-container-high transition-colors" id="player-photo-placeholder" onclick="document.getElementById('player-image-file').click()" title="Загрузить фото с телефона">
                 <span class="material-symbols-outlined scale-125">person</span>
                 <span class="text-[10px] mt-1 font-bold uppercase">Фото</span>
               </div>
@@ -503,7 +503,13 @@
             <div class="grid grid-cols-2 gap-4">
               <div class="col-span-2">
                 <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">URL фото</label>
-                <input id="player-image" class="w-full px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="https://... Ссылка на фото игрока" type="text">
+                <div class="flex gap-2">
+                  <input id="player-image" class="flex-1 px-4 py-3 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 focus:border-royal-blue outline-none transition-all" placeholder="https://... Ссылка на фото игрока" type="text">
+                  <input type="file" id="player-image-file" accept="image/*" style="display:none;" onchange="handleImageUpload(this, 'player-image', 'player-photo-preview', 'player-photo-placeholder')">
+                  <button type="button" class="px-4 py-3 bg-surface-container border border-outline-variant rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container-high transition-all flex items-center gap-1.5 active:scale-95" onclick="document.getElementById('player-image-file').click()" title="Загрузить с телефона">
+                    <span class="material-symbols-outlined text-lg">upload</span> Обзор
+                  </button>
+                </div>
               </div>
               <div class="col-span-2">
                 <label class="text-xs font-bold text-on-surface-variant mb-1.5 block uppercase tracking-wider">Полное имя</label>
@@ -649,7 +655,13 @@
               <input id="post-id" type="hidden">
               <div class="space-y-3">
                 <label class="text-xs font-bold text-on-surface uppercase tracking-wider">Обложка публикации (URL)</label>
-                <input id="post-image" class="w-full rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4" placeholder="Вставьте URL изображения..." type="text">
+                <div class="flex gap-2">
+                  <input id="post-image" class="flex-1 rounded-xl border-outline-variant focus:border-royal-blue focus:ring-royal-blue/20 transition-all py-3 px-4" placeholder="Вставьте URL изображения..." type="text">
+                  <input type="file" id="post-image-file" accept="image/*" style="display:none;" onchange="handleImageUpload(this, 'post-image', 'post-image-preview-img', null, 'post-image-preview')">
+                  <button type="button" class="px-4 py-3 bg-surface-container border border-outline-variant rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container-high transition-all flex items-center gap-1.5 active:scale-95 flex-shrink-0" onclick="document.getElementById('post-image-file').click()" title="Загрузить с телефона">
+                    <span class="material-symbols-outlined text-lg">upload</span> Обзор
+                  </button>
+                </div>
                 <div id="post-image-preview" class="rounded-xl overflow-hidden bg-surface-variant" style="display:none;">
                   <img id="post-image-preview-img" class="w-full h-48 object-cover" src="" alt="">
                 </div>
@@ -849,7 +861,13 @@
               </div>
               <div class="col-span-2">
                 <label class="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-wider">URL изображения</label>
-                <input id="tournament-image" class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" placeholder="https://..." type="text">
+                <div class="flex gap-2">
+                  <input id="tournament-image" class="flex-1 px-4 py-3 border border-outline-variant rounded-xl focus:ring-2 focus:ring-royal-blue/20 outline-none transition-all bg-white" placeholder="https://..." type="text">
+                  <input type="file" id="tournament-image-file" accept="image/*" style="display:none;" onchange="handleImageUpload(this, 'tournament-image')">
+                  <button type="button" class="px-4 py-3 bg-surface-container border border-outline-variant rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container-high transition-all flex items-center gap-1.5 active:scale-95 flex-shrink-0" onclick="document.getElementById('tournament-image-file').click()" title="Загрузить с телефона">
+                    <span class="material-symbols-outlined text-lg">upload</span> Обзор
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -918,6 +936,116 @@
     document.body.appendChild(toast);
     setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300); }, 2500);
   }
+
+  // ===== IMAGE UPLOAD FROM GALLERY / FILE BROWSER (Mobile-friendly) =====
+  window.handleImageUpload = function(fileInput, targetInputId, previewImgId, placeholderId, previewContainerId) {
+    var file = fileInput.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.match(/^image\//)) {
+      showToast('Пожалуйста, выберите изображение', 'error');
+      fileInput.value = '';
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('Изображение слишком большое (макс. 10 МБ)', 'error');
+      fileInput.value = '';
+      return;
+    }
+
+    // Show loading state on the associated button
+    var btn = fileInput.nextElementSibling;
+    var originalBtnHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">sync</span> Загрузка...';
+    }
+
+    // Read file as base64 data URL
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var base64Data = e.target.result;
+
+      // Upload to server
+      fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + (localStorage.getItem('admin_token') || '')
+        },
+        body: JSON.stringify({
+          image: base64Data,
+          filename: file.name
+        })
+      })
+      .then(function(r) {
+        if (!r.ok) {
+          return r.json().then(function(e) { throw new Error(e.error || 'HTTP ' + r.status); })
+            .catch(function() { throw new Error('HTTP ' + r.status); });
+        }
+        return r.json();
+      })
+      .then(function(result) {
+        // Set the URL in the target input
+        var targetInput = document.getElementById(targetInputId);
+        if (targetInput) {
+          targetInput.value = result.url;
+          // Trigger input event so live previews update
+          targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+
+        // Update preview image if provided
+        if (previewImgId) {
+          var previewImg = document.getElementById(previewImgId);
+          if (previewImg) {
+            previewImg.src = result.url;
+            previewImg.style.display = '';
+          }
+        }
+
+        // Hide placeholder if provided
+        if (placeholderId) {
+          var placeholder = document.getElementById(placeholderId);
+          if (placeholder) placeholder.style.display = 'none';
+        }
+
+        // Show preview container if provided
+        if (previewContainerId) {
+          var previewContainer = document.getElementById(previewContainerId);
+          if (previewContainer) previewContainer.style.display = '';
+        }
+
+        showToast('Изображение загружено!', 'info');
+      })
+      .catch(function(err) {
+        console.error('Upload error:', err);
+        showToast('Ошибка загрузки: ' + err.message, 'error');
+      })
+      .finally(function() {
+        // Restore button
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = originalBtnHtml;
+        }
+        // Reset file input so the same file can be selected again
+        fileInput.value = '';
+      });
+    };
+
+    reader.onerror = function() {
+      showToast('Ошибка чтения файла', 'error');
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHtml;
+      }
+      fileInput.value = '';
+    };
+
+    reader.readAsDataURL(file);
+  };
 
   // Admin-specific switchTeam override (no page reload)
   switchTeam = function(isWomen) {
