@@ -72,7 +72,10 @@ async function writeData(data, team) {
   var supabase = getSupabase();
 
   try {
-    // Players — replace all for this team
+    // Players — DELETE all for this team, then INSERT fresh
+    // Using delete+insert (not upsert) to avoid cross-team ID conflicts:
+    // upsert with onConflict:'id' would overwrite a player with same ID
+    // in the OTHER team because PK is on id alone, not (id, team).
     var players = (data.players || []).map(function(p) {
       return {
         id: p.id,
@@ -87,16 +90,13 @@ async function writeData(data, team) {
         image: p.image || ''
       };
     });
+    await supabase.from('players').delete().eq('team', team);
     if (players.length > 0) {
-      // Delete players not in current set (handles removals)
-      var keepIds = players.map(function(p) { return p.id; }).filter(Boolean);
-      await supabase.from('players').delete().eq('team', team).not('id', 'in', '(' + (keepIds.length ? keepIds.join(',') : '0') + ')');
-      await supabase.from('players').upsert(players, { onConflict: 'id' });
-    } else {
-      await supabase.from('players').delete().eq('team', team);
+      var { error: playersErr } = await supabase.from('players').insert(players);
+      if (playersErr) throw new Error('Players insert: ' + playersErr.message);
     }
 
-    // Posts with comments
+    // Posts — DELETE all for this team (comments cascade), then INSERT fresh
     var posts = (data.posts || []).map(function(p) {
       return {
         id: p.id,
@@ -112,13 +112,14 @@ async function writeData(data, team) {
         likes: p.likes || 0
       };
     });
+    // Comments must be deleted first due to FK referencing posts
+    await supabase.from('comments').delete().eq('team', team);
+    await supabase.from('posts').delete().eq('team', team);
     if (posts.length > 0) {
-      var keepPostIds = posts.map(function(p) { return p.id; }).filter(Boolean);
-      await supabase.from('comments').delete().eq('team', team).not('post_id', 'in', '(' + (keepPostIds.length ? keepPostIds.join(',') : '0') + ')');
-      await supabase.from('posts').delete().eq('team', team).not('id', 'in', '(' + (keepPostIds.length ? keepPostIds.join(',') : '0') + ')');
-      await supabase.from('posts').upsert(posts, { onConflict: 'id' });
+      var { error: postsErr } = await supabase.from('posts').insert(posts);
+      if (postsErr) throw new Error('Posts insert: ' + postsErr.message);
 
-      // Handle comments from each post
+      // Re-insert comments
       var allComments = [];
       (data.posts || []).forEach(function(post) {
         (post.comments || []).forEach(function(c) {
@@ -137,16 +138,12 @@ async function writeData(data, team) {
         });
       });
       if (allComments.length > 0) {
-        var keepCommentIds = allComments.map(function(c) { return c.id; }).filter(Boolean);
-        await supabase.from('comments').delete().eq('team', team).not('id', 'in', '(' + (keepCommentIds.length ? keepCommentIds.join(',') : '0') + ')');
-        await supabase.from('comments').upsert(allComments, { onConflict: 'id' });
+        var { error: commentsErr } = await supabase.from('comments').insert(allComments);
+        if (commentsErr) throw new Error('Comments insert: ' + commentsErr.message);
       }
-    } else {
-      await supabase.from('comments').delete().eq('team', team);
-      await supabase.from('posts').delete().eq('team', team);
     }
 
-    // Tournaments
+    // Tournaments — DELETE all for this team, then INSERT fresh
     var tournaments = (data.tournaments || []).map(function(t) {
       return {
         id: t.id,
@@ -162,12 +159,10 @@ async function writeData(data, team) {
         image: t.image || ''
       };
     });
+    await supabase.from('tournaments').delete().eq('team', team);
     if (tournaments.length > 0) {
-      var keepTournIds = tournaments.map(function(t) { return t.id; }).filter(Boolean);
-      await supabase.from('tournaments').delete().eq('team', team).not('id', 'in', '(' + (keepTournIds.length ? keepTournIds.join(',') : '0') + ')');
-      await supabase.from('tournaments').upsert(tournaments, { onConflict: 'id' });
-    } else {
-      await supabase.from('tournaments').delete().eq('team', team);
+      var { error: tournErr } = await supabase.from('tournaments').insert(tournaments);
+      if (tournErr) throw new Error('Tournaments insert: ' + tournErr.message);
     }
 
     // Homepage (upsert)

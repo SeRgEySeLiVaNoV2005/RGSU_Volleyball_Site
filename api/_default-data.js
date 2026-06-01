@@ -195,9 +195,12 @@ const defaultTeams = {
       site_title: "РГСУ ВОЛЕЙБОЛ — Женская сборная",
       yandex_app_id: "27e68fb7f21146f5b0a616cb57e382e8"
     },
+    // Women's IDs start at 1001 to avoid PK collision with men's (1-999)
+    // The DB has PRIMARY KEY on id alone (not composite), so both teams
+    // must use disjoint ID ranges.
     players: [
       {
-        id: 1,
+        id: 1001,
         name: "Анна Кузнецова",
         number: "10",
         position: "Связующий",
@@ -208,7 +211,7 @@ const defaultTeams = {
         image: ""
       },
       {
-        id: 2,
+        id: 1002,
         name: "Екатерина Смирнова",
         number: "7",
         position: "Диагональный",
@@ -219,7 +222,7 @@ const defaultTeams = {
         image: ""
       },
       {
-        id: 3,
+        id: 1003,
         name: "Мария Попова",
         number: "3",
         position: "Либеро",
@@ -230,7 +233,7 @@ const defaultTeams = {
         image: ""
       },
       {
-        id: 4,
+        id: 1004,
         name: "Дарья Васильева",
         number: "12",
         position: "Центральный блокирующий",
@@ -241,7 +244,7 @@ const defaultTeams = {
         image: ""
       },
       {
-        id: 5,
+        id: 1005,
         name: "Алина Фёдорова",
         number: "5",
         position: "Доигровщик",
@@ -252,7 +255,7 @@ const defaultTeams = {
         image: ""
       },
       {
-        id: 6,
+        id: 1006,
         name: "Полина Морозова",
         number: "8",
         position: "Доигровщик",

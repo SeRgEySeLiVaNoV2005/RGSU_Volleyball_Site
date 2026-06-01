@@ -1415,8 +1415,14 @@
 
   function savePlayer() {
     var id = document.getElementById('player-id').value;
+    // Women's team uses IDs 1000+ to avoid PK collision with men's (1-999)
+    // DB has PRIMARY KEY on id alone, so both teams must use disjoint ranges.
+    var teamBaseId = getTeam() === 'women' ? 1000 : 0;
+    var newId = playersData.length > 0
+      ? Math.max(teamBaseId, Math.max.apply(null, playersData.map(function(p) { return p.id; }))) + 1
+      : teamBaseId + 1;
     var player = {
-      id: id ? parseInt(id) : (playersData.length > 0 ? Math.max.apply(null, playersData.map(function(p) { return p.id; })) + 1 : 1),
+      id: id ? parseInt(id) : newId,
       name: document.getElementById('player-name').value.trim(),
       number: document.getElementById('player-number').value.trim(),
       position: document.getElementById('player-position').value,
@@ -1866,8 +1872,12 @@
 
   function savePost(published) {
     var id = document.getElementById('post-id').value;
+    var teamBaseId = getTeam() === 'women' ? 1000 : 0;
+    var newPostId = postsData.length > 0
+      ? Math.max(teamBaseId, Math.max.apply(null, postsData.map(function(p) { return p.id; }))) + 1
+      : teamBaseId + 1;
     var post = {
-      id: id ? parseInt(id) : (postsData.length > 0 ? Math.max.apply(null, postsData.map(function(p) { return p.id; })) + 1 : 1),
+      id: id ? parseInt(id) : newPostId,
       title: document.getElementById('post-title').value.trim(),
       content: document.getElementById('post-content').value.trim(),
       image: document.getElementById('post-image').value.trim(),
@@ -2118,8 +2128,12 @@
 
   function saveTournament() {
     var id = document.getElementById('tournament-id').value;
+    var teamBaseId = getTeam() === 'women' ? 1000 : 0;
+    var newTournId = tournamentsData.length > 0
+      ? Math.max(teamBaseId, Math.max.apply(null, tournamentsData.map(function(t) { return t.id; }))) + 1
+      : teamBaseId + 1;
     var tournament = {
-      id: id ? parseInt(id) : (tournamentsData.length > 0 ? Math.max.apply(null, tournamentsData.map(function(t) { return t.id; })) + 1 : 1),
+      id: id ? parseInt(id) : newTournId,
       title: document.getElementById('tournament-title').value.trim(),
       subtitle: document.getElementById('tournament-subtitle').value.trim(),
       date: document.getElementById('tournament-date').value,

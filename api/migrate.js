@@ -151,8 +151,9 @@ export default async function handler(req, res) {
 }
 
 async function migrateTeam(supabase, team, data, log) {
-  // -- Players --
+  // -- Players (delete+insert to avoid cross-team ID conflicts) --
   var players = data.players || [];
+  await supabase.from('players').delete().eq('team', team);
   if (players.length > 0) {
     var playerRows = players.map(function(p) {
       return {
@@ -168,17 +169,18 @@ async function migrateTeam(supabase, team, data, log) {
         image: p.image || ''
       };
     });
-    var { error: pe } = await supabase.from('players').upsert(playerRows, { onConflict: 'id' });
+    var { error: pe } = await supabase.from('players').insert(playerRows);
     if (pe) { log('Players error: ' + pe.message); throw new Error(pe.message); }
     log('Players: ' + players.length + ' migrated');
   } else {
     log('Players: 0 (empty)');
   }
 
-  // -- Posts --
+  // -- Posts (delete+insert, comments cascade) --
   var posts = data.posts || [];
+  await supabase.from('comments').delete().eq('team', team);
+  await supabase.from('posts').delete().eq('team', team);
   if (posts.length > 0) {
-    // First insert posts without comments
     var postRows = posts.map(function(p) {
       return {
         id: p.id,
@@ -194,42 +196,42 @@ async function migrateTeam(supabase, team, data, log) {
         likes: p.likes || 0
       };
     });
-    var { error: postErr } = await supabase.from('posts').upsert(postRows, { onConflict: 'id' });
+    var { error: postErr } = await supabase.from('posts').insert(postRows);
     if (postErr) { log('Posts error: ' + postErr.message); throw new Error(postErr.message); }
     log('Posts: ' + posts.length + ' migrated');
 
-    // Then migrate comments from each post
+    // Re-insert comments
     var totalComments = 0;
-    for (var i = 0; i < posts.length; i++) {
-      var post = posts[i];
-      var comments = post.comments || [];
-      if (comments.length > 0) {
-        var commentRows = comments.map(function(c) {
-          return {
-            id: c.id,
-            team: team,
-            post_id: post.id,
-            author: c.author || '',
-            text: c.text || '',
-            date: c.date || null,
-            approved: c.approved !== undefined ? c.approved : true,
-            yandex_user_id: c.yandexUserId || c.yandex_user_id || '',
-            yandex_photo: c.yandexPhoto || c.yandex_photo || '',
-            parent_comment_id: null // old replies are flat, we'll skip deep nesting for now
-          };
+    var allComments = [];
+    (data.posts || []).forEach(function(post) {
+      (post.comments || []).forEach(function(c) {
+        allComments.push({
+          id: c.id,
+          team: team,
+          post_id: post.id,
+          author: c.author || '',
+          text: c.text || '',
+          date: c.date || null,
+          approved: c.approved !== undefined ? c.approved : true,
+          yandex_user_id: c.yandexUserId || c.yandex_user_id || '',
+          yandex_photo: c.yandexPhoto || c.yandex_photo || '',
+          parent_comment_id: null
         });
-        var { error: ce } = await supabase.from('comments').upsert(commentRows, { onConflict: 'id' });
-        if (ce) { log('Comments error for post ' + post.id + ': ' + ce.message); throw new Error(ce.message); }
-        totalComments += comments.length;
-      }
+      });
+    });
+    if (allComments.length > 0) {
+      var { error: ce } = await supabase.from('comments').insert(allComments);
+      if (ce) { log('Comments error: ' + ce.message); throw new Error(ce.message); }
+      totalComments = allComments.length;
     }
     log('Comments: ' + totalComments + ' migrated');
   } else {
     log('Posts: 0 (empty)');
   }
 
-  // -- Tournaments --
+  // -- Tournaments (delete+insert) --
   var tournaments = data.tournaments || [];
+  await supabase.from('tournaments').delete().eq('team', team);
   if (tournaments.length > 0) {
     var tournamentRows = tournaments.map(function(t) {
       return {
@@ -246,7 +248,7 @@ async function migrateTeam(supabase, team, data, log) {
         image: t.image || ''
       };
     });
-    var { error: te } = await supabase.from('tournaments').upsert(tournamentRows, { onConflict: 'id' });
+    var { error: te } = await supabase.from('tournaments').insert(tournamentRows);
     if (te) { log('Tournaments error: ' + te.message); throw new Error(te.message); }
     log('Tournaments: ' + tournaments.length + ' migrated');
   } else {
