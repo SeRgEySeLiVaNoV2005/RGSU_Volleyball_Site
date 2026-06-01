@@ -43,12 +43,16 @@ async function readTeamData(team) {
   }
 
   // Fallback: filesystem
+  // IMPORTANT: data.json is men-only legacy data — never use it as fallback for women's team
   if (!data || !data.players || !data.players.length) {
     var paths = [
       '/tmp/data-' + team + '.json',
-      '/tmp/data.json',
-      './data.json'
+      '/tmp/data.json'
     ];
+    // Only fall back to generic data.json for men's team (historical compatibility)
+    if (team === 'men') {
+      paths.push('./data.json');
+    }
     for (var i = 0; i < paths.length; i++) {
       try {
         if (fs.existsSync(paths[i])) {

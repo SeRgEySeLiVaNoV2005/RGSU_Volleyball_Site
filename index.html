@@ -340,30 +340,38 @@
           if (el && hp.tg_link) el.href = hp.tg_link;
         }
 
-        // Render 3 random players in "Наш состав"
-        var players = []; // loaded separately below
-        if (players && players.length > 0) {
-          var shuffled = players.slice().sort(function() { return Math.random() - 0.5; });
-          var picked = shuffled.slice(0, 3);
-          window._rosterPlayers = picked;
-          var rosterList = document.getElementById('roster-list');
-          if (rosterList) {
-            rosterList.innerHTML = picked.map(function(p, i) {
-              var initials = (p.name || '?').charAt(0).toUpperCase();
-              return '<div class="group flex items-center justify-between p-3 md:p-4 bg-white rounded-xl shadow-sm hover:bg-ice-blue transition-all cursor-pointer" onclick="showRosterPlayer(' + i + ')">' +
-                '<div class="flex items-center gap-3 md:gap-4">' +
-                  '<div class="w-10 h-10 md:w-12 md:h-12 bg-surface-variant rounded-full flex items-center justify-center text-royal-blue font-bold text-sm md:text-base">' + (p.number || initials) + '</div>' +
-                  '<span class="font-bold text-royal-blue text-sm md:text-base">' + p.name + '</span>' +
-                '</div>' +
-                '<span class="text-secondary text-xs md:text-label-lg">' + (p.age ? p.age + ' ' + getAgeWord(p.age) : '') + '</span>' +
-              '</div>';
-            }).join('');
-            showRosterPlayer(0);
-          }
-        }
+        // Roster section will be rendered by loadRoster() below
       } catch(e) {}
     };
     xhr.send();
+  })();
+
+  // Load players for the "Наш состав" roster section
+  (function loadRoster() {
+    fetch('/api/players?team=' + getTeam())
+      .then(function(r) { return r.json(); })
+      .then(function(players) {
+        if (!Array.isArray(players) || !players.length) return;
+        // Pick 3 random players
+        var shuffled = players.slice().sort(function() { return Math.random() - 0.5; });
+        var picked = shuffled.slice(0, 3);
+        window._rosterPlayers = picked;
+        var rosterList = document.getElementById('roster-list');
+        if (rosterList) {
+          rosterList.innerHTML = picked.map(function(p, i) {
+            var initials = (p.name || '?').charAt(0).toUpperCase();
+            return '<div class="group flex items-center justify-between p-3 md:p-4 bg-white rounded-xl shadow-sm hover:bg-ice-blue transition-all cursor-pointer" onclick="showRosterPlayer(' + i + ')">' +
+              '<div class="flex items-center gap-3 md:gap-4">' +
+                '<div class="w-10 h-10 md:w-12 md:h-12 bg-surface-variant rounded-full flex items-center justify-center text-royal-blue font-bold text-sm md:text-base">' + (p.number || initials) + '</div>' +
+                '<span class="font-bold text-royal-blue text-sm md:text-base">' + p.name + '</span>' +
+              '</div>' +
+              '<span class="text-secondary text-xs md:text-label-lg">' + (p.age ? p.age + ' ' + getAgeWord(p.age) : '') + '</span>' +
+            '</div>';
+          }).join('');
+          showRosterPlayer(0);
+        }
+      })
+      .catch(function() { /* roster is optional, silent fail */ });
   })();
 
 </script>

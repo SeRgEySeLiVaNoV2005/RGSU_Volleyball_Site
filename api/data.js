@@ -3,6 +3,7 @@
 
 import { getSupabase } from './_supabase.js';
 import { setCors, requireAuth, getTeam, ok, fail } from './_lib.js';
+import { defaultTeams } from './_default-data.js';
 
 // Re-export _lib helpers used by other endpoints
 export { setCors, requireAuth, getTeam, ok, fail, verifyToken } from './_lib.js';
@@ -257,6 +258,32 @@ export default async function handler(req, res) {
         post.comments.push(newComment);
         await writeData(data, team);
         return ok(res, { success: true, comment: newComment });
+      }
+
+      if (body.action === 'restore') {
+        if (!requireAuth(req, res)) return;
+        var defaultData = (defaultTeams && defaultTeams[team]) || (defaultTeams && defaultTeams.men);
+        if (!defaultData) return fail(res, 500, 'Нет данных по умолчанию для команды ' + team);
+        await writeData(defaultData, team);
+        var restored = await readData(team);
+        return ok(res, { success: true, message: 'Данные восстановлены из резерва для команды: ' + team, data: restored });
+      }
+
+      if (body.action === 'reset') {
+        if (!requireAuth(req, res)) return;
+        // Delete ALL data for this team — clean slate
+        var tables = ['players', 'posts', 'comments', 'tournaments', 'homepage', 'settings'];
+        var errors = [];
+        for (var i = 0; i < tables.length; i++) {
+          try {
+            var { error } = await supabase.from(tables[i]).delete().eq('team', team);
+            if (error) errors.push(tables[i] + ': ' + error.message);
+          } catch (e) {
+            errors.push(tables[i] + ': ' + e.message);
+          }
+        }
+        if (errors.length) return fail(res, 500, 'Ошибки при очистке: ' + errors.join('; '));
+        return ok(res, { success: true, message: 'Все данные для команды ' + team + ' удалены. Можно вводить новые.' });
       }
 
       return fail(res, 400, 'Неизвестное действие');
