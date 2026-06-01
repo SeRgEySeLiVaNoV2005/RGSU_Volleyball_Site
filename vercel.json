@@ -2,6 +2,9 @@
   "rewrites": [
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/admin/:path*", "destination": "/admin.html" },
+    { "source": "/api/players/:id", "destination": "/api/players" },
+    { "source": "/api/posts/:id", "destination": "/api/posts" },
+    { "source": "/api/tournaments/:id", "destination": "/api/tournaments" },
     { "source": "/api/:path*", "destination": "/api/:path*" }
   ]
 }

@@ -272,6 +272,7 @@ export default async function handler(req, res) {
       if (body.action === 'reset') {
         if (!requireAuth(req, res)) return;
         // Delete ALL data for this team — clean slate
+        var supabase = getSupabase();
         var tables = ['players', 'posts', 'comments', 'tournaments', 'homepage', 'settings'];
         var errors = [];
         for (var i = 0; i < tables.length; i++) {
